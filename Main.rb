@@ -1,9 +1,5 @@
-require "sinatra"
+require 'sinatra'
 
-get "/" do
-	return "Goodbye, cruel World!"
-end
-
-get "/hello" do
-	return "Hello, World!"
+get '/' do
+	send_file 'views/index.html'
 end
