@@ -1,0 +1,1 @@
+web: bundle exec sinatra -C config/sinatra.rb
