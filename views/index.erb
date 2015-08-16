@@ -3,11 +3,11 @@
    <head>
    </head>
 <body>
-   	<h1>Future home of QuidStatsio</h1>
+   	<h1>Future home of QuidStasio</h1>
    	<p>Seriously, that name is way better</p>
    	<% @all_teams.each do |team| %>
    		<p>
-   			<a href="/stats/<%=team['objectId']%>"><%=team['team_name']%></a>
+   			<a href="/stats/<%=team['objectId']%>/raw_stats"><%=team['team_name']%></a>
    		</p>
    	<%end%>
    <!-- <select>
