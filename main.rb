@@ -9,17 +9,7 @@ end
 
 get '/' do
 	@all_teams = get_teams
-	
-
-
-
-
-
 	erb :index
-
-
-	# send_file 'views/index.html'
-
 end
 
 get '/help' do
