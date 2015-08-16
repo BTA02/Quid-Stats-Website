@@ -8,7 +8,17 @@ configure do
 end
 
 get '/' do
-	send_file 'views/index.html'
+	@all_teams = get_teams
+	
+
+
+
+
+
+	erb :index
+
+
+	# send_file 'views/index.html'
 
 end
 
@@ -20,7 +30,10 @@ get '/stats/:team_id' do
 	get_game_events_for_team(params[:team_id]).to_json
 end
 
+def get_teams
+	Parse::Query.new("Teams").get
+end
+
 def get_game_events_for_team(team_id)
 	Parse::Query.new("Videos").eq("team_id", team_id).get
-
 end
