@@ -39,7 +39,7 @@ class RawStats
 						"snitches" => 0,
 						"plusses" => 0,
 						"minuses" => 0,
-						"time" => 0
+						"time" => 0,
 						"gain_control" => 0,
 						"lose_control" => 0
 					}

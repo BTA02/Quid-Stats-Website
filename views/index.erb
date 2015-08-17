@@ -1,20 +1,26 @@
-<!DOCTYPE html PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <html>
    <head>
+
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
+      <script src="/js/main.js"></script>
    </head>
-<body>
-   	<h1>Future home of QuidStasio</h1>
-   	<p>Seriously, that name is way better</p>
-   	<% @all_teams.each do |team| %>
-   		<p>
-   			<a href="/stats/<%=team['objectId']%>/raw_stats"><%=team['team_name']%></a>
-   		</p>
-   	<%end%>
-   <!-- <select>
-   		<option>Select a team</option>
-   		<% @all_teams.each do |team| %>
-   			<option value = "<%=team['objectId']%>"><%=team['team_name']%></option>
-   		<%end%>
-   </select> -->
-</body>
+
+   <body ng-app="statsApp">
+      <div ng-controller="StatsController">
+      	<h1>Future home of QuidStasio</h1>
+      	<p>Seriously, that name is way better - {{message}} {{1+1}}</p>
+      	<% @all_teams.each do |team| %>
+      		<p>
+      			<a href="/stats/<%=team['objectId']%>/raw_stats"><%=team['team_name']%></a>
+      		</p>
+      	<%end%>
+      <!-- <select>
+      		<option>Select a team</option>
+      		<% @all_teams.each do |team| %>
+      			<option value = "<%=team['objectId']%>"><%=team['team_name']%></option>
+      		<%end%>
+      </select> -->
+      </div>
+      
+   </body>
 </html>

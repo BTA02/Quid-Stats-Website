@@ -5,7 +5,6 @@ require 'pp'
 require_relative 'raw_stats'
 
 configure do
-	puts ENV["PARSE_APP_ID"], ENV["PARSE_API_KEY"]
 	Parse.init :application_id => ENV["PARSE_APP_ID"], :master_key => ENV["PARSE_API_KEY"]
 end
 
@@ -18,9 +17,8 @@ get '/help' do
 	send_file 'views/help.html'
 end
 
-get '/stats/:team_id/raw_stats' dos
+get '/stats/:team_id/raw_stats' do
 	# n = RawStats.new(params[:team_id])
-
 end
 
 
