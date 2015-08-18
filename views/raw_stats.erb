@@ -1,0 +1,45 @@
+<html ng-app="statsApp">
+   <head>
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
+      <script src="/js/main.js"></script>
+      <link rel="stylesheet" type="text/css" href="/stylesheets/the.css">
+   </head>
+
+   <body ng-controller="StatsController">
+   	<h1>Future home of QuidStasio</h1>
+      <table>
+         <thead>
+            <th>NAME</th>
+            <th>SHOTS</th>
+            <th>GOALS</th>
+            <th>ASSISTS</th>
+            <th>TURNOVERS</th>
+            <th>TAKEAWAYS</th>
+            <th>YELLOW CARDS</th>
+            <th>RED CARDS</th>
+            <th>SNITCHES</th>
+            <th>PLUSSES</th>
+            <th>MINUSES</th>
+            <th>TIME</th>
+         </thead>
+         <tbody>
+   	<% @raw_stats_map.each do |player_id, stats| %>
+         <tr>
+            <td> <%= player_id %> </td>
+            <td> <%= stats["shot"]%> </td>
+            <td> <%= stats["goal"]%> </td>
+            <td> <%= stats["assist"]%> </td>
+            <td> <%= stats["turnover"]%> </td>
+            <td> <%= stats["takeaway"]%> </td>
+            <td> <%= stats["yellow_card"]%> </td>
+            <td> <%= stats["red_card"]%> </td>
+            <td> <%= stats["snitches"]%> </td>
+            <td> <%= stats["plusses"]%> </td>
+            <td> <%= stats["minuses"]%> </td>
+            <td> <%= stats["time"]%> </td>
+         </tr>
+   	<%end%>
+   </tbody>
+      </table>      
+   </body>
+</html>
