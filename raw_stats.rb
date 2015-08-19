@@ -108,5 +108,16 @@ class RawStats
 		Parse::Query.new("Videos").eq("team_id", @team_id).get
 	end
 
+	def getTimeFromMilliPretty(milliseconds)
+		minutes = (milliseconds / 1000) / 60
+		seconds = (milliseconds / 1000) % 60
+		if seconds < 10
+			"#{minutes}:0#{seconds}"
+		else	
+			"#{minutes}:#{seconds}"
+		end
+
+	end
+
 end
 

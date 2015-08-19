@@ -18,8 +18,8 @@ get '/help' do
 end
 
 get '/stats/:team_id/raw_stats' do
-	r = RawStats.new(params[:team_id], params[:game_ids])
-	@raw_stats_map = r.calcMap
+	@r = RawStats.new(params[:team_id], params[:game_ids])
+	@raw_stats_map = @r.calcMap
 	erb :raw_stats
 end
 

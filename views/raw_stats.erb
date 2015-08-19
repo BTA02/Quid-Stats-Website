@@ -36,7 +36,7 @@
             <td> <%= stats["snitches"]%> </td>
             <td> <%= stats["plusses"]%> </td>
             <td> <%= stats["minuses"]%> </td>
-            <td> <%= stats["time"]%> </td>
+            <td> <%= @r.getTimeFromMilliPretty(stats["time"])%> </td>
          </tr>
    	<%end%>
    </tbody>
