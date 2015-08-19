@@ -39,3 +39,4 @@ build/
 .rvmrc
 
 .env
+.DS_Store

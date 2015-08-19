@@ -133,8 +133,16 @@ class RawStats
 
 	end
 
-	def getPlayerNamesFromTeam
-		@array_of_players = Parse::Query.new("Players").eq("team_id", @team_id).get
+	def getPlayersFromTeam
+		array_of_players = Parse::Query.new("Players").eq("team_id", @team_id).get
+		array_of_players.sort_by! do |player| 
+			player["fname"]
+		end
+		array_of_players
+	end
+
+	def getStatsMap
+		@stats_map
 	end
 
 

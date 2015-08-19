@@ -2,12 +2,15 @@
    <head>
       <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
       <script src="/js/main.js"></script>
+      <script src="js/bootstrap.min.js"></script>
       <link rel="stylesheet" type="text/css" href="/stylesheets/the.css">
+      <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
    </head>
 
    <body ng-controller="StatsController">
+      <div class="container-fluid">
    	<h1>Future home of QuidStasio</h1>
-      <table>
+      <table class="table table-striped">
          <thead>
             <th>NAME</th>
             <th>SHOTS</th>
@@ -23,25 +26,40 @@
             <th>TIME</th>
          </thead>
          <tbody>
-      <% player_names = @r.getPlayerNamesFromTeam %>
-   	<% @raw_stats_map.each do |player_id, stats| %>
+   	<% @players_from_team.each do |player| %>
+      <% stats = @raw_stats_map.fetch(player["objectId"], nil) %>
+      <% if !stats.nil? %>
          <tr>
-            <% player = player_names.find{|x| x["objectId"] == player_id} %>
             <td> <%= "#{player['fname']} #{player['lname']}"%> </td>
-            <td> <%= stats["shot"]%> </td>
-            <td> <%= stats["goal"]%> </td>
-            <td> <%= stats["assist"]%> </td>
-            <td> <%= stats["turnover"]%> </td>
-            <td> <%= stats["takeaway"]%> </td>
-            <td> <%= stats["yellow_card"]%> </td>
-            <td> <%= stats["red_card"]%> </td>
-            <td> <%= stats["snitches"]%> </td>
-            <td> <%= stats["plusses"]%> </td>
-            <td> <%= stats["minuses"]%> </td>
-            <td> <%= @r.getTimeFromMilliPretty(stats["time"])%> </td>
+            <td><div class='text-center'> <%= stats["shot"]%> </div> </td>
+            <td><div class='text-center'> <%= stats["goal"]%> </div> </td>
+            <td><div class='text-center'> <%= stats["assist"]%> </div> </td>
+            <td><div class='text-center'> <%= stats["turnover"]%> </div> </td>
+            <td><div class='text-center'> <%= stats["takeaway"]%> </div> </td>
+            <td><div class='text-center'> <%= stats["yellow_card"]%> </div> </td>
+            <td><div class='text-center'> <%= stats["red_card"]%> </div> </td>
+            <td><div class='text-center'> <%= stats["snitch_catch"]%> </div> </td>
+            <td><div class='text-center'> <%= stats["plusses"]%> </div> </td>
+            <td><div class='text-center'> <%= stats["minuses"]%> </div> </td>
+            <td><div class='text-center'> <%= @r.getTimeFromMilliPretty(stats["time"])%> </div> </td>
          </tr>
-   	<%end%>
+      <% end %>
+   	<% end %>
+      <tr class='total'>
+         <td> <div> TOTALS </div> </td>
+         <td><div class='text-center'> <%= @totals['shot']%> </div> </td>
+         <td><div class='text-center'> <%= @totals['goal']%> </div> </td>
+         <td><div class='text-center'> <%= @totals['assist']%> </div> </td>
+         <td><div class='text-center'> <%= @totals['turnover']%> </div> </td>
+         <td><div class='text-center'> <%= @totals['takeaway']%> </div> </td>
+         <td><div class='text-center'> <%= @totals['yellow_card']%> </div> </td>
+         <td><div class='text-center'> <%= @totals['red_card']%> </div> </td>
+         <td><div class='text-center'> <%= @totals['snitch_catch']%> </div> </td>
+         <td><div class='text-center'> <%= @totals['plusses']%> </div> </td>
+         <td><div class='text-center'> <%= @totals['minuses']%> </div> </td>
+         <td><div class='text-center'> <%= @r.getTimeFromMilliPretty(@totals['time'])%> </div> </td>
    </tbody>
-      </table>      
+      </table>
+   </div>    
    </body>
 </html>

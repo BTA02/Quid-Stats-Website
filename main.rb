@@ -20,6 +20,29 @@ end
 get '/stats/:team_id/raw_stats' do
 	@r = RawStats.new(params[:team_id], params[:game_ids])
 	@raw_stats_map = @r.calcMap
+	@players_from_team = @r.getPlayersFromTeam
+	#calculate out the totals....
+	@totals= {
+		"shot" => 0,
+		"goal" => 0,
+		"assist" => 0,
+		"turnover" => 0,
+		"takeaway" => 0,
+		"yellow_card" => 0,
+		"red_card" => 0,
+		"snitch_catch" => 0,
+		"plusses" => 0,
+		"minuses" => 0,
+		"time" => 0,
+		"gain_control" => 0,
+		"lose_control" => 0
+	}
+	@raw_stats_map.each do |k,v|
+		v.each do |ik, iv|
+			@totals[ik] += iv
+		end
+	end
+	pp @totals
 	erb :raw_stats
 end
 

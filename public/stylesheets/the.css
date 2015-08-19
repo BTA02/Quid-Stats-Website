@@ -1,3 +1,7 @@
-table {
-	width:100%;
+.td-center{
+	text-align: center;
+}
+
+.total td div {
+	font-weight: bold;
 }
