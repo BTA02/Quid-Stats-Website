@@ -23,9 +23,11 @@
             <th>TIME</th>
          </thead>
          <tbody>
+      <% player_names = @r.getPlayerNamesFromTeam %>
    	<% @raw_stats_map.each do |player_id, stats| %>
          <tr>
-            <td> <%= player_id %> </td>
+            <% player = player_names.find{|x| x["objectId"] == player_id} %>
+            <td> <%= "#{player['fname']} #{player['lname']}"%> </td>
             <td> <%= stats["shot"]%> </td>
             <td> <%= stats["goal"]%> </td>
             <td> <%= stats["assist"]%> </td>

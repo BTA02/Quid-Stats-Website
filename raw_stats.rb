@@ -47,6 +47,7 @@ class RawStats
 				end
 
 				event_type = event["actualAction"]
+
 				if event_type == "SUB"
 					if start_time != -1
 						time_to_add = event["youtubeTime"] - start_time
@@ -54,19 +55,33 @@ class RawStats
 						start_time = event["youtubeTime"]
 					end
 					@on_field_array[event["loc"]] = player_id
+
+
+
 				elsif event_type == "PAUSE_CLOCK"
 					if start_time != -1
 						time_to_add = event["youtubeTime"] - start_time
 						addTimeToEachPlayer(time_to_add)
-						start_time = event["youtubeTime"]
+						start_time = -1
 					end
+
+
+
+
 				elsif event_type == "START_CLOCK"
 					start_time = event["youtubeTime"]
+				elsif event_type == "GAME_START"
+					start_time = event["youtubeTime"]
+
+
+
+
+
 				elsif event_type == "AWAY_GOAL"
 					addPlusMinusVal(-1)
 				elsif event_type == "SNITCH_ON_PITCH"
 				elsif event_type == "AWAY_SNITCH_CATCH"
-				elsif event_type == "GAME_START"
+				
 				elsif event_type == "SNITCH_CATCH"
 					@stats_map[player_id]["snitch_catch"] += 1
 				elsif event_type == "GOAL"
@@ -79,7 +94,6 @@ class RawStats
 								
 			end
 		end
-		# @stats_map is the return
 		@stats_map
 	end
 
@@ -118,6 +132,11 @@ class RawStats
 		end
 
 	end
+
+	def getPlayerNamesFromTeam
+		@array_of_players = Parse::Query.new("Players").eq("team_id", @team_id).get
+	end
+
 
 end
 
