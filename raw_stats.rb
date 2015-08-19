@@ -68,7 +68,7 @@ class RawStats
 				elsif event_type == "AWAY_SNITCH_CATCH"
 				elsif event_type == "GAME_START"
 				elsif event_type == "SNITCH_CATCH"
-					@stats_map[player_id]["snitch"] += 1
+					@stats_map[player_id]["snitch_catch"] += 1
 				elsif event_type == "GOAL"
 					@stats_map[player_id][event["actualAction"].downcase] += 1
 					@stats_map[player_id]["shot"] += 1
