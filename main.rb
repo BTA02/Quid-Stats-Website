@@ -13,6 +13,11 @@ get '/' do
 	erb :index
 end
 
+get '/allStats' do
+	@teams = get_teams
+	erb :stats
+end
+
 get '/help' do
 	send_file 'views/help.html'
 end

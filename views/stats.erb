@@ -1,0 +1,39 @@
+<html ng-app="statsApp">
+	<head>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
+      	<script src="/js/main.js"></script>
+      	<script src="js/bootstrap.min.js"></script>
+      	<link rel="stylesheet" type="text/css" href="/stylesheets/the.css">
+      	<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+      	<h1 class='text-center'>QuidStasio</h1>
+  </head>
+
+  <body ng-controller="StatsController">
+  	<section ng-init="tab = 1" class="text-center">
+	  	<div class="container-fluid">
+
+	  		<select name="teamSelect">
+	  			<option value="">Select a team</option>
+	  			<% @teams.each do |team| %>
+	  			<option value="/<%= team['objectId']%>"><%=team['team_name']%></option>
+	  			<%end%>
+	  		</select>
+
+	  		<select>
+	  			<option value="">Select games</option>
+	  		</select>
+
+	  		<select>
+	  			<option value="/raw_stats">Raw Stats</option>
+	  			<option value="/beater_pairs">Beater Pairs</option>
+	  			<option value="/seeker_performance">Seeker Performance</option>
+  				<option value="/chasers">Chaser Groups</option>
+  			</select>
+
+  			<button class="btn btn-default">Go</button>
+  		</div>
+  	</section>
+
+  	<div>
+  	</div>
+  </body>
