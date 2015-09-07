@@ -19,7 +19,7 @@ get '/allStats' do
 end
 
 get '/games/:team_id' do
-	get_games_for_team(params[:team_id]).to_json
+	get_games_for_team(params[:team_id]).sort_by{|cat| cat[:description]}.to_json
 end
 
 get '/help' do
@@ -63,7 +63,11 @@ def get_games_for_team(team_id)
 	if !team_id.nil?
 		resp = Parse::Query.new("Videos").eq("team_id", team_id).get
 		resp.map do |e| 
-			e["description"]
+			{
+				description: e['description'], 
+				vid_id: e['vid_id'], 
+				team_id: e['team_id']
+			}
 		end
 	end
 end
