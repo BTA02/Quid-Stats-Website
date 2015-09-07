@@ -18,6 +18,10 @@ get '/allStats' do
 	erb :stats
 end
 
+get '/games/:team_id' do
+	get_games_for_team(params[:team_id]).to_json
+end
+
 get '/help' do
 	send_file 'views/help.html'
 end
@@ -53,6 +57,15 @@ end
 
 def get_teams
 	Parse::Query.new("Teams").get
+end
+
+def get_games_for_team(team_id)
+	if !team_id.nil?
+		resp = Parse::Query.new("Videos").eq("team_id", team_id).get
+		resp.map do |e| 
+			e["description"]
+		end
+	end
 end
 
 

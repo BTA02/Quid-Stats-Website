@@ -9,17 +9,19 @@
   </head>
 
   <body ng-controller="StatsController">
+  	{{team}}
+  	{{games}}
   	<section ng-init="tab = 1" class="text-center">
 	  	<div class="container-fluid">
 
-	  		<select name="teamSelect">
+	  		<select name="teamSelect" ng-model="team" ng-change="getGames()">
 	  			<option value="">Select a team</option>
 	  			<% @teams.each do |team| %>
 	  			<option value="/<%= team['objectId']%>"><%=team['team_name']%></option>
 	  			<%end%>
 	  		</select>
 
-	  		<select>
+	  		<select name="gameSelect" ng-model="game" ng-options="game for game in games">
 	  			<option value="">Select games</option>
 	  		</select>
 
