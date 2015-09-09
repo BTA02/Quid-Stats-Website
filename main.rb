@@ -2,6 +2,7 @@ require 'sinatra'
 require 'parse-ruby-client'
 require 'json'
 require 'pp'
+require_relative 'calc_stats'
 require_relative 'raw_stats'
 
 configure do
@@ -9,8 +10,10 @@ configure do
 end
 
 get '/' do
-	@all_teams = get_teams
-	erb :index
+	# @all_teams = get_teams
+	# erb :index
+	@teams = get_teams
+	erb :stats
 end
 
 get '/allStats' do
@@ -20,6 +23,21 @@ end
 
 get '/games/:team_id' do
 	get_games_for_team(params[:team_id]).sort_by{|cat| cat[:description]}.to_json
+end
+
+# This also takes the team_id and game_ids
+get '/calc_stats/:stat_selected' do
+	stat_selected = params[:stat_selected]
+	team_id = params[:team_id]
+	game_ids = params[:ids].split(",")
+	calc_stats = CalcStats.new(team_id, game_ids)
+	case stat_selected
+	when "raw_stats"
+		raw_stats_map_json = r.raw_stats.to_json
+		# return a json for javascript to fuq with
+	end
+
+
 end
 
 get '/help' do
@@ -66,7 +84,8 @@ def get_games_for_team(team_id)
 			{
 				description: e['description'], 
 				vid_id: e['vid_id'], 
-				team_id: e['team_id']
+				team_id: e['team_id'],
+				events: e['events_json']
 			}
 		end
 	end

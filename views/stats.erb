@@ -18,7 +18,7 @@
 	  			<%end%>
 	  		</select>
 
-	  		<select name="gameSelect" ng-model="game" ng-options="game.vid_id as game.description for game in games" multiple>
+	  		<select name="gameSelect" ng-model="selectedGames" ng-options="game.vid_id as game.description for game in games" ng-change="switchGames()" multiple>
 	  			<option value="">Add games</option>
 	  		</select>
 
@@ -29,7 +29,7 @@
   				<option value="/chasers">Chaser Groups</option>
   			</select>
 
-  			<button class="btn btn-default">Go</button>
+  			<button class="btn btn-default" ng-model="statsSelected" ng-click="calcStats()">Go</button>
   		</div>
   	</section>
 
