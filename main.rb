@@ -33,8 +33,10 @@ get '/calc_stats/:stat_selected' do
 	calc_stats = CalcStats.new(team_id, game_ids)
 	case stat_selected
 	when "raw_stats"
-		raw_stats_map_json = r.raw_stats.to_json
+		raw_stats_map_json = calc_stats.raw_stats.to_json
 		# return a json for javascript to fuq with
+	else
+		stat_selected
 	end
 
 

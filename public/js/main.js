@@ -19,10 +19,9 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
 
   $scope.calcStats = function() {
   	var ids = $scope.selectedGames.join(",");
-  	console.log(ids);
 
-  	$http.get("/calc_stats/" + $scope.statSelected + "?team_id=" + $scope.team + "&ids=" + ids).then(function(respose) {
-  		// render a table
+  	$http.get("/calc_stats/" + $scope.statSelected + "?team_id=" + $scope.team + "&ids=" + ids).then(function(response) {
+  		console.log(response["data"]);
   	});
 	
   }

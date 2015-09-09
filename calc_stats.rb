@@ -97,6 +97,7 @@ class CalcStats
 		@stats_map
 	end
 
+
 	def addPlusMinusVal(val)
 		@on_field_array.each do |player|
 			if @stats_map.include?(player)
