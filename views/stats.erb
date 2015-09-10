@@ -37,7 +37,8 @@
   				<th ng-repeat="(key, val) in statsDisp[Object.keys(statsDisp)[0]]">{{key}}</th>
   			</thead> -->
   			<thead>
-            <th>NAME</th>
+            <th>FIRST</th>
+            <th>LAST</th>
             <th>SHOTS</th>
             <th>GOALS</th>
             <th>ASSISTS</th>
@@ -49,6 +50,8 @@
             <th>PLUSSES</th>
             <th>MINUSES</th>
             <th>TIME</th>
+            <th>GAIN CONTROL</th>
+            <th>LOSE CONTROL</th>
          </thead>
   			<tbody>
   				<tr ng-repeat="row in statsDisp">
