@@ -32,13 +32,30 @@
   			<button class="btn btn-default" ng-click="calcStats()">Go</button>
   		</div>
 
-  		<div ng-model="statsDisp">
-			<ul ng-repeat="row in statsDisp">
-			  <li ng-repeat="(key, val) in row">
-			    {{key}}:{{val}}
-			  </li>
-			</ul>
-  		</div>
+  		<table class="table table-striped" ng-model="StatsDisp">
+  			<!-- <thead>
+  				<th ng-repeat="(key, val) in statsDisp[Object.keys(statsDisp)[0]]">{{key}}</th>
+  			</thead> -->
+  			<thead>
+            <th>NAME</th>
+            <th>SHOTS</th>
+            <th>GOALS</th>
+            <th>ASSISTS</th>
+            <th>TURNOVERS</th>
+            <th>TAKEAWAYS</th>
+            <th>YELLOW CARDS</th>
+            <th>RED CARDS</th>
+            <th>SNITCHES</th>
+            <th>PLUSSES</th>
+            <th>MINUSES</th>
+            <th>TIME</th>
+         </thead>
+  			<tbody>
+  				<tr ng-repeat="row in statsDisp">
+  					<td ng-repeat="(key, val) in row"> {{val}} </td>
+  				</tr>
+  			</tbody>
+  		</table>
 
   	</section>
 
