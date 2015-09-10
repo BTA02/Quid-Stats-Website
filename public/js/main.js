@@ -19,6 +19,10 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
 
   $scope.calcStats = function() {
   	var ids = $scope.selectedGames.join(",");
+  	//console.log($scope.selectedGames[0]);
+  	// var ids = $scope.selectedGames.map(function(i){
+  	// 	return i['id'];
+  	// });
 
   	$http.get("/calc_stats/" + $scope.statSelected + "?team_id=" + $scope.team + "&ids=" + ids).then(function(response) {
   		console.log(response["data"]);

@@ -8,17 +8,27 @@ class CalcStats
 	def initialize(team_id, game_ids)
 		@team_id = team_id
 		@game_ids = game_ids
+		@players = get_players_from_team
 	end
 
 	def raw_stats
+		video_table_rows = Parse::Query.new("Videos").tap do |q|
+			q.eq('team_id', @team_id)
+			q.value_in('vid_id', @game_ids)
+		end.get
+		events_map = {}
+		video_table_rows.each do |row|
+			events_map[row['vid_id']] = JSON.parse(row['events_json'])
+		end
 		@stats_map = {}
 		@on_field_array = ["a", "b", "c", "d", "e", "f", "g"]
 		start_time = -1
-		@game_ids = get_game_events_for_team
 		@game_ids.each do |game|
-			next if game["events_json"].nil?
-
-			events_from_game = JSON.parse(game["events_json"])
+			# next if game["events_json"].nil?
+			# events_from_game = JSON.parse(game["events_json"])
+			# pp events_from_game
+			events_from_game = events_map[game]
+			next if events_from_game.nil?
 			events_from_game.each do |event|
 				player_id = nil
 				if event["playerOut"] != ""
@@ -29,6 +39,8 @@ class CalcStats
 				unless @stats_map.include?(player_id)
 					if (!player_id.nil?)
 						@stats_map[player_id] = {
+							"first_name" => @players[player_id][:first_name],
+							"last_name" => @players[player_id][:last_name],
 							"shot" => 0,
 							"goal" => 0,
 							"assist" => 0,
@@ -134,12 +146,16 @@ class CalcStats
 
 	end
 
-	def getPlayersFromTeam
+	def get_players_from_team
 		array_of_players = Parse::Query.new("Players").eq("team_id", @team_id).get
-		array_of_players.sort_by! do |player| 
-			player["fname"]
+		all_players = {}
+		array_of_players.each do |player|
+			all_players[player['objectId']] = {
+				first_name: player['fname'],
+				last_name: player['lname']
+			}
 		end
-		array_of_players
+		all_players
 	end
 
 	def getStatsMap
