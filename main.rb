@@ -37,8 +37,12 @@ get '/calc_stats/:stat_selected' do
 	when "raw_stats"
 		raw_stats_map_json = calc_stats.raw_stats.to_json
 		# return a json for javascript to fuq with
-	else
-		stat_selected
+	when "beater_pairs"
+		pos_arr = [[4,5],[4,5]]
+		calc_stats.calc_plus_minus_stat(pos_arr)
+	when "quaffle_trios"
+		pos_arr = [[0,1,2,3],[0,1,2,3],[0,1,2,3]]
+		calc_stats.calc_plus_minus_stat(pos_arr)
 	end
 
 
@@ -48,42 +52,18 @@ get '/help' do
 	send_file 'views/help.html'
 end
 
-# get '/stats/:team_id/raw_stats' do
-# 	@r = RawStats.new(params[:team_id], params[:game_ids])
-# 	@raw_stats_map = @r.calcMap
-# 	@players_from_team = @r.getPlayersFromTeam
-# 	#calculate out the totals....
-# 	@totals= {
-# 		"shot" => 0,
-# 		"goal" => 0,
-# 		"assist" => 0,
-# 		"turnover" => 0,
-# 		"takeaway" => 0,
-# 		"yellow_card" => 0,
-# 		"red_card" => 0,
-# 		"snitch_catch" => 0,
-# 		"plusses" => 0,
-# 		"minuses" => 0,
-# 		"time" => 0,
-# 		"gain_control" => 0,
-# 		"lose_control" => 0
-# 	}
-# 	@raw_stats_map.each do |k,v|
-# 		v.each do |ik, iv|
-# 			@totals[ik] += iv
-# 		end
-# 	end
-# 	pp @totals
-# 	erb :raw_stats
-# end
-
 def get_teams
 	Parse::Query.new("Teams").get
 end
 
 def get_games_for_team(team_id)
 	if !team_id.nil?
-		resp = Parse::Query.new("Videos").eq("team_id", team_id).get
+
+		resp = Parse::Query.new("Videos").tap do |q|
+			q.eq("team_id", team_id)
+			q.exists("events_json")
+		end.get
+		# resp = Parse::Query.new("Videos").eq("team_id", team_id).get
 		ret = []
 		resp.each do |e|
 			ret << {

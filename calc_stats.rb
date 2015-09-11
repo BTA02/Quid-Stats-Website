@@ -1,5 +1,6 @@
 require 'parse-ruby-client'
 require 'pp'
+require 'set'
 
 class CalcStats
 
@@ -108,6 +109,64 @@ class CalcStats
 		end
 		@stats_map
 	end
+
+	def calc_plus_minus_stat(arrs)
+		# Gets all the events
+		video_table_rows = Parse::Query.new("Videos").tap do |q|
+			q.eq('team_id', @team_id)
+			q.value_in('vid_id', @game_ids)
+		end.get
+		events_map = {}
+		video_table_rows.each do |row|
+			events_map[row['vid_id']] = JSON.parse(row['events_json'])
+		end
+
+		plus_minus_map = {}
+		time_of_group_map = {}
+		all_combos = Set.new
+		
+
+        solutions = 1
+        i = 0
+        while i < arrs.length do
+        	solutions *= arrs[i].length
+        	i += 1
+        end
+        while i < solutions do
+        	list = Array.new
+        	j = 1
+        	arrs.each do |arr|
+        		list << arr[(i / j) % arr.length]
+        		j *= arr.length
+        	end
+        	list.sort!
+        	testSet = list.to_set
+        	if (testSet.length == arrs.length)
+        		all_combos << list
+        	end
+        	i += 1
+        end
+
+        #all_combos are good here
+
+        @game_ids.each do |game|
+        	# do I need the time array?
+        	# or can I do it without it?
+        	# I just need to know who is on the pitch at any given moment
+        	# which I can do normally, so let's avoid the time array thing because it sucks
+        	events_from_game = events_map[game]
+        	next if events_from_game.nil?
+        	on_field_array = ["a", "b", "c", "d", "e", "f", "g"]
+			start_time = -1
+        	events_from_game.each do |event|
+        		if event['actualAction'] == 'GOAL' &&
+        	end
+
+
+        end
+
+	end
+
 
 
 	def addPlusMinusVal(val)

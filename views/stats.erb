@@ -19,7 +19,6 @@
 	  		</select>
 
 	  		<select name="gameSelect" ng-model="selectedGames" ng-options="game.vid_id as game.description for game in games" ng-change="switchGames()" multiple>
-	  			<option value="">Add games</option>
 	  		</select>
 
 	  		<select name="statSelect" ng-model="statSelected">
@@ -27,12 +26,17 @@
 	  			<option value="beater_pairs">Beater Pairs</option>
 	  			<option value="seeker_performance">Seeker Performance</option>
   				<option value="chasers">Chaser Groups</option>
+  				<option value="quaffle_trios">Quaffle Trios</option>
   			</select>
 
   			<button class="btn btn-default" ng-click="calcStats()">Go</button>
   		</div>
 
-  		<table class="table table-striped" ng-model="StatsDisp">
+  		<div ng-hide="isTable" ng-model="StatsDisp">
+  			<!-- this needs to be an ng repeat on the data-->
+  		</div>
+
+  		<table ng-show="isTable" class="table table-striped" ng-model="StatsDisp">
   			<!-- <thead>
   				<th ng-repeat="(key, val) in statsDisp[Object.keys(statsDisp)[0]]">{{key}}</th>
   			</thead> -->

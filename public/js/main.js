@@ -25,6 +25,11 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
   	// });
 
   	$http.get("/calc_stats/" + $scope.statSelected + "?team_id=" + $scope.team + "&ids=" + ids).then(function(response) {
+  		if ($scope.statSelected == "raw_stats") {
+  			$scope.isTable = true;
+  		} else {
+  			$scope.isTable = false;
+  		}
   		console.log(response["data"]);
   		$scope.statsDisp = response["data"];
   		console.log($scope.statsDisp[Object.keys($scope.statsDisp)[0]]);
