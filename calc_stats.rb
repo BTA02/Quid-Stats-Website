@@ -22,7 +22,7 @@ class CalcStats
 			events_map[row['vid_id']] = JSON.parse(row['events_json'])
 		end
 		@stats_map = {}
-		@on_field_array = ["a", "b", "c", "d", "e", "f", "g"]
+		on_field_array = ["a", "b", "c", "d", "e", "f", "g"]
 		start_time = -1
 		@game_ids.each do |game|
 			# next if game["events_json"].nil?
@@ -64,34 +64,22 @@ class CalcStats
 				if event_type == "SUB"
 					if start_time != -1
 						time_to_add = event["youtubeTime"] - start_time
-						addTimeToEachPlayer(time_to_add)
+						add_time_to_each_player(on_field_array, time_to_add)
 						start_time = event["youtubeTime"]
 					end
-					@on_field_array[event["loc"]] = player_id
-
-
-
+					on_field_array[event["loc"]] = player_id
 				elsif event_type == "PAUSE_CLOCK"
 					if start_time != -1
 						time_to_add = event["youtubeTime"] - start_time
-						addTimeToEachPlayer(time_to_add)
+						add_time_to_each_player(on_field_array, time_to_add)
 						start_time = -1
 					end
-
-
-
-
 				elsif event_type == "START_CLOCK"
 					start_time = event["youtubeTime"]
 				elsif event_type == "GAME_START"
 					start_time = event["youtubeTime"]
-
-
-
-
-
 				elsif event_type == "AWAY_GOAL"
-					addPlusMinusVal(-1)
+					add_plus_minus_val(on_field_array, -1)
 				elsif event_type == "SNITCH_ON_PITCH"
 				elsif event_type == "AWAY_SNITCH_CATCH"
 				
@@ -100,7 +88,7 @@ class CalcStats
 				elsif event_type == "GOAL"
 					@stats_map[player_id][event["actualAction"].downcase] += 1
 					@stats_map[player_id]["shot"] += 1
-					addPlusMinusVal(1)
+					add_plus_minus_val(on_field_array, 1)
 				else
 					@stats_map[player_id][event["actualAction"].downcase] += 1
 				end
@@ -108,6 +96,27 @@ class CalcStats
 			end
 		end
 		@stats_map
+	end
+
+	def add_plus_minus_val(on_field_array, val)
+		on_field_array.each do |player|
+			if @stats_map.include?(player)
+				if val == -1
+					@stats_map[player]["minuses"] += 1
+				elsif val == 1
+					@stats_map[player]["plusses"] += 1
+				end
+			end
+		end	
+	end
+
+	def add_time_to_each_player(on_field_array, time_to_add)
+		on_field_array.each do |player|
+			if (@stats_map.include?(player))
+				@stats_map[player]["time"] += time_to_add
+			end
+		end
+		
 	end
 
 	def calc_plus_minus_stat(arrs)
@@ -121,11 +130,8 @@ class CalcStats
 			events_map[row['vid_id']] = JSON.parse(row['events_json'])
 		end
 
-		plus_minus_map = {}
-		time_of_group_map = {}
-		all_combos = Set.new
 		
-
+		all_combos = Set.new
         solutions = 1
         i = 0
         while i < arrs.length do
@@ -149,6 +155,7 @@ class CalcStats
 
         #all_combos are good here
 
+        combo_stat_map = Hash.new
         @game_ids.each do |game|
         	# do I need the time array?
         	# or can I do it without it?
@@ -159,36 +166,84 @@ class CalcStats
         	on_field_array = ["a", "b", "c", "d", "e", "f", "g"]
 			start_time = -1
         	events_from_game.each do |event|
-        		if event['actualAction'] == 'GOAL' &&
+        		sorted_on_field_array = sort_on_field_array_by_position(on_field_array)
+        		case event['actualAction']
+        		when 'GOAL'
+        			all_combos.each do |combo|
+        				add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, 1, 'GOAL')
+        			end
+        		when 'AWAY_GOAL'
+        			all_combos.each do |combo|
+						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, 1, 'AWAY_GOAL')
+        			end
+        		when 'SUB'
+					if start_time != -1
+						time_to_add = event["youtubeTime"] - start_time
+						all_combos.each do |combo|
+							add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, time_to_add, 'time')
+						end
+						start_time = event["youtubeTime"]
+					end
+					on_field_array[event["loc"]] = event['playerIn']
+        		when 'PAUSE_CLOCK'
+        			if start_time != -1
+						time_to_add = event["youtubeTime"] - start_time
+						all_combos.each do |combo|
+							add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, time_to_add, 'time')
+						end
+						start_time = -1
+					end
+        		when 'START_CLOCK'
+        			start_time = event["youtubeTime"]
+        		when 'GAME_START'
+        			start_time = event["youtubeTime"]
+        		end
+
         	end
-
-
         end
-
+        combo_stat_map
 	end
 
-
-
-	def addPlusMinusVal(val)
-		@on_field_array.each do |player|
-			if @stats_map.include?(player)
-				if val == -1
-					@stats_map[player]["minuses"] += 1
-				elsif val == 1
-					@stats_map[player]["plusses"] += 1
-				end
-			end
+	def add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, value, category)
+		cur_players = Array.new
+		combo.each do |elt|
+			cur_players << sorted_on_field_array[elt]
+		end
+		if (combo_stat_map[cur_players].nil?)
+			combo_stat_map[cur_players] = {
+				plus: 0,
+				minus: 0,
+				time: 0
+			}
+		end
+		case category
+		when 'GOAL'
+			combo_stat_map[cur_players][:plus] += value
+		when 'AWAY_GOAL'
+			combo_stat_map[cur_players][:minus] += value
+		when 'time'
+			combo_stat_map[cur_players][:time] += value
 		end
 	end
 
-	def addTimeToEachPlayer(time_to_add)
-		@on_field_array.each do |player|
-			if (@stats_map.include?(player))
-				@stats_map[player]["time"] += time_to_add
-			end
-		end
-		
+	def sort_on_field_array_by_position(on_field_array)
+		return_array = Array.new
+		chaser_array = on_field_array.take(3)
+		chaser_array.sort!
+		keeper_array = on_field_array[3]
+		beater_array = on_field_array.drop(4).take(2)
+		beater_array.sort!
+		seeker_array = on_field_array[6]
+
+		chaser_array.each { |e| return_array << e }
+		return_array << keeper_array
+		beater_array.each { |e| return_array << e }
+		return_array << seeker_array
+		return_array
 	end
+
+
+	
 
 	def get_game_events_for_team
 		Parse::Query.new("Videos").eq("team_id", @team_id).get

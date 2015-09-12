@@ -34,15 +34,17 @@ get '/calc_stats/:stat_selected' do
 	game_ids = params[:ids].split(",")
 	calc_stats = CalcStats.new(team_id, game_ids)
 	case stat_selected
-	when "raw_stats"
+	when 'raw_stats'
 		raw_stats_map_json = calc_stats.raw_stats.to_json
-		# return a json for javascript to fuq with
-	when "beater_pairs"
+	when 'beater_pairs'
 		pos_arr = [[4,5],[4,5]]
-		calc_stats.calc_plus_minus_stat(pos_arr)
-	when "quaffle_trios"
+		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
+	when 'chasers'
+		pos_arr = [[0,1,2][0,1,2][0,1,2]]
+		stats_json = calc_stats.calc_plus_mins_stat(pos_arr).to_json
+	when 'quaffle_trios'
 		pos_arr = [[0,1,2,3],[0,1,2,3],[0,1,2,3]]
-		calc_stats.calc_plus_minus_stat(pos_arr)
+		stats_json = calc_stats.calc_plus_minus_stat(pos_arr)
 	end
 
 

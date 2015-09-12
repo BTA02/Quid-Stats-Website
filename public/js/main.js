@@ -32,7 +32,6 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
   		}
   		console.log(response["data"]);
   		$scope.statsDisp = response["data"];
-  		console.log($scope.statsDisp[Object.keys($scope.statsDisp)[0]]);
   	});
 	
   }
