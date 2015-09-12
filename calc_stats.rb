@@ -207,7 +207,11 @@ class CalcStats
         combo_stat_map.each { |k, v|
         	new_key = []
         	k.each { |id|
-        		new_key << @players[id][:first_name] + ' ' + @players[id][:last_name]
+        		if @players[id].nil?
+        			new_key << '?'
+        		else
+        			new_key << @players[id][:first_name] + ' ' + @players[id][:last_name]
+        		end
         	}
         	combo_stat_map_return[new_key] = v
         }
