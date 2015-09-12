@@ -5,3 +5,8 @@
 .total td div {
 	font-weight: bold;
 }
+
+.left {
+	position:absolute;
+	left:0;
+}

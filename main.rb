@@ -60,7 +60,6 @@ end
 
 def get_games_for_team(team_id)
 	if !team_id.nil?
-
 		resp = Parse::Query.new("Videos").tap do |q|
 			q.eq("team_id", team_id)
 			q.exists("events_json")

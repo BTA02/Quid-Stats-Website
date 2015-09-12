@@ -9,7 +9,17 @@
   </head>
 
   <body ng-controller="StatsController">
-  	<section ng-init="tab = 1">
+
+    <div class="left" id="sidebar" role="navigation">
+        <ul class="nav">
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href="#">Link 1</a></li>
+          <li><a href="#">Link 2</a></li>
+          <li><a href="#">Link 3</a></li>              
+        </ul>
+    </div>
+
+  	<section class="top" ng-init="tab = 1">
 	  	<div class="container-fluid text-center" >
 	  		<select name="teamSelect" ng-model="team" ng-change="getGames()">
 	  			<option value="">Select a team</option>
@@ -66,8 +76,8 @@
             <th>PLUSSES</th>
             <th>MINUSES</th>
             <th>TIME</th>
-            <th>GAIN CONTROL</th>
-            <th>LOSE CONTROL</th>
+            <!-- <th>GAIN CONTROL</th> -->
+            <!-- <th>LOSE CONTROL</th> -->
          </thead>
   			<tbody>
   				<tr ng-repeat="row in statsDisp">
