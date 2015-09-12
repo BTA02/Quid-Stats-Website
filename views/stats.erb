@@ -32,21 +32,23 @@
   			<button class="btn btn-default" ng-click="calcStats()">Go</button>
   		</div>
 
-  		<table ng-hide="isTable" class="table" ng-model="statsDisp">
+  		<table ng-show="isPlusMinus" class="table" ng-model="statsDisp">
   			<thead>
+  				<th>GROUP</th>
             	<th>PLUS</th>
             	<th>MINUS</th>
             	<th>NET</th>
             	<th>TIME</th>
          	</thead>
   			<tbody>
-  				<tr ng-repeat="row1 as (key1, val1) for row in statsDisp">
-  					<td ng-repeat="(key, val) in row"> {{val}} </td>
+  				<tr ng-repeat="(key,val) in statsDisp">
+  					<td>{{key}}</td>
+  					<td ng-repeat="(key1, val1) in val">{{val1}}</td>
   				</tr>
   			</tbody>
   		</table>
 
-  		<table ng-show="isTable" class="table table-striped" ng-model="statsDisp">
+  		<table ng-hide="isPlusMinus" class="table table-striped" ng-model="statsDisp">
   			<!-- <thead>
   				<th ng-repeat="(key, val) in statsDisp[Object.keys(statsDisp)[0]]">{{key}}</th>
   			</thead> -->

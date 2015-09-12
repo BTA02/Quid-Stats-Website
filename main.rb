@@ -40,11 +40,11 @@ get '/calc_stats/:stat_selected' do
 		pos_arr = [[4,5],[4,5]]
 		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
 	when 'chasers'
-		pos_arr = [[0,1,2][0,1,2][0,1,2]]
-		stats_json = calc_stats.calc_plus_mins_stat(pos_arr).to_json
+		pos_arr = [[0,1,2],[0,1,2],[0,1,2]]
+		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
 	when 'quaffle_trios'
 		pos_arr = [[0,1,2,3],[0,1,2,3],[0,1,2,3]]
-		stats_json = calc_stats.calc_plus_minus_stat(pos_arr)
+		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
 	end
 
 

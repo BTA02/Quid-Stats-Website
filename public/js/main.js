@@ -26,9 +26,10 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
 
   	$http.get("/calc_stats/" + $scope.statSelected + "?team_id=" + $scope.team + "&ids=" + ids).then(function(response) {
   		if ($scope.statSelected == "raw_stats") {
-  			$scope.isTable = true;
+  			$scope.isPlusMinus = false;
+  			// sort the data
   		} else {
-  			$scope.isTable = false;
+  			$scope.isPlusMinus = true;
   		}
   		console.log(response["data"]);
   		$scope.statsDisp = response["data"];

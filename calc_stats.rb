@@ -10,6 +10,7 @@ class CalcStats
 		@team_id = team_id
 		@game_ids = game_ids
 		@players = get_players_from_team
+		# @name_mappings = get_name_mappings
 	end
 
 	def raw_stats
@@ -95,6 +96,7 @@ class CalcStats
 								
 			end
 		end
+		# sort it here
 		@stats_map
 	end
 
@@ -153,8 +155,6 @@ class CalcStats
         	i += 1
         end
 
-        #all_combos are good here
-
         combo_stat_map = Hash.new
         @game_ids.each do |game|
         	# do I need the time array?
@@ -201,7 +201,18 @@ class CalcStats
 
         	end
         end
-        combo_stat_map
+        # change out the keys for the player names
+        # and sort
+        combo_stat_map_return = Hash.new
+        combo_stat_map.each { |k, v|
+        	new_key = []
+        	k.each { |id|
+        		new_key << @players[id][:first_name] + ' ' + @players[id][:last_name]
+        	}
+        	combo_stat_map_return[new_key] = v
+        }
+        combo_stat_map_return
+
 	end
 
 	def add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, value, category)
@@ -213,14 +224,17 @@ class CalcStats
 			combo_stat_map[cur_players] = {
 				plus: 0,
 				minus: 0,
+				net: 0,
 				time: 0
 			}
 		end
 		case category
 		when 'GOAL'
 			combo_stat_map[cur_players][:plus] += value
+			combo_stat_map[cur_players][:net] += value
 		when 'AWAY_GOAL'
 			combo_stat_map[cur_players][:minus] += value
+			combo_stat_map[cur_players][:net] -= value
 		when 'time'
 			combo_stat_map[cur_players][:time] += value
 		end
@@ -270,6 +284,15 @@ class CalcStats
 			}
 		end
 		all_players
+	end
+
+	def get_name_mappings
+		return_mappings = {}
+		@players.each do |player|
+			pp player['objectId']
+			return_mappings << {player['objectId'] => player['fname'] + " " + player['lname']}
+		end
+		pp return_mappings
 	end
 
 	def getStatsMap
