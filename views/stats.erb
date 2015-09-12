@@ -32,9 +32,19 @@
   			<button class="btn btn-default" ng-click="calcStats()">Go</button>
   		</div>
 
-  		<div ng-model="statsDisp" ng-repeat="group in statsDisp">
-  			<p ng-repeat="(key, value) in group"> {{key}}:{{value}}</p>
-  		</div>
+  		<table ng-hide="isTable" class="table" ng-model="statsDisp">
+  			<thead>
+            	<th>PLUS</th>
+            	<th>MINUS</th>
+            	<th>NET</th>
+            	<th>TIME</th>
+         	</thead>
+  			<tbody>
+  				<tr ng-repeat="row1 as (key1, val1) for row in statsDisp">
+  					<td ng-repeat="(key, val) in row"> {{val}} </td>
+  				</tr>
+  			</tbody>
+  		</table>
 
   		<table ng-show="isTable" class="table table-striped" ng-model="statsDisp">
   			<!-- <thead>
