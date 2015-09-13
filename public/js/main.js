@@ -3,7 +3,6 @@ var statsApp = angular.module('statsApp', []);
 var page
 
 statsApp.controller('StatsController', ['$scope', '$http', function($scope, $http){
-  $scope.message = 'Really';
   $scope.getGames = function() {
   	$scope.games = []
   	$http.get("/games/" + $scope.team).then(function(response) {
@@ -13,12 +12,19 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
 
   $scope.switchGames = function() {
   	for (var i = 0; i < $scope.selectedGames.length; i++) {
-  		//console.log($scope.selectedGames[i]);
+  		console.log($scope.selectedGames[i]);
   	}
   }
 
   $scope.calcStats = function() {
-  	var ids = $scope.selectedGames.join(",");
+    console.log($scope.selectedGames);
+    var ids;
+    if ($scope.selectedGames == null) {
+      alert("Please select some games");
+      return;
+    } else {
+      ids = $scope.selectedGames.join(",");
+    }
   	//console.log($scope.selectedGames[0]);
   	// var ids = $scope.selectedGames.map(function(i){
   	// 	return i['id'];
@@ -27,7 +33,7 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
   	$http.get("/calc_stats/" + $scope.statSelected + "?team_id=" + $scope.team + "&ids=" + ids).then(function(response) {
   		if ($scope.statSelected == "raw_stats") {
   			$scope.isPlusMinus = false;
-  			// sort the data
+  			// sort the data?
   		} else {
   			$scope.isPlusMinus = true;
   		}
@@ -35,6 +41,15 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
   		$scope.statsDisp = response["data"];
   	});
 	
+  }
+  $scope.selectedGames = [];
+  $scope.toggleGame = function(id) {
+    var index = $scope.selectedGames.indexOf(id);
+    if (index > -1) {
+      $scope.selectedGames.splice(index, 1);
+    } else {
+      $scope.selectedGames.push(id);
+    }
   }
 
 }]);
