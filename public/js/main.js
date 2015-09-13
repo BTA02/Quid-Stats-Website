@@ -8,6 +8,7 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
   	$http.get("/games/" + $scope.team).then(function(response) {
   		$scope.games = response["data"];
   	});
+    $scope.selectedGames = [];
   }
 
   $scope.switchGames = function() {
@@ -19,7 +20,7 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
   $scope.calcStats = function() {
     console.log($scope.selectedGames);
     var ids;
-    if ($scope.selectedGames == null) {
+    if ($scope.selectedGames == null || $scope.selectedGames.length == 0) {
       alert("Please select some games");
       return;
     } else {
@@ -43,7 +44,7 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
 	
   }
   $scope.selectedGames = [];
-  $scope.toggleGame = function(id) {
+  $scope.toggleGame = function(id) {  
     var index = $scope.selectedGames.indexOf(id);
     if (index > -1) {
       $scope.selectedGames.splice(index, 1);

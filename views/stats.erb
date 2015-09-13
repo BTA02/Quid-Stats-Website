@@ -5,12 +5,14 @@
       	<script src="js/bootstrap.min.js"></script>
       	<link rel="stylesheet" type="text/css" href="/stylesheets/the.css">
       	<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+      	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" />
+
       	<h1 class='text-center'>QuidStasio</h1>
   </head>
 
   <body ng-controller="StatsController">
 
-  	<div class="container-fluid text-center" >
+  	<div name="header" class="container-fluid text-center" >
   		<select name="teamSelect" ng-model="team" ng-change="getGames()">
   			<option value="">Select a team</option>
   			<% @teams.each do |team| %>
@@ -29,62 +31,64 @@
 		<button class="btn btn-default" ng-click="calcStats()">Go</button>
 	</div>
 
-	<div ng-repeat="game in games">
-		<input type="checkbox" value="game.vid_id" ng-click="toggleGame(game.vid_id)"> {{game.description}}
-	</div>
+	<div class="container-fluid"> <!-- If Needed Left and Right Padding in 'md' and 'lg' screen means use container class -->
+        <div class="row">
 
-<!--     <select name="gameSelect" ng-model="selectedGames" ng-options="game.vid_id as game.description for game in games" ng-change="switchGames()" multiple>
-  	</select> -->
-
-  	<section class="top" ng-init="tab = 1">
+			<div class="col-lg-2">
+				<h2>Games</h2>
+		  		<div ng-repeat="game in games">
+					<input type="checkbox" value="game.vid_id" ng-click="toggleGame(game.vid_id)"> 
+					{{game.description}}
+				</div>
+			</div>
 	  	
 
-  		<table ng-show="isPlusMinus" class="table" ng-model="statsDisp">
-  			<thead>
-  				<th>GROUP</th>
-            	<th>PLUS</th>
-            	<th>MINUS</th>
-            	<th>NET</th>
-            	<th>TIME</th>
-         	</thead>
-  			<tbody>
-  				<tr ng-repeat="(key,val) in statsDisp">
-  					<td>{{key}}</td>
-  					<td ng-repeat="(key1, val1) in val">{{val1}}</td>
-  				</tr>
-  			</tbody>
-  		</table>
+			<div class="col-lg-10">
+		  		<table ng-show="isPlusMinus" class="table" ng-model="statsDisp">
+		  			<thead>
+		  				<th>GROUP</th>
+		            	<th>PLUS</th>
+		            	<th>MINUS</th>
+		            	<th>NET</th>
+		            	<th>TIME</th>
+		         	</thead>
+		  			<tbody>
+		  				<tr ng-repeat="(key,val) in statsDisp">
+		  					<td>{{key}}</td>
+		  					<td ng-repeat="(key1, val1) in val">{{val1}}</td>
+		  				</tr>
+		  			</tbody>
+		  		</table>
 
-  		<table ng-hide="isPlusMinus" class="table table-striped" ng-model="statsDisp">
-  			<!-- <thead>
-  				<th ng-repeat="(key, val) in statsDisp[Object.keys(statsDisp)[0]]">{{key}}</th>
-  			</thead> -->
-  			<thead>
-            <th>FIRST</th>
-            <th>LAST</th>
-            <th>SHOTS</th>
-            <th>GOALS</th>
-            <th>ASSISTS</th>
-            <th>TURNOVERS</th>
-            <th>TAKEAWAYS</th>
-            <th>YELLOW CARDS</th>
-            <th>RED CARDS</th>
-            <th>SNITCHES</th>
-            <th>PLUSSES</th>
-            <th>MINUSES</th>
-            <th>TIME</th>
-            <!-- <th>GAIN CONTROL</th> -->
-            <!-- <th>LOSE CONTROL</th> -->
-         </thead>
-  			<tbody>
-  				<tr ng-repeat="row in statsDisp">
-  					<td ng-repeat="(key, val) in row"> {{val}} </td>
-  				</tr>
-  			</tbody>
-  		</table>
-
-  	</section>
-
-  	<div>
+		  		<table ng-hide="isPlusMinus" class="table table-striped" ng-model="statsDisp">
+		  			<!-- <thead>
+		  				<th ng-repeat="(key, val) in statsDisp[Object.keys(statsDisp)[0]]">{{key}}</th>
+		  			</thead> -->
+		  			<thead>
+		            <th>FIRST</th>
+		            <th>LAST</th>
+		            <th>SHOTS</th>
+		            <th>GOALS</th>
+		            <th>ASSISTS</th>
+		            <th>TURNOVERS</th>
+		            <th>TAKEAWAYS</th>
+		            <th>YELLOW CARDS</th>
+		            <th>RED CARDS</th>
+		            <th>SNITCHES</th>
+		            <th>PLUSSES</th>
+		            <th>MINUSES</th>
+		            <th>NET</th>
+		            <th>TIME</th>
+		            <!-- <th>GAIN CONTROL</th> -->
+		            <!-- <th>LOSE CONTROL</th> -->
+		         </thead>
+		  			<tbody>
+		  				<tr ng-repeat="row in statsDisp">
+		  					<td ng-repeat="(key, val) in row"> {{val}} </td>
+		  				</tr>
+		  			</tbody>
+		  		</table>
+		  	</div>
+	  	</div>
   	</div>
   </body>

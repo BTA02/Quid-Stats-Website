@@ -40,9 +40,15 @@ class CalcStats
 				end
 				unless @stats_map.include?(player_id)
 					if (!player_id.nil?)
+						first_name = '?'
+						last_name = '?'
+						if !@players[player_id].nil?
+							first_name = @players[player_id][:first_name]
+							last_name = @players[player_id][:last_name]
+						end
 						@stats_map[player_id] = {
-							"first_name" => @players[player_id][:first_name],
-							"last_name" => @players[player_id][:last_name],
+							"first_name" => first_name,
+							"last_name" => last_name,
 							"shot" => 0,
 							"goal" => 0,
 							"assist" => 0,
@@ -53,6 +59,7 @@ class CalcStats
 							"snitch_catch" => 0,
 							"plusses" => 0,
 							"minuses" => 0,
+							"net" => 0,
 							"time" => 0
 							# "gain_control" => 0,
 							# "lose_control" => 0
@@ -105,8 +112,10 @@ class CalcStats
 			if @stats_map.include?(player)
 				if val == -1
 					@stats_map[player]["minuses"] += 1
+					@stats_map[player]["net"] -= 1
 				elsif val == 1
 					@stats_map[player]["plusses"] += 1
+					@stats_map[player]["net"] += 1
 				end
 			end
 		end	
