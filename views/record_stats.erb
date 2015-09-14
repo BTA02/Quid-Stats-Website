@@ -1,4 +1,4 @@
-<html>
+<html ng-app="statsApp">
 	<head>
 			<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
 	      	<script src="/js/main.js"></script>
@@ -11,8 +11,8 @@
 	</head>
 
 	<body ng-controller="StatsController">
-		
-		<div id="header" class="container-fluid">
+
+		<div name="header" class="container-fluid text-center">
 			<select name="teamSelect" ng-model="team" ng-change="getGames()">
   				<option value="">Select a team</option>
   				<% @teams.each do |team| %>
@@ -31,7 +31,7 @@
 
 
 
-				<iframe id="player" class="col-lg-6" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/M7lc1UVf-VE"/>
+				<iframe ng-show="videoSelected" ng-model="selectedVideo" id="player" class="col-lg-6" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/{{selectedVideo}}"/>
 			</div>
 
 	</body>
