@@ -108,7 +108,9 @@ class CalcStats
 	end
 
 	def add_plus_minus_val(on_field_array, val)
-		on_field_array.each do |player|
+		i = 0
+		while i < on_field_array.length - 1 do
+			player = on_field_array[i]
 			if @stats_map.include?(player)
 				if val == -1
 					@stats_map[player]["minuses"] += 1
@@ -118,6 +120,7 @@ class CalcStats
 					@stats_map[player]["net"] += 1
 				end
 			end
+			i+=1
 		end	
 	end
 

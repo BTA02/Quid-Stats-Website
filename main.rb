@@ -17,13 +17,16 @@ get '/' do
 	erb :stats
 end
 
-get '/allStats' do
-	@teams = get_teams
-	erb :stats
-end
-
 get '/games/:team_id' do
 	get_games_for_team(params[:team_id]).sort_by{|cat| cat[:description]}.to_json
+
+end
+
+get '/record/:team_id/:vid_id' do
+	# the team id and vid id come thru this way
+	# author id has to be a cookie
+	@team = get_teams
+	erb :record_stats
 
 end
 

@@ -3,8 +3,10 @@ var statsApp = angular.module('statsApp', []);
 var page
 
 statsApp.controller('StatsController', ['$scope', '$http', function($scope, $http){
+  
   $scope.getGames = function() {
-  	$scope.games = []
+  	$scope.games = [];
+    console.log($scope.games);
   	$http.get("/games/" + $scope.team).then(function(response) {
   		$scope.games = response["data"];
   	});

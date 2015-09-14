@@ -1,0 +1,39 @@
+<html>
+	<head>
+			<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
+	      	<script src="/js/main.js"></script>
+	      	<script src="js/bootstrap.min.js"></script>
+	      	<link rel="stylesheet" type="text/css" href="/stylesheets/the.css">
+	      	<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+	      	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" />
+
+	      	<h1 class='text-center'>QuidStasio</h1>
+	</head>
+
+	<body ng-controller="StatsController">
+		
+		<div id="header" class="container-fluid">
+			<select name="teamSelect" ng-model="team" ng-change="getGames()">
+  				<option value="">Select a team</option>
+  				<% @teams.each do |team| %>
+  				<option value="<%= team['objectId']%>"><%=team['team_name']%></option>
+  				<%end%>
+  			</select>
+
+  			<select ng-model="games">
+  				<option ng-repeat="game in games" value="{{game.vid_id}}">{{game.description}}</option>
+  			</select>
+		</div>
+
+
+		<div class="container-fluid">
+			<div class="row">
+
+
+
+				<iframe id="player" class="col-lg-6" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/M7lc1UVf-VE"/>
+			</div>
+
+	</body>
+
+</html>
