@@ -57,7 +57,8 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
   }
 
   $scope.loadVideo = function() {
-    $scope.theBestVideo = 'sMKoNBRZM1M';
+    console.log(id);
+    $scope.theBestVideo = id;
   }
 
 
