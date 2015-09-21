@@ -1,13 +1,18 @@
 <html ng-app="statsApp">
 	<head>
-			<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
-	      	<script src="/js/main.js"></script>
-	      	<script src="js/bootstrap.min.js"></script>
-	      	<link rel="stylesheet" type="text/css" href="/stylesheets/the.css">
-	      	<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-	      	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" />
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
+      	<script src="/js/main.js"></script>
+      	<script src="js/bootstrap.min.js"></script>
+      	<script src="angular-video/js/anguvideo.js"></script>
+      	<script src="https://www.youtube.com/iframe_api"></script>
+		<script src="angular-youtube-embed/src/angular-youtube-embed.js"></script>
 
-	      	<h1 class='text-center'>QuidStasio</h1>
+
+      	<link rel="stylesheet" type="text/css" href="/stylesheets/the.css">
+      	<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+      	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" />
+
+      	<h1 class='text-center'>QuidMustaStasio</h1>
 	</head>
 
 	<body ng-controller="StatsController">
@@ -20,19 +25,46 @@
   				<%end%>
   			</select>
 
-  			<select ng-model="games">
+  			<select ng-model="games" ng-change="loadVideo()">
   				<option ng-repeat="game in games" value="{{game.vid_id}}">{{game.description}}</option>
   			</select>
 		</div>
 
 
-		<div class="container-fluid">
-			<div class="row">
+		<div id="player"></div>
+		<script>
+			var tag = document.createElement('script');
+			tag.src = "https://www.youtube.com/iframe_api";
+      		var firstScriptTag = document.getElementsByTagName('script')[0];
+      		firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+      		var player;
+      		function onYouTubeIframeAPIReady() {
+        		player = new YT.Player('player', {
+         		height: '390',
+          		width: '640',
+          		videoId: 'M7lc1UVf-VE',
+          		events: {
+            	'onReady': onPlayerReady,
+            	'onStateChange': onPlayerStateChange
+          			}
+        		});
+      		}
+      		function onPlayerReady(event) {
+        		event.target.playVideo();
+      		}
+      		var done = false;
+      		function onPlayerStateChange(event) {
+        		if (event.data == YT.PlayerState.PLAYING && !done) {
+          			setTimeout(stopVideo, 6000);
+          			done = true;
+        		}
+      		}
+      		function stopVideo() {
+        	player.stopVideo();
+      	}
+    	</script>
 
 
-
-				<iframe ng-show="videoSelected" ng-model="selectedVideo" id="player" class="col-lg-6" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/{{selectedVideo}}"/>
-			</div>
 
 	</body>
 

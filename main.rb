@@ -19,7 +19,7 @@ end
 
 
 
-get '/record/:team_id/:vid_id' do
+get '/record' do
 	# the team id and vid id come thru this way
 	# author id has to be a cookie
 	@teams = get_teams

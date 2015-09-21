@@ -1,4 +1,4 @@
-var statsApp = angular.module('statsApp', []);
+var statsApp = angular.module('statsApp', ['youtube-embed']);
 
 var page
 
@@ -56,12 +56,13 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
     }
   }
 
-
-
-  $scope.videoSelected = false;
   $scope.loadVideo = function() {
-    $scope.videoSelected = true;
+    $scope.theBestVideo = 'sMKoNBRZM1M';
   }
+
+
+
+  // $scope.theBestVideo = 'sMKoNBRZM1M';
 
 }]);
 
