@@ -11,12 +11,13 @@ configure do
 end
 
 get '/' do
-	# @all_teams = get_teams
-	# erb :index
+	# login screen needed here
+end
+
+get '/stats' do
 	@teams = get_teams
 	erb :stats
 end
-
 
 
 get '/record' do
@@ -28,10 +29,14 @@ get '/record' do
 end
 
 # I use http calls in javascript for these
-get '/games/:team_id' do
-	get_games_for_team(params[:team_id]).sort_by{|cat| cat[:description]}.to_json
-
+get '/doneGames/:team_id' do
+	get_games_for_team(params[:team_id], false).sort_by{|cat| cat[:description]}.to_json
 end
+
+get '/allGames/:team_id' do
+	get_games_for_team(params[:team_id], true).sort_by{|cat| cat[:description]}.to_json
+end
+
 
 # This also takes the team_id and game_ids
 get '/calc_stats/:stat_selected' do
@@ -64,14 +69,21 @@ def get_teams
 	Parse::Query.new("Teams").get
 end
 
-def get_games_for_team(team_id)
+def get_games_for_team(team_id, all)
 	if !team_id.nil?
-		resp = Parse::Query.new("Videos").tap do |q|
-			q.eq("team_id", team_id)
-			q.exists("events_json")
-		end.get
-		# resp = Parse::Query.new("Videos").eq("team_id", team_id).get
+		pp all
+		if !all
+			resp = Parse::Query.new("Videos").tap do |q|
+				q.eq("team_id", team_id)
+				q.exists("events_json")
+			end.get
+		else
+			resp = Parse::Query.new("Videos").tap do |q|
+				q.eq("team_id", team_id)
+			end.get
+		end
 		ret = []
+		pp resp
 		resp.each do |e|
 			ret << {
 				description: e['description'], 

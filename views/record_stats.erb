@@ -12,21 +12,20 @@
       	<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
       	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" />
 
-      	<h1 class='text-center'>QuidMustaStasio</h1>
+      	<h1 class='text-center'>QuidStasio</h1>
 	</head>
 
 	<body ng-controller="StatsController">
 
 		<div name="header" class="container-fluid text-center">
-			<select name="teamSelect" ng-model="team" ng-change="getGames()">
+			<select name="teamSelect" ng-model="team" ng-change="getAllGamesAndPlayers()">
   				<option value="">Select a team</option>
   				<% @teams.each do |team| %>
   				<option value="<%= team['objectId']%>"><%=team['team_name']%></option>
   				<%end%>
   			</select>
 
-  			<select ng-model="selectedVideo" ng-options="game.vid_id as game.description for game in games">
-  				<!-- <option ng-repeat="game in games" value="game.vid_id">{{game.description}}</option> -->
+  			<select ng-model="selectedVideo" ng-options="game.vid_id as game.description for game in allGames">
   			</select>
 		</div>
 

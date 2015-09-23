@@ -3,17 +3,16 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
       	<script src="/js/main.js"></script>
       	<script src="js/bootstrap.min.js"></script>
-      	<link rel="stylesheet" type="text/css" href="/stylesheets/the.css">
-      	<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+      	<link rel="stylesheet" type="text/css" href="/stylesheets/the.css"/>
+      	<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen"/>
       	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" />
-
       	<h1 class='text-center'>QuidStasio</h1>
   </head>
 
   <body ng-controller="StatsController">
 
-  	<div name="header" class="container-fluid text-center" >
-  		<select name="teamSelect" ng-model="team" ng-change="getGames()">
+  	<div name="header" class="container-fluid text-center">
+  		<select name="teamSelect" ng-model="team" ng-change="getDoneGames()">
   			<option value="">Select a team</option>
   			<% @teams.each do |team| %>
   			<option value="<%= team['objectId']%>"><%=team['team_name']%></option>
@@ -31,12 +30,11 @@
 		<button class="btn btn-default" ng-click="calcStats()">Go</button>
 	</div>
 
-	<div class="container-fluid"> <!-- If Needed Left and Right Padding in 'md' and 'lg' screen means use container class -->
+	<div class="container-fluid">
         <div class="row">
-
 			<div class="col-lg-2">
 				<h2>Games</h2>
-		  		<div ng-repeat="game in games">
+		  		<div ng-repeat="game in doneGames">
 					<input type="checkbox" value="game.vid_id" ng-click="toggleGame(game.vid_id)"> 
 					{{game.description}}
 				</div>

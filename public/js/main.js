@@ -4,14 +4,20 @@ var page
 
 statsApp.controller('StatsController', ['$scope', '$http', function($scope, $http){
   
-  $scope.getGames = function() {
-  	$scope.games = [];
-  	$http.get("/games/" + $scope.team).then(function(response) {
-  		$scope.games = response["data"];
-      console.log($scope.games);
+  $scope.getDoneGames = function() {
+  	$scope.doneGames = [];
+  	$http.get("/doneGames/" + $scope.team).then(function(response) {
+  		$scope.doneGames = response["data"];
   	});
-    
     $scope.selectedGames = [];
+  }
+
+  $scope.getAllGamesAndPlayers = function() {
+    $scope.allGames = [];
+    $http.get("/allGames/" + $scope.team).then(function(response) {
+      $scope.allGames = response["data"];
+      $scope.allPlayers;
+    });
   }
 
   $scope.switchGames = function() {
