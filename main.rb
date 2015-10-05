@@ -100,22 +100,17 @@ def get_games_for_team(team_id, all)
 end
 
 def get_players_for_team(team_id)
-
 	respIds = Parse::Query.new("Rosters").tap do |q|
 		q.eq("team_id", team_id)
 	end.get
+	ids = []
 	respIds.each do |e|
-		respIds << {
-			player_id: e['player_id']
-		}
+		ids << e['player_id']
 	end
-	pp "RESPIDS"
-	pp respIds.to_json
-
 	players = Parse::Query.new("Players").tap do |q|
-		q.value_in("objectId", respIds)
+		q.value_in("objectId", ids)
 	end.get
-	players.to_json
+	players
 end
 
 

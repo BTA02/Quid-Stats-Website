@@ -22,12 +22,14 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
 
   $scope.getAllGamesAndPlayers = function() {
     $scope.allGames = [];
+    $scope.allPlayers = [];
     $http.get("/allGames/" + $scope.team).then(function(response) {
       $scope.allGames = response["data"];
     });
     $http.get("/allPlayers/" + $scope.team).then(function(response) {
       $scope.allPlayers = response["data"];
     });
+
   }
 
   $scope.switchGames = function() {
@@ -76,6 +78,8 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
     console.log(id);
     $scope.theBestVideo = id;
   }
+
+
 
 }]);
 
