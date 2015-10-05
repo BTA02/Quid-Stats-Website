@@ -37,6 +37,10 @@ get '/allGames/:team_id' do
 	get_games_for_team(params[:team_id], true).sort_by{|cat| cat[:description]}.to_json
 end
 
+get '/allPlayers/:team_id' do
+	get_players_for_team(params[:team_id]).sort_by{|cat| cat[:description]}.to_json
+end
+
 
 # This also takes the team_id and game_ids
 get '/calc_stats/:stat_selected' do
@@ -71,7 +75,6 @@ end
 
 def get_games_for_team(team_id, all)
 	if !team_id.nil?
-		pp all
 		if !all
 			resp = Parse::Query.new("Videos").tap do |q|
 				q.eq("team_id", team_id)
@@ -83,7 +86,6 @@ def get_games_for_team(team_id, all)
 			end.get
 		end
 		ret = []
-		pp resp
 		resp.each do |e|
 			ret << {
 				description: e['description'], 
@@ -95,6 +97,25 @@ def get_games_for_team(team_id, all)
 		end
 		ret
 	end
+end
+
+def get_players_for_team(team_id)
+
+	respIds = Parse::Query.new("Rosters").tap do |q|
+		q.eq("team_id", team_id)
+	end.get
+	respIds.each do |e|
+		respIds << {
+			player_id: e['player_id']
+		}
+	end
+	pp "RESPIDS"
+	pp respIds.to_json
+
+	players = Parse::Query.new("Players").tap do |q|
+		q.value_in("objectId", respIds)
+	end.get
+	players.to_json
 end
 
 
