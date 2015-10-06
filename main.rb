@@ -109,6 +109,7 @@ def get_players_for_team(team_id)
 	end
 	players = Parse::Query.new("Players").tap do |q|
 		q.value_in("objectId", ids)
+		q.limit = 7
 	end.get
 	players
 end

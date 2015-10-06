@@ -11,7 +11,7 @@
       	<link rel="stylesheet" type="text/css" href="/stylesheets/the.css">
       	<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
       	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" />
-
+        <title>Takin dem stats</title>
       	<h1 class='text-center'>QuidStasio</h1>
 	</head>
 
@@ -34,11 +34,19 @@
 		<div class="container-fluid" align="center">
 			<youtube-video video-id="selectedVideo"></youtube-video>
 		</div>
-    
-    <div class="container-fluid" align="center">
-      <select ng-model="allPlayers" ng-options="player.objectId as player.first_name for player in allPlayers">
-      </select>
+
+    <div class="row" margin="auto">
+      <div class="col-md-1" ng-repeat="player in allPlayers">
+        <!-- Players on pitch -->
+        <ul style="list-style-type:none">
+          <li class="playerName">{{player.first_name + ' ' + player.last_name}}</li>
+          <li class="clickList">Shot</li>
+          <li class="clickList">Goal</li>
+        </ul>
+      </div>
     </div>
+
+
 
 
 
