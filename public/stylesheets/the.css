@@ -1,7 +1,15 @@
+.playerList {
+	list-style: none;
+}
+
 .playerName {
-	color:red;
+	font-weight: bold;
 }
 
 .clickList {
-	color: blue;
+	ng-click="addStat()"
+}
+
+.clickList:hover {
+	background: red;
 }

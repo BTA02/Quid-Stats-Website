@@ -79,6 +79,10 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
     $scope.theBestVideo = id;
   }
 
+  $scope.addStat = function(playerId, stat) {
+    alert(playerId + " " + stat);
+  }
+
 
 
 }]);

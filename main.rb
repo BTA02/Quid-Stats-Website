@@ -41,6 +41,11 @@ get '/allPlayers/:team_id' do
 	get_players_for_team(params[:team_id]).sort_by{|cat| cat[:description]}.to_json
 end
 
+get '/addStat/:vid_id/:team_id/:author_id/:fall_year/:player_id/:stat_name/:time/:player_in_id' do
+	add_stat(params)
+end
+
+
 
 # This also takes the team_id and game_ids
 get '/calc_stats/:stat_selected' do
@@ -112,6 +117,10 @@ def get_players_for_team(team_id)
 		q.limit = 7
 	end.get
 	players
+end
+
+def add_stat(params)
+	pp params.to_json
 end
 
 
