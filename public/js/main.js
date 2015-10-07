@@ -74,13 +74,14 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
     }
   }
 
-  $scope.loadVideo = function() {
-    console.log(id);
-    $scope.theBestVideo = id;
-  }
+  $scope.addStat = function(playerId, playerInId, stat) {
+    $scope.videoPlayer.pauseVideo();
+    $scope.videoPlayer.getCurrentTime();
+    
+    $http.get("/addStat/" + $scope.selectedVideo + "/" + $scope.team + "/null" + "/2014" + "/" + playerId + "/" + stat + "/" + $scope.videoPlayer.getCurrentTime() + "/" + playerInId).then(function(response) {
+        $scope.something = response["data"];
+    });
 
-  $scope.addStat = function(playerId, stat) {
-    alert(playerId + " " + stat);
   }
 
 

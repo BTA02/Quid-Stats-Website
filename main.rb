@@ -120,7 +120,18 @@ def get_players_for_team(team_id)
 end
 
 def add_stat(params)
-	pp params.to_json
+	new_stat = Parse::Object.new("Stats");
+	new_stat['vid_id'] = params['vid_id'];
+	new_stat['team_id'] = params['team_id'];
+	new_stat['author_id'] = params['author_id'];
+	new_stat['fall_year'] = params['fall_year'];
+	new_stat['player_id'] = params['player_id'];
+	new_stat['stat_name'] = params['stat_name'];
+	new_stat['time'] = params['time'].to_i;
+	new_stat['player_in_id'] = params['player_in_id'];
+
+	result = new_stat.save
+
 end
 
 

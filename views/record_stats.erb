@@ -32,7 +32,7 @@
 
 
 		<div class="container-fluid" align="center">
-			<youtube-video video-id="selectedVideo"></youtube-video>
+			<youtube-video video-id="selectedVideo" player="videoPlayer"></youtube-video>
 		</div>
 
     <div class="row" margin="auto">
@@ -40,12 +40,12 @@
         <!-- Players on pitch -->
         <ul class="playerList">
           <li class="playerName">{{player.first_name + " " + player.last_name}}</li>
-          <li class="clickList" ng-click="addStat(player.objectId, 'SHOT')">Shot</li>
-          <li class="clickList" ng-click="addStat(player.objectId, 'GOAL')">Goal</li>
-          <li class="clickList" ng-click="addStat(player.objectId, 'ASSIST')">Assist</li>
-          <li class="clickList" ng-click="addStat(player.objectId, 'TAKEAWAY')">Takeaway</li>
-          <li class="clickList" ng-click="addStat(player.objectId, 'TURNOVER')">Turnover</li>
-          <li class="clickList" ng-click="addStat(player.objectId, 'SNITCH_CATCH')">Snitch Catch</li>
+          <li class="clickList" ng-click="addStat(player.objectId, null, 'SHOT')">Shot</li>
+          <li class="clickList" ng-click="addStat(player.objectId, null, 'GOAL')">Goal</li>
+          <li class="clickList" ng-click="addStat(player.objectId, null, 'ASSIST')">Assist</li>
+          <li class="clickList" ng-click="addStat(player.objectId, null, 'TAKEAWAY')">Takeaway</li>
+          <li class="clickList" ng-click="addStat(player.objectId, null, 'TURNOVER')">Turnover</li>
+          <li class="clickList" ng-click="addStat(player.objectId, null, 'SNITCH_CATCH')">Snitch Catch</li>
         </ul>
       </div>
     </div>

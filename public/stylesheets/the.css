@@ -7,7 +7,7 @@
 }
 
 .clickList {
-	ng-click="addStat()"
+	
 }
 
 .clickList:hover {
