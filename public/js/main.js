@@ -11,10 +11,18 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
   	});
     $scope.selectedGames = [];
   }
+
   $scope.getAllGames = function() {
     $scope.allGames = [];
     $http.get("/allGames/" + $scope.team).then(function(response) {
       $scope.allGames = response["data"];
+    });
+  }
+
+  $scope.getAllPlayers = function() {
+    $scope.allPlayers = [];
+    $http.get("/allPlayers/" + $scope.team + "/" + $scope.year).then(function(response) {
+      $scope.allPlayers = response["data"];
     });
   }
 
@@ -77,7 +85,7 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
   $scope.addStat = function(playerId, playerInId, stat) {
     $scope.videoPlayer.pauseVideo();
     $scope.videoPlayer.getCurrentTime();
-    
+
     $http.get("/addStat/" + $scope.selectedVideo + "/" + $scope.team + "/null" + "/2014" + "/" + playerId + "/" + stat + "/" + $scope.videoPlayer.getCurrentTime() + "/" + playerInId).then(function(response) {
         $scope.something = response["data"];
     });

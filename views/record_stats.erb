@@ -19,14 +19,14 @@
 
 		<div name="header" class="container-fluid text-center">
       <!-- Team Selector -->
-			<select name="teamSelect" ng-model="team" ng-change="getAllGamesAndPlayers()">
+			<select name="teamSelect" ng-model="team" ng-change="getAllGames()">
   				<option value="">Select a team</option>
   				<% @teams.each do |team| %>
   				<option value="<%= team['objectId']%>"><%=team['team_name']%></option>
   				<%end%>
   			</select>
       <!-- Video Selector -->
-			<select ng-model="selectedVideo" ng-options="game.vid_id as game.description for game in allGames">
+			<select ng-model="selectedVideo" ng-change="getAllPlayers()" ng-options="game.vid_id as game.description for game in allGames">
 			</select>
 		</div>
 
