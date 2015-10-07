@@ -96,9 +96,8 @@ def get_games_for_team(team_id, all)
 				description: e['description'], 
 				vid_id: e['vid_id'], 
 				team_id: e['team_id'],	
-				events: e['events_json']
+				fall_year: e['fall_year']
 			}
-			# session[e['team_id']] = e['events_json']
 		end
 		ret
 	end

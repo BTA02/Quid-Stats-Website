@@ -20,6 +20,10 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
   }
 
   $scope.getAllPlayers = function() {
+    var idAndYear;
+    idAndYear = $scope.vidObj.split(",");
+    $scope.selectedVideo = idAndYear[0];
+    $scope.year = idAndYear[1];
     $scope.allPlayers = [];
     $http.get("/allPlayers/" + $scope.team + "/2014").then(function(response) {
       $scope.allPlayers = response["data"];
@@ -72,7 +76,7 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
     $scope.videoPlayer.pauseVideo();
     $scope.videoPlayer.getCurrentTime();
 
-    $http.get("/addStat/" + $scope.selectedVideo + "/" + $scope.team + "/null" + "/2014" + "/" + playerId + "/" + stat + "/" + $scope.videoPlayer.getCurrentTime() + "/" + playerInId).then(function(response) {
+    $http.get("/addStat/" + $scope.selectedVideo + "/" + $scope.team + "/null" + "/" + $scope.year + "/" + playerId + "/" + stat + "/" + $scope.videoPlayer.getCurrentTime() + "/" + playerInId).then(function(response) {
         $scope.something = response["data"];
     });
 
