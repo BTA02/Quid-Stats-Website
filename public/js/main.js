@@ -21,23 +21,9 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
 
   $scope.getAllPlayers = function() {
     $scope.allPlayers = [];
-    $http.get("/allPlayers/" + $scope.team + "/" + $scope.year).then(function(response) {
+    $http.get("/allPlayers/" + $scope.team + "/2014").then(function(response) {
       $scope.allPlayers = response["data"];
     });
-  }
-
-
-
-  $scope.getAllGamesAndPlayers = function() {
-    $scope.allGames = [];
-    $scope.allPlayers = [];
-    $http.get("/allGames/" + $scope.team).then(function(response) {
-      $scope.allGames = response["data"];
-    });
-    $http.get("/allPlayers/" + $scope.team).then(function(response) {
-      $scope.allPlayers = response["data"];
-    });
-
   }
 
   $scope.switchGames = function() {

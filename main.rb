@@ -37,8 +37,8 @@ get '/allGames/:team_id' do
 	get_games_for_team(params[:team_id], true).sort_by{|cat| cat[:description]}.to_json
 end
 
-get '/allPlayers/:team_id' do
-	get_players_for_team(params[:team_id]).sort_by{|cat| cat[:description]}.to_json
+get '/allPlayers/:team_id/:fall_year' do
+	get_players_for_team(params[:team_id], params[:fall_year]).sort_by{|cat| cat[:description]}.to_json
 end
 
 get '/addStat/:vid_id/:team_id/:author_id/:fall_year/:player_id/:stat_name/:time/:player_in_id' do
@@ -104,16 +104,17 @@ def get_games_for_team(team_id, all)
 	end
 end
 
-def get_players_for_team(team_id)
-	respIds = Parse::Query.new("Rosters").tap do |q|
+def get_players_for_team(team_id, fall_year)
+	resp = Parse::Query.new("Rosters").tap do |q|
 		q.eq("team_id", team_id)
+		q.eq("fall_year", fall_year)
 	end.get
-	ids = []
-	respIds.each do |e|
-		ids << e['player_id']
-	end
+	pp resp[0]["player_ids"]
+
+
+
 	players = Parse::Query.new("Players").tap do |q|
-		q.value_in("objectId", ids)
+		q.value_in("objectId", resp[0]["player_ids"])
 		q.limit = 7
 	end.get
 	players
