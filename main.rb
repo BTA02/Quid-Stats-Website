@@ -41,6 +41,10 @@ get '/allPlayers/:team_id/:fall_year' do
 	get_players_for_team(params[:team_id], params[:fall_year]).sort_by{|cat| cat[:description]}.to_json
 end
 
+get '/allStats/:vid_id/:team_id/:author_id' do
+	get_all_stats_from_game(params[:vid_id], params[:team_id], params[:author_id]);
+end
+
 get '/addStat/:vid_id/:team_id/:author_id/:fall_year/:player_id/:stat_name/:time/:player_in_id' do
 	add_stat(params)
 end
@@ -109,12 +113,23 @@ def get_players_for_team(team_id, fall_year)
 		q.eq("fall_year", fall_year)
 	end.get
 
-	pp resp.to_json
-
 	players = Parse::Query.new("Players").tap do |q|
 		q.value_in("objectId", resp[0]["player_ids"])
+		q.order_by = "first_name"
 	end.get
+
 	players
+end
+
+def get_all_stats_from_game(vid, team, author)
+	resp = Parse::Query.new("Stats").tap do |q|
+		q.eq("vid_id", vid)
+		q.eq("team_id", team)
+		q.eq("author_id", author)
+	end.get
+
+	pp resp
+	resp
 end
 
 def add_stat(params)

@@ -34,17 +34,20 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
   }
 
   function initVals() {
-    var chaserA = {first_name:"Chaser", last_name:"A"};
-    var chaserB = {first_name:"Chaser", last_name:"B"};
-    var chaserC = {first_name:"Chaser", last_name:"C"};
-    var keeper = {first_name:"Keeper", last_name:""};
-    var beaterA = {first_name:"Beater", last_name:"A"};
-    var beaterB = {first_name:"Beater", last_name:"B"};
-    var seeker = {first_name:"Seeker", last_name:""};
+    var chaserA = {objectId:"chaserA", first_name:"Chaser", last_name:"A"};
+    var chaserB = {objectId:"chaserB", first_name:"Chaser", last_name:"B"};
+    var chaserC = {objectId:"chaserC", first_name:"Chaser", last_name:"C"};
+    var keeper = {objectId:"keeper", first_name:"Keeper", last_name:""};
+    var beaterA = {objectId:"beaterA", first_name:"Beater", last_name:"A"};
+    var beaterB = {objectId:"beaterB", first_name:"Beater", last_name:"B"};
+    var seeker = {objectId:"seeker", first_name:"Seeker", last_name:""};
     $scope.onFieldPlayers = [chaserA, chaserB, chaserC, keeper, beaterA, beaterB, seeker];
 
-    $scope.subTimes = [];
-    // This is where things need to be added
+    $scope.subMap = new Map();
+    $http.get("/allStats/" + $scope.selectedVideo + "/" + $scope.team + "/null").then(function(response) {
+      // this returns all the events from a single game
+      response["data"];
+    });
   }
 
   $scope.switchGames = function() {
@@ -53,17 +56,38 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
   	}
   }
 
-  $scope.subPlayer = function(text) {
-    var el, x, y;
-    x = 10;
-    y = 10;
-    el = document.getElementById('subPopUp');
-    
-    el.style.left = x + "px";
-    el.style.top = y + "px";
-    el.style.display = "block";
-    document.getElementById('popUpText').innerHTML = text;
 
+
+
+
+
+  // All subbing stuff
+
+
+  $scope.updateOnFieldPlayers = function(time) {
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  $scope.startSub = function(playerId) {
+    $scope.subbingPlayer = playerId;
+  }
+
+  $scope.subPlayer = function(playerInId) {
+    $scope.addStat($scope.subbingPlayer, playerInId, "SUB");
   }
 
   $scope.addStat = function(playerId, playerInId, stat) {
@@ -73,7 +97,23 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
     $http.get("/addStat/" + $scope.selectedVideo + "/" + $scope.team + "/null" + "/" + $scope.year + "/" + playerId + "/" + stat + "/" + $scope.videoPlayer.getCurrentTime() + "/" + playerInId).then(function(response) {
         $scope.something = response["data"];
     });
+    var index = -1;
+    for (var i = 0; i < $scope.onFieldPlayers.length; i++) {
+      if ($scope.onFieldPlayers[i].objectId == playerId) {
+        index = i;
+      }
+    }
+    if (index !== -1) {
+      $scope.onFieldPlayers[index] = getPlayerForId(playerInId);
+    }
+  }
 
+  function getPlayerForId(id) {
+    for (var i = 0; i < $scope.allPlayers.length; i++) {
+      if ($scope.allPlayers[i].objectId == id) {
+        return $scope.allPlayers[i];
+      }
+    }
   }
 
 

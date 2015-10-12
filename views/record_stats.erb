@@ -12,7 +12,7 @@
       	<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
       	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" />
         <title>Takin dem stats</title>
-      	<h1 class='text-center'>QuidStasio</h1>
+      	<h1 class='text-center'>Statsio</h1>
 	</head>
 
 	<body ng-controller="StatsController">
@@ -39,21 +39,25 @@
       <div class="col-md-1" ng-repeat="onPlayer in onFieldPlayers">
         <!-- Players on pitch -->
         <ul class="playerList">
-          <li class="onFieldPlayer" ng-click="subPlayer('test')">{{onPlayer.first_name + ' ' + onPlayer.last_name}}</li>
-          <li class="clickList" ng-click="addStat(player.objectId, null, 'SHOT')">Shot</li>
-          <li class="clickList" ng-click="addStat(player.objectId, null, 'GOAL')">Goal</li>
-          <li class="clickList" ng-click="addStat(player.objectId, null, 'ASSIST')">Assist</li>
-          <li class="clickList" ng-click="addStat(player.objectId, null, 'TAKEAWAY')">Takeaway</li>
-          <li class="clickList" ng-click="addStat(player.objectId, null, 'TURNOVER')">Turnover</li>
-          <li class="clickList" ng-click="addStat(player.objectId, null, 'SNITCH_CATCH')">Snitch Catch</li>
+          <!-- The onclick just changes the visibility of the popup div -->
+          <a href = "javascript:void(0)" ng-click="startSub(onPlayer.objectId)" onclick = "document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block'">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
+          <li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'SHOT')">Shot</li>
+          <li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'GOAL')">Goal</li>
+          <li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'ASSIST')">Assist</li>
+          <li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'TAKEAWAY')">Takeaway</li>
+          <li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'TURNOVER')">Turnover</li>
+          <li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'SNITCH_CATCH')">Snitch Catch</li>
         </ul>
       </div>
     </div>
 
-    <div id='subPopUp' style='display: none;' >
-      <ul class="playerList">
-        <li ng-repeat="allPlayer in allPlayers">{{allPlayer.first_name+' ' + allPlayer.last_name}}</li>
+    <!-- Div for picking subs, starts just not-visible -->
+    <div id="light" class="white_content">
+      <a href = "javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">Close<br></a>
+      <a ng-repeat="allPlayer in allPlayers" ng-click="subPlayer(allPlayer.objectId)" href = "javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">{{allPlayer.first_name+' '+allPlayer.last_name}}<br></a>
+      <a href = "javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">Close<br></a>
     </div>
+    <div id="fade" class="black_overlay"></div>
 
 
 
