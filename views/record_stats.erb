@@ -25,7 +25,7 @@
   				<option value="<%= team['objectId']%>"><%=team['team_name']%></option>
   				<%end%>
   			</select>
-      <!-- Video Selector -->
+      <!-- Video Selector and allPlayers populator-->
 			<select ng-model="vidObj" ng-change="getAllPlayers()" ng-options="game.vid_id+','+game.fall_year as game.description for game in allGames">
 			</select>
 		</div>
@@ -36,10 +36,10 @@
 		</div>
 
     <div class="row" margin="auto">
-      <div class="col-md-1" ng-repeat="player in allPlayers">
+      <div class="col-md-1" ng-repeat="onPlayer in onFieldPlayers">
         <!-- Players on pitch -->
         <ul class="playerList">
-          <li class="playerName">{{player.first_name + " " + player.last_name}}</li>
+          <li class="onFieldPlayer" ng-click="subPlayer('test')">{{onPlayer.first_name + ' ' + onPlayer.last_name}}</li>
           <li class="clickList" ng-click="addStat(player.objectId, null, 'SHOT')">Shot</li>
           <li class="clickList" ng-click="addStat(player.objectId, null, 'GOAL')">Goal</li>
           <li class="clickList" ng-click="addStat(player.objectId, null, 'ASSIST')">Assist</li>
@@ -48,6 +48,11 @@
           <li class="clickList" ng-click="addStat(player.objectId, null, 'SNITCH_CATCH')">Snitch Catch</li>
         </ul>
       </div>
+    </div>
+
+    <div id='subPopUp' style='display: none;' >
+      <ul class="playerList">
+        <li ng-repeat="allPlayer in allPlayers">{{allPlayer.first_name+' ' + allPlayer.last_name}}</li>
     </div>
 
 

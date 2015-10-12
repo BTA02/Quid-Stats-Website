@@ -6,8 +6,28 @@
 	font-weight: bold;
 }
 
+.onFieldPlayer {
+	font-weight: bold;
+}
+
+.onFieldPlayer:hover {
+	background: red;
+}
+
+#subPopUp {
+	position:absolute;
+	top:50%;
+    left:50%;
+    padding: 10px;
+    background-color: rgb(200,100,100);
+    text-align: justify;
+    font-size: 12px;
+    width: 300px;
+    height: 500px;
+}
+
 .clickList {
-	
+
 }
 
 .clickList:hover {

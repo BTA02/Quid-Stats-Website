@@ -12,6 +12,8 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
     $scope.selectedGames = [];
   }
 
+  // Recording stats section
+
   $scope.getAllGames = function() {
     $scope.allGames = [];
     $http.get("/allGames/" + $scope.team).then(function(response) {
@@ -27,7 +29,22 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
     $scope.allPlayers = [];
     $http.get("/allPlayers/" + $scope.team + "/2014").then(function(response) {
       $scope.allPlayers = response["data"];
+      initVals();
     });
+  }
+
+  function initVals() {
+    var chaserA = {first_name:"Chaser", last_name:"A"};
+    var chaserB = {first_name:"Chaser", last_name:"B"};
+    var chaserC = {first_name:"Chaser", last_name:"C"};
+    var keeper = {first_name:"Keeper", last_name:""};
+    var beaterA = {first_name:"Beater", last_name:"A"};
+    var beaterB = {first_name:"Beater", last_name:"B"};
+    var seeker = {first_name:"Seeker", last_name:""};
+    $scope.onFieldPlayers = [chaserA, chaserB, chaserC, keeper, beaterA, beaterB, seeker];
+
+    $scope.subTimes = [];
+    // This is where things need to be added
   }
 
   $scope.switchGames = function() {
@@ -35,6 +52,33 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
   		console.log($scope.selectedGames[i]);
   	}
   }
+
+  $scope.subPlayer = function(text) {
+    var el, x, y;
+    x = 10;
+    y = 10;
+    el = document.getElementById('subPopUp');
+    
+    el.style.left = x + "px";
+    el.style.top = y + "px";
+    el.style.display = "block";
+    document.getElementById('popUpText').innerHTML = text;
+
+  }
+
+  $scope.addStat = function(playerId, playerInId, stat) {
+    $scope.videoPlayer.pauseVideo();
+    $scope.videoPlayer.getCurrentTime();
+
+    $http.get("/addStat/" + $scope.selectedVideo + "/" + $scope.team + "/null" + "/" + $scope.year + "/" + playerId + "/" + stat + "/" + $scope.videoPlayer.getCurrentTime() + "/" + playerInId).then(function(response) {
+        $scope.something = response["data"];
+    });
+
+  }
+
+
+
+  // Viewing stats page
 
   $scope.calcStats = function() {
     console.log($scope.selectedGames);
@@ -72,15 +116,7 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
     }
   }
 
-  $scope.addStat = function(playerId, playerInId, stat) {
-    $scope.videoPlayer.pauseVideo();
-    $scope.videoPlayer.getCurrentTime();
 
-    $http.get("/addStat/" + $scope.selectedVideo + "/" + $scope.team + "/null" + "/" + $scope.year + "/" + playerId + "/" + stat + "/" + $scope.videoPlayer.getCurrentTime() + "/" + playerInId).then(function(response) {
-        $scope.something = response["data"];
-    });
-
-  }
 
 
 

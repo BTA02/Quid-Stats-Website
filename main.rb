@@ -108,13 +108,11 @@ def get_players_for_team(team_id, fall_year)
 		q.eq("team_id", team_id)
 		q.eq("fall_year", fall_year)
 	end.get
-	pp resp[0]["player_ids"]
 
-
+	pp resp.to_json
 
 	players = Parse::Query.new("Players").tap do |q|
 		q.value_in("objectId", resp[0]["player_ids"])
-		q.limit = 7
 	end.get
 	players
 end
