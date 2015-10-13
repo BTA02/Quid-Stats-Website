@@ -30,6 +30,19 @@
 			</select>
 		</div>
 
+    <!-- The visualization of the stats -->
+    <ul class="stats">
+      <li class="singleStat" ng-repeat="stat in allStats">
+        <div>
+          <p>{{stat.player_id}}</p>
+          <p>{{stat.stat_name}}</p>
+          <p>{{stat.time}}</p>
+        </div>
+      </li>
+    </ul>
+
+
+
 
 		<div class="container-fluid" align="center">
 			<youtube-video video-id="selectedVideo" player="videoPlayer"></youtube-video>

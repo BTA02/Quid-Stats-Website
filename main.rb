@@ -129,7 +129,7 @@ def get_all_stats_from_game(vid, team, author)
 	end.get
 
 	pp resp
-	resp
+	resp.to_json
 end
 
 def add_stat(params)

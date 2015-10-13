@@ -1,3 +1,17 @@
+.stats {
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+  width: 900px;
+  overflow-x: auto;
+  background-color: #ddd;
+}
+.singleStat {
+  display: inline;
+  width: 150px;
+  height: 150px;
+}
+
 .playerList {
 	list-style: none;
 }

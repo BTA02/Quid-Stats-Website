@@ -46,7 +46,7 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
     $scope.subMap = new Map();
     $http.get("/allStats/" + $scope.selectedVideo + "/" + $scope.team + "/null").then(function(response) {
       // this returns all the events from a single game
-      response["data"];
+      $scope.allStats = response["data"];
     });
   }
 
