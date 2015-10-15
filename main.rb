@@ -49,6 +49,10 @@ get '/addStat/:vid_id/:team_id/:author_id/:fall_year/:player_id/:stat_name/:time
 	add_stat(params)
 end
 
+get '/deleteStat/:object_id' do
+	delete_stat(params[:object_id])
+end
+
 
 
 # This also takes the team_id and game_ids
@@ -126,9 +130,8 @@ def get_all_stats_from_game(vid, team, author)
 		q.eq("vid_id", vid)
 		q.eq("team_id", team)
 		q.eq("author_id", author)
+		q.order_by = "time"
 	end.get
-
-	pp resp
 	resp.to_json
 end
 
@@ -144,8 +147,31 @@ def add_stat(params)
 	new_stat['player_in_id'] = params['player_in_id'];
 
 	result = new_stat.save
-
+	result.to_json
 end
+
+def delete_stat(id)
+	stat_to_del = Parse::Query.new("Stats").tap do |q|
+		q.eq("objectId", id);
+	end.get.first
+	retObj = stat_to_del.clone
+	pp retObj
+	resp = stat_to_del.parse_delete
+	pp "FHDKSL"
+	pp retObj
+	pp 'HDFKLSJF'
+	retObj.to_json
+
+end	
+
+
+
+
+
+
+
+
+
 
 
 

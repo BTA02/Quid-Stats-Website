@@ -1,15 +1,23 @@
-.stats {
-  margin: 0;
-  padding: 0;
-  white-space: nowrap;
-  width: 900px;
-  overflow-x: auto;
-  background-color: #ddd;
+.statsList {
+	width: 380px;
+	height: 350px;
+	overflow-x: auto;
+	overflow-y: auto;
+	float: left;
+	vertical-align: center;
 }
-.singleStat {
-  display: inline;
-  width: 150px;
-  height: 150px;
+
+.statsListItem {
+  display: inline-block;
+  border: 1px solid black;
+  padding: 3px;
+  width: 125px;
+  float: left;
+
+}
+
+.statsListItem p {
+	text-align: center;
 }
 
 .playerList {

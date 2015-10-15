@@ -1,18 +1,17 @@
 <html ng-app="statsApp">
 	<head>
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
-      	<script src="/js/main.js"></script>
-
-      	<script src="angular-video/js/anguvideo.js"></script>
-      	<script src="https://www.youtube.com/iframe_api"></script>
+  	<script src="/js/main.js"></script>
+  	<script src="angular-video/js/anguvideo.js"></script>
+  	<script src="https://www.youtube.com/iframe_api"></script>
 		<script src="angular-youtube-embed/src/angular-youtube-embed.js"></script>
 
 
-      	<link rel="stylesheet" type="text/css" href="/stylesheets/the.css">
-      	<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-      	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" />
-        <title>Takin dem stats</title>
-      	<h1 class='text-center'>Statsio</h1>
+  	<link rel="stylesheet" type="text/css" href="/stylesheets/the.css">
+  	<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+  	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" />
+    <title>Takin dem stats</title>
+  	<h1 class='text-center'>Statsio</h1>
 	</head>
 
 	<body ng-controller="StatsController">
@@ -31,22 +30,24 @@
 		</div>
 
     <!-- The visualization of the stats -->
-    <ul class="stats">
-      <li class="singleStat" ng-repeat="stat in allStats">
-        <div>
-          <p>{{stat.player_id}}</p>
-          <p>{{stat.stat_name}}</p>
-          <p>{{stat.time}}</p>
-        </div>
-      </li>
-    </ul>
+    <div class="statsList">
+      <div class="statsListItem" ng-repeat="statObj in allStats">
+        <p>{{statObj.player_id}}</p>
+        <p>{{statObj.player_in_id}}</p>
+        <p>{{statObj.stat_name}}</p>
+        <p>{{statObj.time}}</p>
+        <button ng-click="deleteStat(statObj.objectId)">Delete</button>
+      </div>
+    </div>
 
 
 
 
+    <!-- Video player object -->
 		<div class="container-fluid" align="center">
 			<youtube-video video-id="selectedVideo" player="videoPlayer"></youtube-video>
 		</div>
+
 
     <div class="row" margin="auto">
       <div class="col-md-1" ng-repeat="onPlayer in onFieldPlayers">
