@@ -27,7 +27,8 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
     $scope.selectedVideo = idAndYear[0];
     $scope.year = idAndYear[1];
     $scope.allPlayers = [];
-    $http.get("/allPlayers/" + $scope.team + "/2014").then(function(response) {
+    initVals();
+    $http.get("/allPlayers/" + $scope.team + "/" + $scope.year).then(function(response) {
       $scope.allPlayers = response["data"];
       initVals();
     });
@@ -36,6 +37,7 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
   function initVals() {
     setOnFieldToBlank();
     $scope.subMap = new Map();
+    $scope.allStats = [];
     $http.get("/allStats/" + $scope.selectedVideo + "/" + $scope.team + "/null").then(function(response) {
       // this returns all the events from a single game
       $scope.allStats = response["data"];
@@ -82,7 +84,7 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
 
   $scope.updateOnFieldPlayers = function() {
     var startTime = 0;
-    var endTime = $scope.videoPlayer.getCurrentTime();
+    var endTime = $scope.videoPlayer.getCurrentTime() + 1;
     setOnFieldToBlank();
     for (var i = startTime; i < endTime; i++) {
       if ($scope.subMap.get(i) != null) {

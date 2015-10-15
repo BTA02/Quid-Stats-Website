@@ -52,11 +52,13 @@ class CalcStats
 					if (!player_id.nil?)
 						first_name = '?'
 						last_name = '?'
-						# arr.any?{|a| a.seat_id == "value"}
 						player_index = @players.find_index { |item| 
 							item['objectId'] == player_id
 						}
-						if !@players[player_index].nil?
+						pp 'HERE'
+						pp player_index
+						pp 'CLOSE'
+						if !player_index.nil?
 							first_name = @players[player_index]['first_name']
 							last_name = @players[player_index]['last_name']
 						end
