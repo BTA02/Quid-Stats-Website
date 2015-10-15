@@ -160,11 +160,7 @@ def delete_stat(id)
 		q.eq("objectId", id);
 	end.get.first
 	retObj = stat_to_del.clone
-	pp retObj
 	resp = stat_to_del.parse_delete
-	pp "FHDKSL"
-	pp retObj
-	pp 'HDFKLSJF'
 	retObj.to_json
 
 end	

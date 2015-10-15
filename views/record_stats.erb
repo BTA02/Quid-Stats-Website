@@ -48,8 +48,15 @@
 			<youtube-video video-id="selectedVideo" player="videoPlayer"></youtube-video>
 		</div>
 
+    <div class="container-fluid" align="center">
+      <button ng-click="addStat(null, null, 'PAUSE_CLOCK')">Game Stoppage</button>
+      <button ng-click="addStat(null, null, 'START_CLOCK')">Game Restart</button>
+      <button ng-click="addStat(null, null, 'AWAY_GOAL')">Away Goal</button>
+      <button ng-click="addStat(null, null, 'SNITCH_ON_PITCH')">Snitch on pitch</button>
+      <button ng-click="addStat(null, null, 'AWAY_SNITCH_CATCH')">Opponent snitch catch</button>
+    </div>
 
-    <div class="row" margin="auto">
+    <div class="row" margin="auto" align="center">
       <div class="col-md-1" ng-repeat="onPlayer in onFieldPlayers">
         <!-- Players on pitch -->
         <ul class="playerList">

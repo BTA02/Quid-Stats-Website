@@ -55,9 +55,6 @@ class CalcStats
 						player_index = @players.find_index { |item| 
 							item['objectId'] == player_id
 						}
-						pp 'HERE'
-						pp player_index
-						pp 'CLOSE'
 						if !player_index.nil?
 							first_name = @players[player_index]['first_name']
 							last_name = @players[player_index]['last_name']
@@ -311,18 +308,19 @@ class CalcStats
 		resp = Parse::Query.new("Rosters").tap do |q|
 			q.eq("team_id", @team_id)
 		end.get
-
-		players = Parse::Query.new("Players").tap do |q|
-			q.value_in("objectId", resp[0]["player_ids"])
-			q.order_by = "first_name"
-		end.get
+		players = Set.new
+		for i in 0..resp.length-1
+			players.merge(Parse::Query.new("Players").tap do |q|
+				q.value_in("objectId", resp[i]["player_ids"])
+				q.order_by = "first_name"
+			end.get)
+		end
 		players
 	end
 
 	def get_name_mappings
 		return_mappings = {}
 		@players.each do |player|
-			pp player['objectId']
 			return_mappings << {player['objectId'] => player['fname'] + " " + player['lname']}
 		end
 		pp return_mappings
