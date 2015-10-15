@@ -86,12 +86,14 @@ def get_teams
 	Parse::Query.new("Teams").get
 end
 
+# Needs work, look at the first part of the if
+# This should only return "done games", whatever that means
+
 def get_games_for_team(team_id, all)
 	if !team_id.nil?
 		if !all
 			resp = Parse::Query.new("Videos").tap do |q|
 				q.eq("team_id", team_id)
-				q.exists("events_json")
 			end.get
 		else
 			resp = Parse::Query.new("Videos").tap do |q|
@@ -111,6 +113,7 @@ def get_games_for_team(team_id, all)
 	end
 end
 
+# Updated to new backend
 def get_players_for_team(team_id, fall_year)
 	resp = Parse::Query.new("Rosters").tap do |q|
 		q.eq("team_id", team_id)
@@ -125,6 +128,7 @@ def get_players_for_team(team_id, fall_year)
 	players
 end
 
+# Updated to new backend
 def get_all_stats_from_game(vid, team, author)
 	resp = Parse::Query.new("Stats").tap do |q|
 		q.eq("vid_id", vid)
@@ -135,6 +139,7 @@ def get_all_stats_from_game(vid, team, author)
 	resp.to_json
 end
 
+# Updated to new backend
 def add_stat(params)
 	new_stat = Parse::Object.new("Stats");
 	new_stat['vid_id'] = params['vid_id'];

@@ -13,22 +13,30 @@ class CalcStats
 		# @name_mappings = get_name_mappings
 	end
 
-	def raw_stats
-		video_table_rows = Parse::Query.new("Videos").tap do |q|
+	def get_events_rows_from_games()
+		all_stats = Parse::Query.new("Stats").tap do |q|
 			q.eq('team_id', @team_id)
 			q.value_in('vid_id', @game_ids)
+			q.order_by = "vid_id, time"
 		end.get
-		events_map = {}
-		video_table_rows.each do |row|
-			events_map[row['vid_id']] = JSON.parse(row['events_json'])
-		end
+		pp all_stats
+		all_stats
+	end
+
+	def raw_stats
+		# video_table_rows = Parse::Query.new("Videos").tap do |q|
+		# 	q.eq('team_id', @team_id)
+		# 	q.value_in('vid_id', @game_ids)
+		# end.get
+		# events_map = {}
+		# video_table_rows.each do |row|
+		# 	events_map[row['vid_id']] = JSON.parse(row['events_json'])
+		# end
 		@stats_map = {}
-		on_field_array = ["a", "b", "c", "d", "e", "f", "g"]
+		
 		start_time = -1
 		@game_ids.each do |game|
-			# next if game["events_json"].nil?
-			# events_from_game = JSON.parse(game["events_json"])
-			# pp events_from_game
+			on_field_array = ["a", "b", "c", "d", "e", "f", "g"]
 			events_from_game = events_map[game]
 			next if events_from_game.nil?
 			events_from_game.each do |event|

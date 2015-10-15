@@ -1,16 +1,20 @@
 <html ng-app="statsApp">
 	<head>
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
-      	<link rel="stylesheet" type="text/css" href="/stylesheets/the.css">
-      	<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-      	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" />
-      	<script src="/js/main.js"></script>
-        <title>Viewin' dem stats</title>
-      	<h1 class='text-center'>Statsio</h1>
+	  	<script src="/js/main.js"></script>
+	  	<script src="angular-video/js/anguvideo.js"></script>
+	  	<script src="https://www.youtube.com/iframe_api"></script>
+		<script src="angular-youtube-embed/src/angular-youtube-embed.js"></script>
+
+
+	  	<link rel="stylesheet" type="text/css" href="/stylesheets/the.css">
+	  	<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+	  	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" />
+	    <title>Takin dem stats</title>
+	  	<h1 class='text-center'>Statsio</h1>
 	</head>
 
   <body ng-controller="StatsController">
-
   	<div name="header" class="container-fluid text-center">
   		<select name="teamSelect" ng-model="team" ng-change="getDoneGames()">
   			<option value="">Select a team</option>
@@ -30,6 +34,7 @@
 		<button class="btn btn-default" ng-click="calcStats()">Go</button>
 	</div>
 
+	<!-- THIS SECTION IS OKAY -->
 	<div class="container-fluid">
         <div class="row">
 			<div class="col-lg-2">
@@ -89,5 +94,7 @@
 		  	</div>
 	  	</div>
   	</div>
+
+  	
   </body>
 </html>
