@@ -13,13 +13,14 @@ class CalcStats
 		# @name_mappings = get_name_mappings
 	end
 
-	def get_events_rows_from_games()
+	def get_stats_rows_from_games()
 		all_stats = Parse::Query.new("Stats").tap do |q|
 			q.eq('team_id', @team_id)
 			q.value_in('vid_id', @game_ids)
-			q.order_by = "vid_id, time"
+			q.order_by = "vid_id,time"
 		end.get
-		pp all_stats
+		# pp all_stats
+		# come back to this when I have multiple games
 		all_stats
 	end
 
@@ -32,27 +33,32 @@ class CalcStats
 		# video_table_rows.each do |row|
 		# 	events_map[row['vid_id']] = JSON.parse(row['events_json'])
 		# end
+		all_stats = get_stats_rows_from_games()
 		@stats_map = {}
-		
 		start_time = -1
 		@game_ids.each do |game|
-			on_field_array = ["a", "b", "c", "d", "e", "f", "g"]
-			events_from_game = events_map[game]
+			on_field_array = ["chaserA", "chaserB", "chaserC", "keeper", "beaterA", "beaterB", "seeker"]
+			events_from_game = all_stats
 			next if events_from_game.nil?
 			events_from_game.each do |event|
 				player_id = nil
-				if event["playerOut"] != ""
-					player_id = event["playerOut"]
-				elsif event["playerIn"] != ""
-					player_id = event["playerIn"]
+				if event["stat_name"] == "SUB"
+					player_id = event["player_in_id"]
+				else
+					player_id = event["player_id"]
 				end
+
 				unless @stats_map.include?(player_id)
 					if (!player_id.nil?)
 						first_name = '?'
 						last_name = '?'
-						if !@players[player_id].nil?
-							first_name = @players[player_id][:first_name]
-							last_name = @players[player_id][:last_name]
+						# arr.any?{|a| a.seat_id == "value"}
+						player_index = @players.find_index { |item| 
+							item['objectId'] == player_id
+						}
+						if !@players[player_index].nil?
+							first_name = @players[player_index]['first_name']
+							last_name = @players[player_index]['last_name']
 						end
 						@stats_map[player_id] = {
 							"first_name" => first_name,
@@ -75,25 +81,26 @@ class CalcStats
 					end
 				end
 
-				event_type = event["actualAction"]
+				event_type = event["stat_name"]
 
 				if event_type == "SUB"
 					if start_time != -1
-						time_to_add = event["youtubeTime"] - start_time
+						time_to_add = event["time"] - start_time
 						add_time_to_each_player(on_field_array, time_to_add)
-						start_time = event["youtubeTime"]
+						start_time = event["time"]
 					end
-					on_field_array[event["loc"]] = player_id
+					ind = on_field_array.index(event["player_id"])
+					on_field_array[ind] = player_id
 				elsif event_type == "PAUSE_CLOCK"
 					if start_time != -1
-						time_to_add = event["youtubeTime"] - start_time
+						time_to_add = event["time"] - start_time
 						add_time_to_each_player(on_field_array, time_to_add)
 						start_time = -1
 					end
 				elsif event_type == "START_CLOCK"
-					start_time = event["youtubeTime"]
+					start_time = event["time"]
 				elsif event_type == "GAME_START"
-					start_time = event["youtubeTime"]
+					start_time = event["time"]
 				elsif event_type == "AWAY_GOAL"
 					add_plus_minus_val(on_field_array, -1)
 				elsif event_type == "SNITCH_ON_PITCH"
@@ -102,11 +109,11 @@ class CalcStats
 				elsif event_type == "SNITCH_CATCH"
 					@stats_map[player_id]["snitch_catch"] += 1
 				elsif event_type == "GOAL"
-					@stats_map[player_id][event["actualAction"].downcase] += 1
+					@stats_map[player_id][event["stat_name"].downcase] += 1
 					@stats_map[player_id]["shot"] += 1
 					add_plus_minus_val(on_field_array, 1)
 				else
-					@stats_map[player_id][event["actualAction"].downcase] += 1
+					@stats_map[player_id][event["stat_name"].downcase] += 1
 				end
 								
 			end
@@ -299,15 +306,15 @@ class CalcStats
 	end
 
 	def get_players_from_team
-		array_of_players = Parse::Query.new("Players").eq("team_id", @team_id).get
-		all_players = {}
-		array_of_players.each do |player|
-			all_players[player['objectId']] = {
-				first_name: player['fname'],
-				last_name: player['lname']
-			}
-		end
-		all_players
+		resp = Parse::Query.new("Rosters").tap do |q|
+			q.eq("team_id", @team_id)
+		end.get
+
+		players = Parse::Query.new("Players").tap do |q|
+			q.value_in("objectId", resp[0]["player_ids"])
+			q.order_by = "first_name"
+		end.get
+		players
 	end
 
 	def get_name_mappings
