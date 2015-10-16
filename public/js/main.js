@@ -79,7 +79,7 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
     }
   }
 
-  $interval( function(){ $scope.updateOnFieldPlayers(); }, 1000);
+  $interval( function(){ $scope.updateOnFieldPlayers(); }, 500);
 
 
   $scope.updateOnFieldPlayers = function() {

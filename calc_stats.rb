@@ -33,89 +33,96 @@ class CalcStats
 		# video_table_rows.each do |row|
 		# 	events_map[row['vid_id']] = JSON.parse(row['events_json'])
 		# end
-		all_stats = get_stats_rows_from_games()
+		events_from_games = get_stats_rows_from_games()
+		# if event_from_games.nil?
+		# 	return nil
+		# end
 		@stats_map = {}
 		start_time = -1
-		@game_ids.each do |game|
-			on_field_array = ["chaserA", "chaserB", "chaserC", "keeper", "beaterA", "beaterB", "seeker"]
-			events_from_game = all_stats
-			next if events_from_game.nil?
-			events_from_game.each do |event|
-				player_id = nil
-				if event["stat_name"] == "SUB"
-					player_id = event["player_in_id"]
-				else
-					player_id = event["player_id"]
-				end
-
-				unless @stats_map.include?(player_id)
-					if (!player_id.nil?)
-						first_name = '?'
-						last_name = '?'
-						player_index = @players.find_index { |item| 
-							item['objectId'] == player_id
-						}
-						if !player_index.nil?
-							first_name = @players[player_index]['first_name']
-							last_name = @players[player_index]['last_name']
-						end
-						@stats_map[player_id] = {
-							"first_name" => first_name,
-							"last_name" => last_name,
-							"shot" => 0,
-							"goal" => 0,
-							"assist" => 0,
-							"turnover" => 0,
-							"takeaway" => 0,
-							"yellow_card" => 0,
-							"red_card" => 0,
-							"snitch_catch" => 0,
-							"plusses" => 0,
-							"minuses" => 0,
-							"net" => 0,
-							"time" => 0
-							# "gain_control" => 0,
-							# "lose_control" => 0
-						}
-					end
-				end
-
-				event_type = event["stat_name"]
-
-				if event_type == "SUB"
-					if start_time != -1
-						time_to_add = event["time"] - start_time
-						add_time_to_each_player(on_field_array, time_to_add)
-						start_time = event["time"]
-					end
-					ind = on_field_array.index(event["player_id"])
-					on_field_array[ind] = player_id
-				elsif event_type == "PAUSE_CLOCK"
-					if start_time != -1
-						time_to_add = event["time"] - start_time
-						add_time_to_each_player(on_field_array, time_to_add)
-						start_time = -1
-					end
-				elsif event_type == "START_CLOCK"
-					start_time = event["time"]
-				elsif event_type == "GAME_START"
-					start_time = event["time"]
-				elsif event_type == "AWAY_GOAL"
-					add_plus_minus_val(on_field_array, -1)
-				elsif event_type == "SNITCH_ON_PITCH"
-				elsif event_type == "AWAY_SNITCH_CATCH"
-				
-				elsif event_type == "SNITCH_CATCH"
-					@stats_map[player_id]["snitch_catch"] += 1
-				elsif event_type == "GOAL"
-					@stats_map[player_id][event["stat_name"].downcase] += 1
-					@stats_map[player_id]["shot"] += 1
-					add_plus_minus_val(on_field_array, 1)
-				else
-					@stats_map[player_id][event["stat_name"].downcase] += 1
-				end
-								
+		cur_game = "notAGame"
+		on_field_array = ["chaserA", "chaserB", "chaserC", "keeper", "beaterA", "beaterB", "seeker"]
+		events_from_games.each do |event|
+			if cur_game != event["vid_id"]
+				on_field_array = ["chaserA", "chaserB", "chaserC", "keeper", "beaterA", "beaterB", "seeker"]
 			end
+			cur_game = event["vid_id"]
+			player_id = nil
+			if event["stat_name"] == "SUB"
+				player_id = event["player_in_id"]
+			else
+				player_id = event["player_id"]
+			end
+
+			unless @stats_map.include?(player_id)
+				if (!player_id.nil?)
+					first_name = '?'
+					last_name = '?'
+					player_index = @players.find_index { |item| 
+						item['objectId'] == player_id
+					}
+					if !player_index.nil?
+						first_name = @players[player_index]['first_name']
+						last_name = @players[player_index]['last_name']
+					end
+					@stats_map[player_id] = {
+						"first_name" => first_name,
+						"last_name" => last_name,
+						"shot" => 0,
+						"goal" => 0,
+						"assist" => 0,
+						"turnover" => 0,
+						"takeaway" => 0,
+						"yellow_card" => 0,
+						"red_card" => 0,
+						"snitch_catch" => 0,
+						"plusses" => 0,
+						"minuses" => 0,
+						"net" => 0,
+						"time" => 0
+						# "gain_control" => 0,
+						# "lose_control" => 0
+					}
+				end
+			end
+
+			event_type = event["stat_name"]
+
+			if event_type == "SUB"
+				if start_time != -1
+					time_to_add = event["time"] - start_time
+					add_time_to_each_player(on_field_array, time_to_add)
+					start_time = event["time"]
+				end
+				ind = on_field_array.index(event["player_id"])
+				pp 'ANDRE'
+				pp on_field_array
+				pp event
+				pp 'AXTELL'
+				on_field_array[ind] = player_id
+			elsif event_type == "PAUSE_CLOCK"
+				if start_time != -1
+					time_to_add = event["time"] - start_time
+					add_time_to_each_player(on_field_array, time_to_add)
+					start_time = -1
+				end
+			elsif event_type == "START_CLOCK"
+				start_time = event["time"]
+			elsif event_type == "GAME_START"
+				start_time = event["time"]
+			elsif event_type == "AWAY_GOAL"
+				add_plus_minus_val(on_field_array, -1)
+			elsif event_type == "SNITCH_ON_PITCH"
+			elsif event_type == "AWAY_SNITCH_CATCH"
+			
+			elsif event_type == "SNITCH_CATCH"
+				@stats_map[player_id]["snitch_catch"] += 1
+			elsif event_type == "GOAL"
+				@stats_map[player_id][event["stat_name"].downcase] += 1
+				@stats_map[player_id]["shot"] += 1
+				add_plus_minus_val(on_field_array, 1)
+			else
+				@stats_map[player_id][event["stat_name"].downcase] += 1
+			end				
 		end
 		# sort it here
 		@stats_map
@@ -187,11 +194,11 @@ class CalcStats
         	# or can I do it without it?
         	# I just need to know who is on the pitch at any given moment
         	# which I can do normally, so let's avoid the time array thing because it sucks
-        	events_from_game = events_map[game]
-        	next if events_from_game.nil?
+        	events_from_games = events_map[game]
+        	next if events_from_games.nil?
         	on_field_array = ["a", "b", "c", "d", "e", "f", "g"]
 			start_time = -1
-        	events_from_game.each do |event|
+        	events_from_games.each do |event|
         		sorted_on_field_array = sort_on_field_array_by_position(on_field_array)
         		case event['actualAction']
         		when 'GOAL'
@@ -242,7 +249,6 @@ class CalcStats
         	combo_stat_map_return[new_key] = v
         }
         combo_stat_map_return
-
 	end
 
 	def add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, value, category)
@@ -308,14 +314,15 @@ class CalcStats
 		resp = Parse::Query.new("Rosters").tap do |q|
 			q.eq("team_id", @team_id)
 		end.get
-		players = Set.new
+		playersSet = Set.new
 		for i in 0..resp.length-1
-			players.merge(Parse::Query.new("Players").tap do |q|
+			players = Parse::Query.new("Players").tap do |q|
 				q.value_in("objectId", resp[i]["player_ids"])
 				q.order_by = "first_name"
-			end.get)
+			end.get
+			playersSet.merge(players)
 		end
-		players
+		playersSet.to_a
 	end
 
 	def get_name_mappings
@@ -323,13 +330,10 @@ class CalcStats
 		@players.each do |player|
 			return_mappings << {player['objectId'] => player['fname'] + " " + player['lname']}
 		end
-		pp return_mappings
 	end
 
 	def getStatsMap
 		@stats_map
 	end
-
-
 end
 
