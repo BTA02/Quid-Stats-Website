@@ -30,7 +30,7 @@
 		</div>
 
     <!-- The visualization of the stats -->
-    <div class="container-fluid statsList" align="center">
+    <div id="statsList" class="container-fluid">
       <div class="statsListItem" ng-repeat="statObj in allStats">
         <p>{{statObj.player_id}}</p>
         <p>{{statObj.player_in_id}}</p>
@@ -48,8 +48,8 @@
 
     <!-- Buttons under the video -->
     <div class="container-fluid" align="center">
-      <button class="btn btn-default" ng-click="addStat(null, null, 'PAUSE_CLOCK')">Game Stoppage</button>
       <button class="btn btn-default" ng-click="addStat(null, null, 'START_CLOCK')">Game (Re)Start</button>
+      <button class="btn btn-default" ng-click="addStat(null, null, 'PAUSE_CLOCK')">Game Stoppage</button>
       <button class="btn btn-default" ng-click="addStat(null, null, 'AWAY_GOAL')">Away Goal</button>
       <button class="btn btn-default" ng-click="addStat(null, null, 'SNITCH_ON_PITCH')">Snitch on pitch</button>
       <button class="btn btn-default" ng-click="addStat(null, null, 'AWAY_SNITCH_CATCH')">Opponent snitch catch</button>

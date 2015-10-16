@@ -27,9 +27,13 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
     $scope.selectedVideo = idAndYear[0];
     $scope.year = idAndYear[1];
     $scope.allPlayers = [];
-    initVals();
+    // initVals();
     $http.get("/allPlayers/" + $scope.team + "/" + $scope.year).then(function(response) {
       $scope.allPlayers = response["data"];
+      $scope.playersMap = new Map();
+      for (var i = 0; i < $scope.allPlayers.length; i++) {
+        $scope.playersMap.set($scope.allPlayers[i]["objectId"], $scope.allPlayers[i]);
+      }
       initVals();
     });
   }
@@ -41,13 +45,17 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
     $http.get("/allStats/" + $scope.selectedVideo + "/" + $scope.team + "/null").then(function(response) {
       // this returns all the events from a single game
       $scope.allStats = response["data"];
-      // loop through the events, adding the subs to my sub map
-
       for (var i = 0; i < $scope.allStats.length; i++) {
+        // add the player names to the objects here
+        $scope.allStats[i]["player_first_name"]
         if ($scope.allStats[i]["stat_name"] === "SUB") {
           addSubToMap($scope.allStats[i]);
         }
       }
+      // I need to think about this, what do I need?
+      // Well, ideally, the statObj would have the player object
+      // But it doesn't
+      // So, dynamically, I need to add the value, right?
     });
   }
 
@@ -107,7 +115,7 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
     }
     //index coming back as -1 each time
     if (index !== -1) {
-      $scope.onFieldPlayers[index] = getPlayerForId(sub["player_in_id"]);
+      $scope.onFieldPlayers[index] = $scope.playersMap.get(sub["player_in_id"]);
     }
   }
 
@@ -142,14 +150,6 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
           return a["time"] - b["time"];
         })
     });
-  }
-
-  function getPlayerForId(id) {
-    for (var i = 0; i < $scope.allPlayers.length; i++) {
-      if ($scope.allPlayers[i].objectId == id) {
-        return $scope.allPlayers[i];
-      }
-    }
   }
 
   $scope.deleteStat = function(objId) {

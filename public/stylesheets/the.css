@@ -1,8 +1,13 @@
-.classList {
-	
+#statsList > div {
+	display: inline-block;
+	border: solid 1px black;
 }
-.classListItem {
-	float: left;
+
+#statsList {
+    text-align: center;
+    margin: 0px auto;
+    width: 40%;
+    overflow: scroll;
 }
 
 .playerList {
