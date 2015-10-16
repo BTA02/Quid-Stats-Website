@@ -177,6 +177,12 @@ class CalcStats
     		if event["vid_id"] != cur_game
     			on_field_array = ["chaserA", "chaserB", "chaserC", "keeper", "beaterA", "beaterB", "seeker"]
     		end
+    		
+    		pp 'yuup'
+    		pp event
+    		pp on_field_array
+    		pp 'dul'
+
     		cur_game = event['vid_id']
     		sorted_on_field_array = sort_on_field_array_by_position(on_field_array)
     		case event['stat_name']

@@ -32,8 +32,8 @@
     <!-- The visualization of the stats -->
     <div id="statsList" class="container-fluid">
       <div class="statsListItem" ng-repeat="statObj in allStats">
-        <p>{{statObj.player_id}}</p>
-        <p>{{statObj.player_in_id}}</p>
+        <p>{{statObj.player_name}}</p>
+        <p>{{statObj.player_in_name}}</p>
         <p>{{statObj.stat_name}}</p>
         <p>{{statObj.time}}</p>
         <button class="btn btn-danger btn-xs" ng-click="deleteStat(statObj.objectId)">Delete</button>

@@ -47,7 +47,22 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
       $scope.allStats = response["data"];
       for (var i = 0; i < $scope.allStats.length; i++) {
         // add the player names to the objects here
-        $scope.allStats[i]["player_first_name"]
+        var id = $scope.allStats[i]["player_id"];
+        var inId = $scope.allStats[i]["player_in_id"];
+        var player = $scope.playersMap.get(id);
+        var playerIn = $scope.playersMap.get(inId);
+        if (player) {
+          $scope.allStats[i]["player_name"] = player["first_name"] + ' ' + player["last_name"];
+        } else {
+          $scope.allStats[i]["player_name"] = id;
+
+        }
+        if (playerIn) {
+          $scope.allStats[i]["player_in_name"] = playerIn["first_name"] + ' ' + playerIn["last_name"];
+        } else {
+          $scope.allStats[i]["player_in_name"] = inId;
+        }
+        console.log($scope.allStats[i]);
         if ($scope.allStats[i]["stat_name"] === "SUB") {
           addSubToMap($scope.allStats[i]);
         }
@@ -120,6 +135,7 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
   }
 
   $scope.startSub = function(playerId) {
+    $scope.videoPlayer.pauseVideo();
     $scope.subbingPlayer = playerId;
   }
 
@@ -141,6 +157,22 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
       + "/" + $scope.videoPlayer.getCurrentTime() 
       + "/" + playerInId).then(function(response) {
         // handle errors here, if I get them
+        var id = response["data"]["player_id"];
+        var inId = response["data"]["player_in_id"];
+        var player = $scope.playersMap.get(id);
+        var playerIn = $scope.playersMap.get(inId);
+        if (player) {
+          response["data"]["player_name"] = player["first_name"] + ' ' + player["last_name"];
+        } else {
+          response["data"]["player_name"] = id;
+
+        }
+        if (playerIn) {
+          response["data"]["player_in_name"] = playerIn["first_name"] + ' ' + playerIn["last_name"];
+        } else {
+          response["data"]["player_in_name"] = inId;
+        }
+        console.log(response["data"]);
         $scope.allStats.push(response["data"]);
         if (stat === "SUB") {
           addSubToMap(response["data"]);
