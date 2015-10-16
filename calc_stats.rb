@@ -218,12 +218,14 @@ class CalcStats
         combo_stat_map.each { |k, v|
         	new_key = []
         	k.each { |id|
-        		ind = @players.index(id)
-				on_field_array[ind] = player_id
-        		if @players[ind].nil?
+        		player_index = @players.find_index { |item| 
+						item['objectId'] == id
+				}
+				on_field_array[player_index] = id
+        		if @players[player_index].nil?
         			new_key << '?'
         		else
-        			new_key << @players[id][:first_name] + ' ' + @players[id][:last_name]
+        			new_key << @players[player_index]['first_name'] + ' ' + @players[player_index]['last_name']
         		end
         	}
         	combo_stat_map_return[new_key] = v
