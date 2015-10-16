@@ -25,18 +25,10 @@ class CalcStats
 	end
 
 	def raw_stats
-		# video_table_rows = Parse::Query.new("Videos").tap do |q|
-		# 	q.eq('team_id', @team_id)
-		# 	q.value_in('vid_id', @game_ids)
-		# end.get
-		# events_map = {}
-		# video_table_rows.each do |row|
-		# 	events_map[row['vid_id']] = JSON.parse(row['events_json'])
-		# end
 		events_from_games = get_stats_rows_from_games()
-		# if event_from_games.nil?
-		# 	return nil
-		# end
+		if event_from_games.nil?
+			return nil
+		end
 		@stats_map = {}
 		start_time = -1
 		cur_game = "notAGame"
@@ -94,10 +86,6 @@ class CalcStats
 					start_time = event["time"]
 				end
 				ind = on_field_array.index(event["player_id"])
-				pp 'ANDRE'
-				pp on_field_array
-				pp event
-				pp 'AXTELL'
 				on_field_array[ind] = player_id
 			elsif event_type == "PAUSE_CLOCK"
 				if start_time != -1
@@ -156,16 +144,10 @@ class CalcStats
 
 	def calc_plus_minus_stat(arrs)
 		# Gets all the events
-		video_table_rows = Parse::Query.new("Videos").tap do |q|
-			q.eq('team_id', @team_id)
-			q.value_in('vid_id', @game_ids)
-		end.get
-		events_map = {}
-		video_table_rows.each do |row|
-			events_map[row['vid_id']] = JSON.parse(row['events_json'])
+		all_stats = get_stats_rows_from_games
+		if all_stats.nil?
+			return nil
 		end
-
-		
 		all_combos = Set.new
         solutions = 1
         i = 0
@@ -187,52 +169,48 @@ class CalcStats
         	end
         	i += 1
         end
-
         combo_stat_map = Hash.new
-        @game_ids.each do |game|
-        	# do I need the time array?
-        	# or can I do it without it?
-        	# I just need to know who is on the pitch at any given moment
-        	# which I can do normally, so let's avoid the time array thing because it sucks
-        	events_from_games = events_map[game]
-        	next if events_from_games.nil?
-        	on_field_array = ["a", "b", "c", "d", "e", "f", "g"]
-			start_time = -1
-        	events_from_games.each do |event|
-        		sorted_on_field_array = sort_on_field_array_by_position(on_field_array)
-        		case event['actualAction']
-        		when 'GOAL'
-        			all_combos.each do |combo|
-        				add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, 1, 'GOAL')
-        			end
-        		when 'AWAY_GOAL'
-        			all_combos.each do |combo|
-						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, 1, 'AWAY_GOAL')
-        			end
-        		when 'SUB'
-					if start_time != -1
-						time_to_add = event["youtubeTime"] - start_time
-						all_combos.each do |combo|
-							add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, time_to_add, 'time')
-						end
-						start_time = event["youtubeTime"]
+		cur_game = "notAGame"
+    	on_field_array = ["chaserA", "chaserB", "chaserC", "keeper", "beaterA", "beaterB", "seeker"]
+		start_time = -1
+    	all_stats.each do |event|
+    		if event["vid_id"] != cur_game
+    			on_field_array = ["chaserA", "chaserB", "chaserC", "keeper", "beaterA", "beaterB", "seeker"]
+    		end
+    		cur_game = event['vid_id']
+    		sorted_on_field_array = sort_on_field_array_by_position(on_field_array)
+    		case event['stat_name']
+    		when 'GOAL'
+    			all_combos.each do |combo|
+    				add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, 1, 'GOAL')
+    			end
+    		when 'AWAY_GOAL'
+    			all_combos.each do |combo|
+					add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, 1, 'AWAY_GOAL')
+    			end
+    		when 'SUB'
+				if start_time != -1
+					time_to_add = event["time"] - start_time
+					all_combos.each do |combo|
+						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, time_to_add, 'time')
 					end
-					on_field_array[event["loc"]] = event['playerIn']
-        		when 'PAUSE_CLOCK'
-        			if start_time != -1
-						time_to_add = event["youtubeTime"] - start_time
-						all_combos.each do |combo|
-							add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, time_to_add, 'time')
-						end
-						start_time = -1
+					start_time = event["time"]
+				end
+				ind = on_field_array.index(event['player_id'])
+				on_field_array[ind] = event["player_in_id"]
+    		when 'PAUSE_CLOCK'
+    			if start_time != -1
+					time_to_add = event["time"] - start_time
+					all_combos.each do |combo|
+						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, time_to_add, 'time')
 					end
-        		when 'START_CLOCK'
-        			start_time = event["youtubeTime"]
-        		when 'GAME_START'
-        			start_time = event["youtubeTime"]
-        		end
-
-        	end
+					start_time = -1
+				end
+    		when 'START_CLOCK'
+    			start_time = event["time"]
+    		when 'GAME_START'
+    			start_time = event["time"]
+    		end
         end
         # change out the keys for the player names
         # and sort
@@ -240,7 +218,9 @@ class CalcStats
         combo_stat_map.each { |k, v|
         	new_key = []
         	k.each { |id|
-        		if @players[id].nil?
+        		ind = @players.index(id)
+				on_field_array[ind] = player_id
+        		if @players[ind].nil?
         			new_key << '?'
         		else
         			new_key << @players[id][:first_name] + ' ' + @players[id][:last_name]
