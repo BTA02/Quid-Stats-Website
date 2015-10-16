@@ -67,7 +67,10 @@ get '/calc_stats/:stat_selected' do
 	when 'beater_pairs'
 		pos_arr = [[4,5],[4,5]]
 		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
-	when 'chasers'
+	when 'chasers_pairs'
+		pos_arr = [[0,1,2],[0,1,2]]
+		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
+	when 'chasers_trios'
 		pos_arr = [[0,1,2],[0,1,2],[0,1,2]]
 		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
 	when 'quaffle_trios'

@@ -30,34 +30,33 @@
 		</div>
 
     <!-- The visualization of the stats -->
-    <div class="statsList">
+    <div class="container-fluid statsList" align="center">
       <div class="statsListItem" ng-repeat="statObj in allStats">
         <p>{{statObj.player_id}}</p>
         <p>{{statObj.player_in_id}}</p>
         <p>{{statObj.stat_name}}</p>
         <p>{{statObj.time}}</p>
-        <button ng-click="deleteStat(statObj.objectId)">Delete</button>
+        <button class="btn btn-danger btn-xs" ng-click="deleteStat(statObj.objectId)">Delete</button>
       </div>
     </div>
 
 
-
-
     <!-- Video player object -->
-		<div class="container-fluid" align="center">
-			<youtube-video video-id="selectedVideo" player="videoPlayer"></youtube-video>
+		<div class="container-flud" align="center">
+			<youtube-video video-id="selectedVideo" player="videoPlayer" class="embed-responsive-item" player-width="'65%'"></youtube-video>
 		</div>
 
+    <!-- Buttons under the video -->
     <div class="container-fluid" align="center">
-      <button ng-click="addStat(null, null, 'PAUSE_CLOCK')">Game Stoppage</button>
-      <button ng-click="addStat(null, null, 'START_CLOCK')">Game Restart</button>
-      <button ng-click="addStat(null, null, 'AWAY_GOAL')">Away Goal</button>
-      <button ng-click="addStat(null, null, 'SNITCH_ON_PITCH')">Snitch on pitch</button>
-      <button ng-click="addStat(null, null, 'AWAY_SNITCH_CATCH')">Opponent snitch catch</button>
+      <button class="btn btn-default" ng-click="addStat(null, null, 'PAUSE_CLOCK')">Game Stoppage</button>
+      <button class="btn btn-default" ng-click="addStat(null, null, 'START_CLOCK')">Game (Re)Start</button>
+      <button class="btn btn-default" ng-click="addStat(null, null, 'AWAY_GOAL')">Away Goal</button>
+      <button class="btn btn-default" ng-click="addStat(null, null, 'SNITCH_ON_PITCH')">Snitch on pitch</button>
+      <button class="btn btn-default" ng-click="addStat(null, null, 'AWAY_SNITCH_CATCH')">Opponent snitch catch</button>
     </div>
 
-    <div class="row" margin="auto" align="center">
-      <div class="col-md-1" ng-repeat="onPlayer in onFieldPlayers">
+    <div class="container-fluid" align="center">
+      <div ng-repeat="onPlayer in onFieldPlayers">
         <!-- Players on pitch -->
         <ul class="playerList">
           <!-- The onclick just changes the visibility of the popup div -->

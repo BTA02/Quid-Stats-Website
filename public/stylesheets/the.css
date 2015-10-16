@@ -1,27 +1,13 @@
-.statsList {
-	width: 380px;
-	height: 350px;
-	overflow-x: auto;
-	overflow-y: auto;
+.classList {
+	
+}
+.classListItem {
 	float: left;
-	vertical-align: center;
-}
-
-.statsListItem {
-  display: inline-block;
-  border: 1px solid black;
-  padding: 3px;
-  width: 125px;
-  float: left;
-
-}
-
-.statsListItem p {
-	text-align: center;
 }
 
 .playerList {
 	list-style: none;
+	float: left;
 }
 
 .playerName {

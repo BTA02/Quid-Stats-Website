@@ -197,7 +197,6 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
   		} else {
   			$scope.isPlusMinus = true;
   		}
-  		console.log(response["data"]);
   		$scope.statsDisp = response["data"];
   	});
   }
