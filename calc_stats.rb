@@ -18,8 +18,8 @@ class CalcStats
 			q.eq('team_id', @team_id)
 			q.value_in('vid_id', @game_ids)
 			q.order_by = "vid_id,time"
+			q.limit = 1000
 		end.get
-		# pp all_stats
 		# come back to this when I have multiple games
 		all_stats
 	end
@@ -175,6 +175,7 @@ class CalcStats
 		cur_game = "notAGame"
     	on_field_array = ["chaserA", "chaserB", "chaserC", "keeper", "beaterA", "beaterB", "seeker"]
 		start_time = -1
+
     	all_stats.each do |event|
     		if event["vid_id"] != cur_game
     			on_field_array = ["chaserA", "chaserB", "chaserC", "keeper", "beaterA", "beaterB", "seeker"]
@@ -193,8 +194,10 @@ class CalcStats
     		when 'SUB'
 				if start_time != -1
 					time_to_add = event["time"] - start_time
-					all_combos.each do |combo|
-						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, time_to_add, 'time')
+					if time_to_add > 5
+						all_combos.each do |combo|
+							add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, time_to_add, 'time')
+						end
 					end
 					start_time = event["time"]
 				end
@@ -236,12 +239,10 @@ class CalcStats
         			new_key << @players[player_index]['first_name'] + ' ' + @players[player_index]['last_name']
         		end
         	}
-        	pp 'here'
-        	pp v
-        	pp 'enddd'
         	if v[:time] > 0
         		combo_stat_map_return[new_key] = v
         	end
+        		
         }
         combo_stat_map_return
 	end

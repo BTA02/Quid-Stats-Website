@@ -248,7 +248,7 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
   }
 
   $scope.seekToTime = function(time) {
-    $scope.videoPlayer.seekTo(time);
+    $scope.videoPlayer.seekTo(time-5);
   }
 
 
