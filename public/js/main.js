@@ -134,7 +134,8 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
 
   $interval( function(){
     if ($scope.videoPlayer != null) {
-      $scope.updateOnFieldPlayers(); 
+      $scope.updateOnFieldPlayers();
+      $scope.updateScore();
     }
   }, 500);
 
@@ -147,9 +148,22 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
       if ($scope.subMap.get(i) != null) {
         var arrayOfSubs = $scope.subMap.get(i);
         for (var j = 0; j < arrayOfSubs.length; j++) {
-          console.log("Applying sub " + arrayOfSubs[j]["player_in_id"]);
           applySub(arrayOfSubs[j]);
         }
+      }
+    }
+  }
+
+  $scope.updateScore = function() {
+    var startTime = 0;
+    var endTime = $scope.videoPlayer.getCurrentTime() + 1;
+    $scope.homeScore = 0;
+    for (var i = 0; i < $scope.allStats.length; i++) {
+      if ($scope.allStats[i]["time"] > endTime) {
+        break;
+      }
+      if ($scope.allStats[i]["stat_name"] === "GOAL") {
+        $scope.homeScore += 1;
       }
     }
   }

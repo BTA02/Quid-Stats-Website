@@ -51,9 +51,15 @@
 
 
     <!-- Video player object -->
-		<div class="container-flud" align="center">
-			<youtube-video video-id="selectedVideo" player="videoPlayer" class="embed-responsive-item" player-width="'65%'"></youtube-video>
-		</div>
+    <div class="row">
+      <div class="score col-xs-1">
+        <p>HOME</p>
+        <p ng-model="homeScore">{{homeScore}}</p>
+      </div>
+  		<div class="container-flud col-xs-10" align="center">
+  			<youtube-video video-id="selectedVideo" player="videoPlayer" class="embed-responsive-item" player-width="'65%'"></youtube-video>
+  		</div>
+    </div>
 
     <!-- Buttons under the video -->
     <div class="container-fluid" align="center">
