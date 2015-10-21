@@ -20,12 +20,15 @@
   text-decoration: none;
   color: #fff;
   display: block;
-  transition: .3s background-color;
+}
+
+.nav a:hover{
+  color:#940000;
 }
 
 .nav a.active {
   background-color: #fff;
-  color: #444;
+  color: #940000;
   cursor: default;
 }
  

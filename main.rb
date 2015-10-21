@@ -16,6 +16,7 @@ get '/' do
 	erb :login
 end
 
+# I need to work on getting data from a post request
 get '/signUp' do
 	sign_up_user
 end
@@ -23,6 +24,10 @@ end
 get '/stats' do
 	@teams = get_teams
 	erb :stats
+end
+
+get '/add_team' do
+	erb :add_team
 end
 
 
@@ -92,7 +97,7 @@ get '/help' do
 end
 
 def sign_up_user
-	
+
 end
 
 def get_teams
