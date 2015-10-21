@@ -102,7 +102,11 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
     }
   }
 
-  $interval( function(){ $scope.updateOnFieldPlayers(); }, 500);
+  $interval( function(){
+    if ($scope.videoPlayer != null) {
+      $scope.updateOnFieldPlayers(); 
+    }
+  }, 500);
 
 
   $scope.updateOnFieldPlayers = function() {
@@ -241,6 +245,10 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
     } else {
       $scope.selectedGames.push(id);
     }
+  }
+
+  $scope.seekToTime = function(time) {
+    $scope.videoPlayer.seekTo(time);
   }
 
 

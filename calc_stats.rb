@@ -26,7 +26,7 @@ class CalcStats
 
 	def raw_stats
 		events_from_games = get_stats_rows_from_games()
-		if event_from_games.nil?
+		if events_from_games.nil?
 			return nil
 		end
 		@stats_map = {}
@@ -145,6 +145,7 @@ class CalcStats
 	def calc_plus_minus_stat(arrs)
 		# Gets all the events
 		all_stats = get_stats_rows_from_games
+
 		if all_stats.nil?
 			return nil
 		end
@@ -169,6 +170,7 @@ class CalcStats
         	end
         	i += 1
         end
+
         combo_stat_map = Hash.new
 		cur_game = "notAGame"
     	on_field_array = ["chaserA", "chaserB", "chaserC", "keeper", "beaterA", "beaterB", "seeker"]
@@ -177,12 +179,6 @@ class CalcStats
     		if event["vid_id"] != cur_game
     			on_field_array = ["chaserA", "chaserB", "chaserC", "keeper", "beaterA", "beaterB", "seeker"]
     		end
-    		
-    		pp 'yuup'
-    		pp event
-    		pp on_field_array
-    		pp 'dul'
-
     		cur_game = event['vid_id']
     		sorted_on_field_array = sort_on_field_array_by_position(on_field_array)
     		case event['stat_name']
@@ -218,15 +214,21 @@ class CalcStats
     			start_time = event["time"]
     		end
         end
-        # change out the keys for the player names
-        # and sort
+
+        # this loop takes the combos map, and prepares it
+        # for displaying
         combo_stat_map_return = Hash.new
         combo_stat_map.each { |k, v|
         	new_key = []
+        	# loops through the keys values and puts
+        	# names to each id
         	k.each { |id|
-        		player_index = @players.find_index { |item| 
-						item['objectId'] == id
+        		player_index = @players.find_index { |item| 	
+					item['objectId'] == id
 				}
+				if player_index.nil?
+					next
+				end
 				on_field_array[player_index] = id
         		if @players[player_index].nil?
         			new_key << '?'
@@ -234,7 +236,12 @@ class CalcStats
         			new_key << @players[player_index]['first_name'] + ' ' + @players[player_index]['last_name']
         		end
         	}
-        	combo_stat_map_return[new_key] = v
+        	pp 'here'
+        	pp v
+        	pp 'enddd'
+        	if v[:time] > 0
+        		combo_stat_map_return[new_key] = v
+        	end
         }
         combo_stat_map_return
 	end

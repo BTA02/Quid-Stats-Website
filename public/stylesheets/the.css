@@ -6,9 +6,11 @@
 
 #statsList {
     text-align: center;
-    margin: 0px auto;
-    width: 40%;
-    overflow: scroll;
+    /*margin: 0px auto;*/
+    width: 80%;
+    overflow-x: scroll;
+    white-space: nowrap;
+    padding: 5px
 }
 
 .playerList {

@@ -24,7 +24,7 @@
   				<option value="<%= team['objectId']%>"><%=team['team_name']%></option>
   				<%end%>
   			</select>
-      <!-- Video Selector and allPlayers populator-->
+      <!-- Video Selector and allPlayers populator--> 
 			<select ng-model="vidObj" ng-change="getAllPlayers()" ng-options="game.vid_id+','+game.fall_year as game.description for game in allGames">
 			</select>
 		</div>
@@ -35,7 +35,7 @@
         <p>{{statObj.player_name}}</p>
         <p>{{statObj.player_in_name}}</p>
         <p>{{statObj.stat_name}}</p>
-        <p>{{statObj.time}}</p>
+        <p ng-click="seekToTime(statObj.time)">{{statObj.time}}</p>
         <button class="btn btn-danger btn-xs" ng-click="deleteStat(statObj.objectId)">Delete</button>
       </div>
     </div>
@@ -55,9 +55,9 @@
       <button class="btn btn-default" ng-click="addStat(null, null, 'AWAY_SNITCH_CATCH')">Opponent snitch catch</button>
     </div>
 
-    <div class="container-fluid" align="center">
+    <!-- Players on pitch -->
+    <div class="container-fluid">
       <div ng-repeat="onPlayer in onFieldPlayers">
-        <!-- Players on pitch -->
         <ul class="playerList">
           <!-- The onclick just changes the visibility of the popup div -->
           <a href = "javascript:void(0)" ng-click="startSub(onPlayer.objectId)" onclick = "document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block'">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
