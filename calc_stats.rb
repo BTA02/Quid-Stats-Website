@@ -239,7 +239,10 @@ class CalcStats
         			new_key << @players[player_index]['first_name'] + ' ' + @players[player_index]['last_name']
         		end
         	}
+        	# this is cheating
+        	prettyTime = Time.at(v[:time]).utc.strftime("%M:%S")
         	if v[:time] > 0
+        		# v[:time] = prettyTime
         		combo_stat_map_return[new_key] = v
         	end
         		

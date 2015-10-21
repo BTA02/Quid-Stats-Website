@@ -5,16 +5,25 @@
   	<script src="angular-video/js/anguvideo.js"></script>
   	<script src="https://www.youtube.com/iframe_api"></script>
 		<script src="angular-youtube-embed/src/angular-youtube-embed.js"></script>
-
-
-  	<link rel="stylesheet" type="text/css" href="/stylesheets/the.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/the.css">
+  	<link rel="stylesheet" type="text/css" href="/stylesheets/header.css">
   	<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
   	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" />
-    <title>Takin dem stats</title>
-  	<h1 class='text-center'>Statsio</h1>
+
+    <title>Quidstats</title>
 	</head>
 
 	<body ng-controller="StatsController">
+    <header>
+      <div class="nav">
+        <ul>
+          <li><a href="/record" class="active">Record Stats</a></li>
+          <li><a href="/stats">View Stats</a></li>
+          <li><a href="#">Add Team</a></li>
+          <li><a href="#">Add Video</a></li>
+        </ul>
+      </div>
+    </header>
 
 		<div name="header" class="container-fluid text-center">
       <!-- Team Selector -->

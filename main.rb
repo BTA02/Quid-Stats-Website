@@ -2,6 +2,7 @@ require 'sinatra'
 require 'parse-ruby-client'
 require 'json'
 require 'pp'
+require 'net/http'
 require_relative 'calc_stats'
 require_relative 'raw_stats'
 
@@ -12,6 +13,11 @@ end
 
 get '/' do
 	# login screen needed here
+	erb :login
+end
+
+get '/signUp' do
+	sign_up_user
 end
 
 get '/stats' do
@@ -85,12 +91,17 @@ get '/help' do
 	send_file 'views/help.html'
 end
 
+def sign_up_user
+	
+end
+
 def get_teams
 	Parse::Query.new("Teams").get
 end
 
 # Needs work, look at the first part of the if
 # This should only return "done games", whatever that means
+# that means there is a snitch catch
 
 def get_games_for_team(team_id, all)
 	if !team_id.nil?

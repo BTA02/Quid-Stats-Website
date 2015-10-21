@@ -6,15 +6,25 @@
 	  	<script src="https://www.youtube.com/iframe_api"></script>
 		<script src="angular-youtube-embed/src/angular-youtube-embed.js"></script>
 
-
 	  	<link rel="stylesheet" type="text/css" href="/stylesheets/the.css">
+	  	<link rel="stylesheet" type="text/css" href="/stylesheets/header.css">
 	  	<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 	  	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" />
-	    <title>Viewin' dem stats</title>
-	  	<h1 class='text-center'>Statsio</h1>
+	    <title>Quidstats</title>
 	</head>
 
   <body ng-controller="StatsController">
+  	<header>
+      <div class="nav">
+        <ul>
+          <li><a href="/record">Record Stats</a></li>
+          <li><a href="/stats" class="active">View Stats</a></li>
+          <li><a href="#">Add Team</a></li>
+          <li><a href="#">Add Video</a></li>
+        </ul>
+      </div>
+    </header>
+
   	<div name="header" class="container-fluid text-center">
   		<select name="teamSelect" ng-model="team" ng-change="getDoneGames()">
   			<option value="">Select a team</option>
