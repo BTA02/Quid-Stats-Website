@@ -69,7 +69,10 @@
 		  			<tbody>
 		  				<tr ng-repeat="(key,val) in statsDisp">
 		  					<td>{{key}}</td>
-		  					<td ng-repeat="(key1, val1) in val">{{val1}}</td>
+		  					<td ng-repeat="(key1, val1) in val"> 
+		  						<p ng-if="key1=='time'">{{val1 | time:'ss':'mm:ss'}}</p>
+		  						<p ng-if="key1!='time'">{{val1}}</p>
+	  						</td>
 		  				</tr>
 		  			</tbody>
 		  		</table>
