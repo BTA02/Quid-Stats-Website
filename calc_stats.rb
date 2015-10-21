@@ -21,6 +21,9 @@ class CalcStats
 			q.limit = 1000
 		end.get
 		# come back to this when I have multiple games
+		pp 'length'
+		pp all_stats.length
+		pp 'end l'
 		all_stats
 	end
 
@@ -194,10 +197,8 @@ class CalcStats
     		when 'SUB'
 				if start_time != -1
 					time_to_add = event["time"] - start_time
-					if time_to_add > 5
-						all_combos.each do |combo|
-							add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, time_to_add, 'time')
-						end
+					all_combos.each do |combo|
+						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, time_to_add, 'time')
 					end
 					start_time = event["time"]
 				end

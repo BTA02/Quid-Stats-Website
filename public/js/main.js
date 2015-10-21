@@ -1,4 +1,34 @@
-var statsApp = angular.module('statsApp', ['youtube-embed']);
+var statsApp = angular.module('statsApp', ['youtube-embed'])
+.filter('time', function() {
+    var conversions = {
+      'ss': angular.identity,
+      'mm': function(value) { return value * 60; },
+      'hh': function(value) { return value * 3600; }
+    };
+    
+    var padding = function(value, length) {
+      var zeroes = length - ('' + (value)).length,
+          pad = '';
+      while(zeroes-- > 0) pad += '0';
+      return pad + value;
+    };
+    
+    return function(value, unit, format, isPadded) {
+      var totalSeconds = conversions[unit || 'ss'](value),
+          hh = Math.floor(totalSeconds / 3600),
+          // mm = Math.floor((totalSeconds % 3600) / 60),
+          mm = Math.floor(totalSeconds / 60),
+          ss = totalSeconds % 60;
+      
+      format = format || 'hh:mm:ss';
+      isPadded = angular.isDefined(isPadded)? isPadded: true;
+      hh = isPadded? padding(hh, 2): hh;
+      mm = isPadded? padding(mm, 2): mm;
+      ss = isPadded? padding(ss, 2): ss;
+      
+      return format.replace(/hh/, hh).replace(/mm/, mm).replace(/ss/, ss);
+    };
+  });
 
 var page
 
@@ -154,7 +184,7 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
 
     $http.get("/addStat/" + $scope.selectedVideo 
       + "/" + $scope.team 
-      + "/null"  //meant to be author id here, will get eventually
+      + "/" + "nwlMkrbCJ9"  //meant to be author id here, will get eventually
       + "/" + $scope.year
       + "/" + playerId 
       + "/" + stat 
@@ -250,6 +280,7 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
   $scope.seekToTime = function(time) {
     $scope.videoPlayer.seekTo(time-5);
   }
+
 }]);
 
 

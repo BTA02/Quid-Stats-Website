@@ -153,6 +153,7 @@ def get_all_stats_from_game(vid, team, author)
 		q.eq("vid_id", vid)
 		q.eq("team_id", team)
 		q.eq("author_id", author)
+		q.limit = 1000
 		q.order_by = "time"
 	end.get
 	resp.to_json

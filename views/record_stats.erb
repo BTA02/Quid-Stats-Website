@@ -44,7 +44,7 @@
         <p>{{statObj.player_name}}</p>
         <p>{{statObj.player_in_name}}</p>
         <p>{{statObj.stat_name}}</p>
-        <p ng-click="seekToTime(statObj.time)">{{statObj.time}}</p>
+        <p ng-click="seekToTime(statObj.time)">{{statObj.time | time:'ss':'mm:ss'}}</p>
         <button class="btn btn-danger btn-xs" ng-click="deleteStat(statObj.objectId)">Delete</button>
       </div>
     </div>
@@ -66,7 +66,7 @@
 
     <!-- Players on pitch -->
     <div class="container-fluid">
-      <div ng-repeat="onPlayer in onFieldPlayers">
+      <div ng-repeat="onPlayer in onFieldPlayers track by $index">
         <ul class="playerList">
           <!-- The onclick just changes the visibility of the popup div -->
           <a href = "javascript:void(0)" ng-click="startSub(onPlayer.objectId)" onclick = "document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block'">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
