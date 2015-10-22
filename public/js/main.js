@@ -169,6 +169,12 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
       if ($scope.allStats[i]["stat_name"] === "AWAY_GOAL") {
         $scope.awayScore += 1;
       }
+      if ($scope.allStats[i]["stat_name"] === "SNITCH_CATCH") {
+        $scope.awayScore += 3;
+      }
+      if ($scope.allStats[i]["stat_name"] === "AWAY_SNITCH_CATCH") {
+        $scope.awayScore += 3;
+      }
     }
   }
 
@@ -273,8 +279,8 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
   	// var ids = $scope.selectedGames.map(function(i){
   	// 	return i['id'];
   	// });
-
-  	$http.get("/calc_stats/" + $scope.statSelected + "?team_id=" + $scope.team + "&ids=" + ids).then(function(response) {
+    $scope.per = 0;
+  	$http.get("/calc_stats/" + $scope.statSelected + "/" + $scope.per + "?team_id=" + $scope.team + "&ids=" + ids).then(function(response) {
   		if ($scope.statSelected == "raw_stats") {
   			$scope.isPlusMinus = false;
   			// sort the data?

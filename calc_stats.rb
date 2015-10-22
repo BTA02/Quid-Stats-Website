@@ -6,11 +6,14 @@ class CalcStats
 
 	attr_accessor :stats_map
 
-	def initialize(team_id, game_ids)
+	def initialize(team_id, game_ids, per)
 		@team_id = team_id
 		@game_ids = game_ids
 		@players = get_players_from_team
-		# @name_mappings = get_name_mappings
+		# per = 0 - nothing
+		# per = 1 - per minute
+		# per = 2 - per game
+		@per = per
 	end
 
 	def get_stats_rows_from_games()
@@ -116,7 +119,18 @@ class CalcStats
 			end				
 		end
 		# sort it here
+		# pp 'axtell2'
+		# pp @per
+		# if @per == 0
+		# 	pp 'hereAxtell'
+		# 	return @stats_map
+		# elsif @per == 1
+		# 	@stats_map.each do |player|
+
+		# 	end
+		# end
 		@stats_map
+
 	end
 
 	def add_plus_minus_val(on_field_array, val)
@@ -242,7 +256,7 @@ class CalcStats
         	}
         	# this is cheating
         	prettyTime = Time.at(v[:time]).utc.strftime("%M:%S")
-        	if v[:time] > 0
+        	if v[:time] > 5
         		# v[:time] = prettyTime
         		combo_stat_map_return[new_key] = v
         	end

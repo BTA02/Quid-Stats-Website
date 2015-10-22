@@ -20,7 +20,7 @@
           <li><a href="/record">Record Stats</a></li>
           <li><a href="/stats" class="active">View Stats</a></li>
           <li><a href="/add_team">Add Team</a></li>
-          <li><a href="#">Add Video</a></li>
+          <li><a href="/add_video">Add Video</a></li>
         </ul>
       </div>
     </header>
@@ -38,11 +38,15 @@
   			<option value="beater_pairs">Beater Pairs</option>
 			<option value="chasers_pairs">Chaser Pairs</option>
 			<option value="chasers_trios">Chaser Lines</option>
-			<option value="quaffle_trios">Quaffle Trios</option>
+			<option value="quaffle_players">Quaffle Players</option>
 			<!-- <option value="seeker_performance">Seeker Performance</option> -->
 		</select>
 
 		<button class="btn btn-default" ng-click="calcStats()">Go</button>
+	</div>
+
+	<div name="modifiers" class="container-fluid">
+
 	</div>
 
 	<!-- Games selector -->
@@ -56,7 +60,6 @@
 				</div>
 			</div>
 	  	
-
 			<div class="col-lg-10">
 		  		<table ng-show="isPlusMinus" class="table" ng-model="statsDisp">
 		  			<thead>
@@ -69,7 +72,7 @@
 		  			<tbody>
 		  				<tr ng-repeat="(key,val) in statsDisp">
 		  					<td>{{key}}</td>
-		  					<td ng-repeat="(key1, val1) in val"> 
+		  					<td ng-repeat="(key1, val1) in val">
 		  						<p ng-if="key1=='time'">{{val1 | time:'ss':'mm:ss'}}</p>
 		  						<p ng-if="key1!='time'">{{val1}}</p>
 	  						</td>
