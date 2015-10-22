@@ -12,7 +12,6 @@ configure do
 end
 
 get '/' do
-	# login screen needed here
 	erb :login
 end
 
@@ -34,6 +33,7 @@ get '/record' do
 end
 
 get '/add_video' do
+	@teams = get_teams
 	erb :add_video
 end
 

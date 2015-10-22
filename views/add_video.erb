@@ -25,11 +25,42 @@
 		        <li><a href="/add_video" class="active">Add Video</a></li>
 		      </ul>
 		    </div>
-		  </header>
+	  	</header>
 
-	<div class="container-fluid" align="center">
-  		<img src="/images/youtube_link_helper.jpg">
-  	</div>
+	  	<div class="container-fluid" align="center">
+		  	<h2>To add a video, first, select a team. If your team isn't there, go to the "Add Team" tab.</h2>
+
+		  	<select name="teamSelect" ng-model="teamVidToAdd" ng-change="getAllGames()">
+				<% @teams.each do |team| %>
+				<option value="<%= team['objectId']%>"><%=team['team_name']%></option>
+				<%end%>
+			</select>
+		</div>
+
+		<div ng-if="teamVidToAdd != null" class="container-fluid" name="postTeamSelection">
+
+			<div  class="container-fluid" align="center">
+				<h2>Then, go to the video you wish to add on youtube. There, take the video id, as shown, and paste it in to the box</h2>
+		  		<img src="/images/youtube_link_helper.jpg"/>
+		  		<br>
+		  		<br>
+		  		<form>
+		  			<input ng-model="vidPreview" type="text"><br>
+		  		</form>
+		  	</div>
+
+		  	<div class="container-fluid" align="center">
+		  		<h2 ng-if="vidPreview != null"> Is this your desired video?</h2>
+		  		<youtube-video video-id="vidPreview" player="videoPlayer" class="embed-responsive-item" player-width="'65%'"></youtube-video>
+		  		<h2 ng-if="vidPreview != null && videoExists()">This video already exists in the database for this team</h2>
+
+
+		  		<h2 ng-if="vidPreview != null && !videoExists()"> Then hit the "Add" button, and you're good to go </h2>
+
+		  		<button ng-if="vidPreview != null && !videoExists()" class="btn btn-lg" ng-click="addVideo()">Add</button>
+		  	</div>
+
+	  	</div>
 
 
 	</body>

@@ -28,11 +28,11 @@
 		<div name="header" class="container-fluid text-center">
       <!-- Team Selector -->
 			<select name="teamSelect" ng-model="team" ng-change="getAllGames()">
-  				<option value="">Select a team</option>
-  				<% @teams.each do |team| %>
-  				<option value="<%= team['objectId']%>"><%=team['team_name']%></option>
-  				<%end%>
-  			</select>
+				<option value="">Select a team</option>
+				<% @teams.each do |team| %>
+				<option value="<%= team['objectId']%>"><%=team['team_name']%></option>
+				<%end%>
+			</select>
       <!-- Video Selector and allPlayers populator--> 
 			<select ng-model="vidObj" ng-change="getAllPlayers()" ng-options="game.vid_id+','+game.fall_year as game.description for game in allGames">
 			</select>
