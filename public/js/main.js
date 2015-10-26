@@ -305,26 +305,14 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
     $scope.videoPlayer.seekTo(time-5);
   }
 
-  $scope.videoExists = function() {
-    alert($scope.allGames.length);
-    if ($scope.allGames.indexOf($scope.vidPreview) > -1) {
-      return true;
-    } else {
-      return false;
-    }
-
-  }
-
   $scope.addVideo = function() {
+    alert("what the hell");
     $scope.vidPreview;
     $scope.teamVidToAdd;
+  }
 
-    // check if the video exists
-    // if it does, throw the alert to the user
-    // that's better, let's get all the ids, 
-    // and check dynamically if that video already exists
-    // so, how do I check if an input exists in an array already?
-
+  function addVideo() {
+    alert("hfdjsl");
   }
 
 }]);

@@ -34,7 +34,7 @@ end
 
 get '/add_video' do
 	@teams = get_teams
-	erb :add_video
+	erb :add_video_dumb
 end
 
 post '/sign_up' do
