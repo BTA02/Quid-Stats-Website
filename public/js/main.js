@@ -132,6 +132,27 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
     }
   }
 
+  function removeSubFromMap(subStat) {
+    // Didn't quite work. The index was -18
+    var arrayAtTime = $scope.subMap.get(subStat["time"]);
+    console.log(arrayAtTime);
+    if (arrayAtTime != null) {
+      var index = -1;
+      for(var i = 0; i < arrayAtTime.length; i++) {
+        if (arrayAtTime[i]["objectId"] === subStat["objectId"]) {
+          index = i;
+          break;
+        }
+      }
+      console.log(index);
+      //finds the object index
+      if (index > -1) {
+        arrayAtTime.splice(index, 1);
+        console.log(arrayAtTime);
+      }
+    }
+  }
+
   $interval( function(){
     if ($scope.videoPlayer != null) {
       $scope.updateOnFieldPlayers();
@@ -179,7 +200,6 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
   }
 
   function applySub(sub) {
-    // So I think I want to apply this to the initValues
     var index = -1;
     for (var i = 0; i < $scope.onFieldPlayers.length; i++) {
       if ($scope.onFieldPlayers[i].objectId == sub["player_id"]) {
@@ -243,13 +263,15 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
   }
 
   $scope.deleteStat = function(objId) {
-    $http.get("/deleteStat/" +objId).then(function(response) {
+    $http.get("/deleteStat/" + objId).then(function(response) {
       // do nothing for now
       //remove locally
+      console.log(response["data"]);
       var index = findStatIndex(response["data"]);
       if (index !== -1) {
         $scope.allStats.splice(index, 1);
       }
+      removeSubFromMap(response["data"]);
     });
   }
 
@@ -309,10 +331,6 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
     alert("what the hell");
     $scope.vidPreview;
     $scope.teamVidToAdd;
-  }
-
-  function addVideo() {
-    alert("hfdjsl");
   }
 
 }]);
