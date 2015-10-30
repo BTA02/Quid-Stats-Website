@@ -67,6 +67,12 @@ get '/deleteStat/:object_id' do
 	delete_stat(params[:object_id])
 end
 
+get '/addVideo/:video_id/:team_id/:fall_year/:description' do
+	pp 'found'
+	pp 'here'
+	add_video(params)
+end
+
 
 
 # This also takes the team_id and game_ids
@@ -193,6 +199,21 @@ def delete_stat(id)
 
 end	
 
+def add_video(params)
+	video = params['video_id']
+	team = params['team_id']
+	year = params['fall_year']
+	description = params['description']
+
+	new_video = Parse::Object.new("Videos")
+	new_video['team_id'] = team
+	new_video['vid_id'] = video 
+	new_video['fall_year'] = year
+	new_video['description'] = description
+
+	result = new_video.save
+	result.to_json
+end
 
 
 

@@ -1,0 +1,6 @@
+.videoBoard > div {
+	display: inline-block;
+}
+.videoBoard {
+	white-space: nowrap;
+}

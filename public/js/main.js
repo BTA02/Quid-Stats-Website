@@ -48,6 +48,8 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
     $scope.allGames = [];
     $http.get("/allGames/" + $scope.team).then(function(response) {
       $scope.allGames = response["data"];
+      console.log("all games 1");
+      console.log($scope.allGames);
     });
   }
 
@@ -72,6 +74,7 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
     setOnFieldToBlank();
     $scope.subMap = new Map();
     $scope.allStats = [];
+    // $scope.gameTime = 0;
     $http.get("/allStats/" + $scope.selectedVideo + "/" + $scope.team + "/" + "nwlMkrbCJ9").then(function(response) {
       // this returns all the events from a single game
       $scope.allStats = response["data"];
@@ -156,7 +159,7 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
   $interval( function(){
     if ($scope.videoPlayer != null) {
       $scope.updateOnFieldPlayers();
-      $scope.updateScore();
+      $scope.updateScoreboard();
     }
   }, 500);
 
@@ -175,11 +178,15 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
     }
   }
 
-  $scope.updateScore = function() {
+  $scope.updateScoreboard = function() {
     var startTime = 0;
     var endTime = $scope.videoPlayer.getCurrentTime() + 1;
+    var pausedTime = 0;
+    var pauseStart = 0;
+    var pauseEnd = 0;
     $scope.homeScore = 0;
     $scope.awayScore = 0;
+    // $scope.gameTime = $scope.videoPlayer.getCurrentTime();
     for (var i = 0; i < $scope.allStats.length; i++) {
       if ($scope.allStats[i]["time"] > endTime) {
         break;
@@ -196,7 +203,19 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
       if ($scope.allStats[i]["stat_name"] === "AWAY_SNITCH_CATCH") {
         $scope.awayScore += 3;
       }
+      // if ($scope.allStats[i]["stat_name"] === "PAUSE_CLOCK") {
+      //   pauseStart = $scope.allStats[i]["time"];
+      // }
+      // if ($scope.allStats[i]["stat_name"] === "START_CLOCK") {
+      //   pauseEnd = $scope.allStats[i]["time"];
+      //   pausedTime += (pauseEnd - pauseStart);
+      //   pauseStart = 0;
+      //   pauseEnd = 0;
+      //   $scope.gameTime = endTime - 1 - pausedTime;
+      // }
+
     }
+    
   }
 
   function applySub(sub) {
@@ -328,10 +347,42 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
   }
 
   $scope.addVideo = function() {
-    alert("what the hell");
     $scope.vidPreview;
-    $scope.teamVidToAdd;
+    $scope.fallYear;
+    $scope.vidDesc;
+
+    // alert($scope.vidPreview + ' ' + $scope.teamVidToAdd + ' ' + $scope.fallYear);
+    if ($scope.team == null) {
+      alert("Please select a team");
+    }
+    else if ($scope.fallYear == null) {
+      alert("Please select a fall year");
+    }
+    else if ($scope.vidPreview == null) {
+      alert("Please enter a video id");
+    } else if ($scope.vidDesc == null) {
+      alert("Please add a description");
+    } else if (search($scope.vidPreview, $scope.allGames)) {
+      alert("This video has already been entered for this team");
+    } else {
+      // if (exists in $scope.allGames)
+      // 
+      $http.get("/addVideo/" + $scope.vidPreview + "/" + $scope.team + "/" + $scope.fallYear + "/" + $scope.vidDesc).then(function(response) {
+        console.log(response["data"]);
+      });
+    }
+    
   }
+
+  function search(nameKey, myArray){
+    console.log(myArray);
+    for (var i=0; i < myArray.length; i++) {
+      if (myArray[i].vid_id === nameKey) {
+          return true;
+      }
+    }
+    return false;
+}
 
 }]);
 
