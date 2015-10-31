@@ -45,8 +45,8 @@
 		<button class="btn btn-default" ng-click="calcStats()">Go</button>
 	</div>
 
-	<div name="modifiers" class="container-fluid">
-
+	<div name="modifiers" class="container-fluid" align="center">
+		<input type="checkbox" ng-model="perMinute" ng-true-value="1" ng-false-value="0">Per Minute</input>
 	</div>
 
 	<!-- Games selector -->
@@ -98,6 +98,7 @@
 		            <th>PLUS</th>
 		            <th>MINUS</th>
 		            <th>NET</th>
+		            <th>RATIO</th>
 		            <th>TIME</th>
 		            <!-- <th>GAIN CONTROL</th> -->
 		            <!-- <th>LOSE CONTROL</th> -->

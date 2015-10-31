@@ -76,7 +76,7 @@
 
     <!-- Players on pitch -->
     <div class="container-fluid">
-      <div ng-repeat="onPlayer in onFieldPlayers track by $index">
+      <div class="playerListHolder" ng-repeat="onPlayer in onFieldPlayers track by $index">
         <ul class="playerList">
           <!-- The onclick just changes the visibility of the popup div -->
           <a href = "javascript:void(0)" ng-click="startSub(onPlayer.objectId)" onclick = "document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block'">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>

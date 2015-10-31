@@ -321,6 +321,7 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
   	// 	return i['id'];
   	// });
     $scope.per = 0;
+    $scope.per += $scope.perMinute;
   	$http.get("/calc_stats/" + $scope.statSelected + "/" + $scope.per + "?team_id=" + $scope.team + "&ids=" + ids).then(function(response) {
   		if ($scope.statSelected == "raw_stats") {
   			$scope.isPlusMinus = false;

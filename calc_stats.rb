@@ -13,7 +13,8 @@ class CalcStats
 		# per = 0 - nothing
 		# per = 1 - per minute
 		# per = 2 - per game
-		@per = per
+		# per = 3 - per minute per game
+		@per = per.to_i
 	end
 
 	def get_stats_rows_from_games()
@@ -24,9 +25,6 @@ class CalcStats
 			q.limit = 1000
 		end.get
 		# come back to this when I have multiple games
-		pp 'length'
-		pp all_stats.length
-		pp 'end l'
 		all_stats
 	end
 
@@ -76,6 +74,7 @@ class CalcStats
 						"plusses" => 0,
 						"minuses" => 0,
 						"net" => 0,
+						"ratio" => 0,
 						"time" => 0
 						# "gain_control" => 0,
 						# "lose_control" => 0
@@ -118,17 +117,26 @@ class CalcStats
 				@stats_map[player_id][event["stat_name"].downcase] += 1
 			end				
 		end
-		# sort it here
-		# pp 'axtell2'
-		# pp @per
-		# if @per == 0
-		# 	pp 'hereAxtell'
-		# 	return @stats_map
-		# elsif @per == 1
-		# 	@stats_map.each do |player|
-
-		# 	end
-		# end
+		if @per == 0
+			return @stats_map
+		elsif @per == 1
+			@stats_map.update(@stats_map) { |key, val|
+				val.update(val) { |key1, val1|
+					if key1 == 'first_name'
+						val1 = val['first_name']
+					elsif key1 == 'last_name'
+						val1 = val['last_name']
+					elsif key1 == 'time'
+						val1 = val['time']
+					elsif key1 == 'ratio'
+						val1 = val['ratio']
+					elsif val['time'] != 0
+						val1 = val1.to_f / (val['time'].to_f / 60.0)
+						val1.round(2)
+					end
+				}
+			}
+		end
 		@stats_map
 
 	end
@@ -145,6 +153,17 @@ class CalcStats
 					@stats_map[player]["plusses"] += 1
 					@stats_map[player]["net"] += 1
 				end
+				plus = @stats_map[player]['plusses']
+				minus = @stats_map[player]['minuses']
+				ratio = 0
+				if minus != 0
+					ratio = plus.to_f/minus.to_f
+				else
+					ratio = plus
+				end
+				pp ratio.round(2)
+				# ratio.round(2)
+				# @stats_map[player]['ratio'] = ratio + ':' + '1'
 			end
 			i+=1
 		end	
@@ -254,7 +273,21 @@ class CalcStats
         			new_key << @players[player_index]['first_name'] + ' ' + @players[player_index]['last_name']
         		end
         	}
+        	# loop through the vals here, modding each one
+        	if @per == 1 
+	        	v.update(v) { |key1, val1|
+	        		if key1 != :time && v[:time] != 0
+	        			val1 = val1.to_f / (v[:time].to_f / 60.0)
+						val1.round(2)
+					else
+						val1 = v[key1]
+					end
+
+	        	}
+	        end
         	# this is cheating
+        	# why?
+        	# im betting because i'm removing pairs with <5 seconds together
         	prettyTime = Time.at(v[:time]).utc.strftime("%M:%S")
         	if v[:time] > 5
         		# v[:time] = prettyTime
