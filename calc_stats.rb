@@ -74,7 +74,7 @@ class CalcStats
 						"plusses" => 0,
 						"minuses" => 0,
 						"net" => 0,
-						"ratio" => 0,
+						"ratio" =>'',
 						"time" => 0
 						# "gain_control" => 0,
 						# "lose_control" => 0
@@ -163,7 +163,7 @@ class CalcStats
 				end
 				pp ratio.round(2)
 				# ratio.round(2)
-				# @stats_map[player]['ratio'] = ratio + ':' + '1'
+				@stats_map[player]['ratio'] = ratio.round(2).to_s + ':' + '1'
 			end
 			i+=1
 		end	
