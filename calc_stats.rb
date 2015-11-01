@@ -6,10 +6,11 @@ class CalcStats
 
 	attr_accessor :stats_map
 
-	def initialize(team_id, game_ids, per)
+	def initialize(team_id, game_ids, author_id, per)
 		@team_id = team_id
 		@game_ids = game_ids
 		@players = get_players_from_team
+		@author_id = author_id
 		# per = 0 - nothing
 		# per = 1 - per minute
 		# per = 2 - per game
@@ -20,11 +21,12 @@ class CalcStats
 	def get_stats_rows_from_games()
 		all_stats = Parse::Query.new("Stats").tap do |q|
 			q.eq('team_id', @team_id)
+			q.eq('author_id', @author_id)
 			q.value_in('vid_id', @game_ids)
 			q.order_by = "vid_id,time"
 			q.limit = 1000
 		end.get
-		# come back to this when I have multiple games
+		# come back to this when I have too many games
 		all_stats
 	end
 
@@ -161,8 +163,6 @@ class CalcStats
 				else
 					ratio = plus
 				end
-				pp ratio.round(2)
-				# ratio.round(2)
 				@stats_map[player]['ratio'] = ratio.round(2).to_s + ':' + '1'
 			end
 			i+=1

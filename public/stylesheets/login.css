@@ -1,0 +1,10 @@
+.container {
+	display: flex;
+}
+.login {
+	flex-grow: 1;
+}
+
+.welcome {
+	width: 200px;
+}

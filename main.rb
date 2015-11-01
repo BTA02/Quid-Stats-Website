@@ -17,7 +17,7 @@ end
 
 get '/stats' do
 	@teams = get_teams
-	erb :stats
+	erb :view_stats
 end
 
 get '/add_team' do
@@ -39,8 +39,11 @@ end
 
 post '/sign_up' do
 	sign_up_user(params)
-	@teams = get_teams
-	erb :stats
+	erb :login
+end
+
+post '/log_in' do
+	log_in_user(params)
 end
 
 get '/doneGames/:team_id' do
@@ -56,7 +59,7 @@ get '/allPlayers/:team_id/:fall_year' do
 end
 
 get '/allStats/:vid_id/:team_id/:author_id' do
-	get_all_stats_from_game(params[:vid_id], params[:team_id], params[:author_id]);
+	get_all_stats_from_game(params[:vid_id], params[:team_id], session[:authorId]);
 end
 
 get '/addStat/:vid_id/:team_id/:author_id/:fall_year/:player_id/:stat_name/:time/:player_in_id' do
@@ -68,8 +71,6 @@ get '/deleteStat/:object_id' do
 end
 
 get '/addVideo/:video_id/:team_id/:fall_year/:description' do
-	pp 'found'
-	pp 'here'
 	add_video(params)
 end
 
@@ -80,7 +81,7 @@ get '/calc_stats/:stat_selected/:per' do
 	stat_selected = params[:stat_selected]
 	team_id = params[:team_id]
 	game_ids = params[:ids].split(",")
-	calc_stats = CalcStats.new(team_id, game_ids, params[:per])
+	calc_stats = CalcStats.new(team_id, game_ids, session[:authorId], params[:per])
 	case stat_selected
 	when 'raw_stats'
 		raw_stats_map_json = calc_stats.raw_stats.to_json
@@ -110,9 +111,21 @@ def sign_up_user(params)
 	user = Parse::Object.new("_User")
 	user[:username] = params["email"].to_s
 	user[:password] = params["pass1"].to_s
-	user.save.to_json
+	ret_val = user.save
+	session[:sessionToken] = ret_val["sessionToken"]
+	session[:authorId] = ret_val["objectId"]
+	ret_val.to_json
 	# do need handling for bad returns
 end
+
+def log_in_user(params)
+	username = params["email"].to_s
+	password = params["password"].to_s
+	user = Parse::User.authenticate(username, password)
+	session[:sessionToken] = ret_val["sessionToken"]
+	session[:authorId] = ret_val["objectId"]
+	user.to_json
+end 
 
 def get_teams
 	Parse::Query.new("Teams").get

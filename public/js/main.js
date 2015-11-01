@@ -383,7 +383,7 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
       }
     }
     return false;
-}
+  }
 
 }]);
 
