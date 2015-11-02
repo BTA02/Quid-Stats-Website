@@ -3,10 +3,7 @@ var statsApp = angular.module('statsApp', [])
 var page
 
 statsApp.controller('StatsController', ['$scope', '$http', function($scope, $http) {
-  $scope.signUpUser = function() {
-
-  }
-
+  
   $scope.checkPasswords = function() {
   	if ($scope.pass1 == null) {
   		return false;

@@ -21,22 +21,25 @@
 		<header>
 		    <div class="nav">
 		      <ul>
+		      	<li class="username"><a href="/"><%=getUser()%> </a></li>
 		        <li><a href="/record">Record Stats</a></li>
 		        <li><a href="/stats">View Stats</a></li>
 		        <li><a href="/add_team">Add Team</a></li>
 		        <li><a href="/add_video">Add Video</a></li>
 		      </ul>
 		    </div>
-		  </header>
+	  	</header>
 
   		<div class="container">
 		  	<div class="welcome">
 		  		<h3>Welcome to QuidStats</h3>
-		  		<p>The primary goal of this website is to provide a tool for taking statistics on quidditch matches. With that said, this is also a tool to help generate more public quidditch film. All team rosters and videos will be public. Any user can login, select any team, and watch any game that has been submitted. Users can also submit videos of any team. However, all stats will be private to a user. I understand teams like to keep their film private, but hopefully teams find that getting stats actually makes posting their video a net win for them. Videos must be public YouTube videos to work on this site. Also, don't try and cheat the system. I'll find it and either just delete the stats, make them public, or subtlety alter the rest of your teams stats.</p>
+		  		<p>The primary goal of this website is to provide a tool for taking statistics on quidditch matches. With that said, this is also a tool to help generate more public quidditch film. All team rosters and videos will be public. Any user can login, select any team, and watch any game that has been submitted. Users can also submit videos of any team. However, all stats will be private to a user. I understand teams like to keep their film private, but hopefully teams find that getting stats actually makes posting their video a net win for them. Videos must be public YouTube videos to work on this site. Don't try and cheat the system.</p>
 				
 				<p>Also, currently, there isn't a way to share stats with other users, so I suggest making an account for your entire organization.</p>
 		  	</div>
+	  	</div>
 		<!-- login form -->
+		<div>
 			<div class="login">
 				<div class="container-fluid form" align="center">
 					<h1>Login</h1>

@@ -11,6 +11,16 @@ configure do
 	Parse.init :application_id => ENV["PARSE_APP_ID"], :master_key => ENV["PARSE_API_KEY"]
 end
 
+helpers do
+  def getUser()
+  	if !session[:username].nil?
+    	"<p>"+session[:username]+"</p>"
+    else
+    	"<p>Login</p>"
+    end
+  end
+end
+
 get '/' do
 	erb :login
 end
@@ -44,6 +54,7 @@ end
 
 post '/log_in' do
 	log_in_user(params)
+	erb :login
 end
 
 get '/doneGames/:team_id' do
@@ -114,16 +125,17 @@ def sign_up_user(params)
 	ret_val = user.save
 	session[:sessionToken] = ret_val["sessionToken"]
 	session[:authorId] = ret_val["objectId"]
+	session[:username] = ret_val["username"]
 	ret_val.to_json
-	# do need handling for bad returns
 end
 
 def log_in_user(params)
 	username = params["email"].to_s
 	password = params["password"].to_s
 	user = Parse::User.authenticate(username, password)
-	session[:sessionToken] = ret_val["sessionToken"]
-	session[:authorId] = ret_val["objectId"]
+	session[:sessionToken] = user["sessionToken"]
+	session[:authorId] = user["objectId"]
+	session[:username] = user["username"]
 	user.to_json
 end 
 
@@ -131,16 +143,40 @@ def get_teams
 	Parse::Query.new("Teams").get
 end
 
-# Needs work, look at the first part of the if
-# This should only return "done games", whatever that means
-# that means there is a snitch catch
 
+# Updated to new backend
+# Needs tons of work
 def get_games_for_team(team_id, all)
 	if !team_id.nil?
 		if !all
-			resp = Parse::Query.new("Videos").tap do |q|
+			# done games
+			# refactor this one day
+			vids = Parse::Query.new("Videos").tap do |q|
 				q.eq("team_id", team_id)
 			end.get
+			ids = []
+			vids.each do |e|
+				ids.push(e['vid_id'])
+			end
+			catch_names = ['SNITCH_CATCH', 'AWAY_SNITCH_CATCH']
+			# get all games with a snitch catch, by row in stat table
+			done_games = Parse::Query.new("Stats").tap do |q|
+				q.eq("team_id", team_id)
+				q.value_in("vid_id", ids)
+				q.eq("author_id", session[:authorId])
+				q.value_in("stat_name", catch_names)
+			end.get
+			resp = []
+			# add all videos found in both sets (by id) to a var called resp
+			vids.each do |vid|
+				id_of_game = vid['vid_id']
+				done_games.each do |done_game|
+					if done_game['vid_id'] == id_of_game
+						resp.push(vid)
+						break
+					end
+				end
+			end
 		else
 			resp = Parse::Query.new("Videos").tap do |q|
 				q.eq("team_id", team_id)

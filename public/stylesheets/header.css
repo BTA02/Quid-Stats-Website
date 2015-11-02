@@ -9,11 +9,15 @@
   padding: 0;
   margin: 0;
 }
+
 .nav li {
-  font-size: 1.2em;
-  line-height: 40px;
+  width: 120px;
+  border-bottom: none;
   height: 40px;
-  border-bottom: 1px solid #888;
+  line-height: 40px;
+  font-size: 1.2em;
+  display: inline-block;
+  margin-right: -4px;
 }
  
 .nav a {
@@ -31,18 +35,8 @@
   color: #940000;
   cursor: default;
 }
- 
-@media screen and (min-width: 600px) {
-  .nav li {
-    width: 120px;
-    border-bottom: none;
-    height: 50px;
-    line-height: 50px;
-    font-size: 1.4em;
-  }
-  
-  .nav li {
-    display: inline-block;
-    margin-right: -4px;
-  }
+
+.username {
+  float: left;
+  padding-left: 5px;
 }
