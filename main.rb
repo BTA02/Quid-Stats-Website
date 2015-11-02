@@ -19,10 +19,41 @@ helpers do
     	"<p>Login</p>"
     end
   end
+  def loggedIn()
+  	if !session[:username].nil?
+  		return true
+  	else
+  		return false
+  	end
+  end
 end
 
 get '/' do
-	erb :login
+	pp 'logged'
+	pp loggedIn()
+	if loggedIn()
+		@teams = get_teams
+		erb :logged_in
+	else
+		pp 'serving'
+		erb :login
+	end
+end
+
+post '/sign_up' do
+	sign_up_user(params)
+	redirect '/'
+end
+
+post '/log_in' do
+	log_in_user(params)
+	redirect '/stats'
+end
+
+get '/log_out' do
+	session.clear
+	pp 'redirecting'
+	redirect '/'
 end
 
 get '/stats' do
@@ -47,16 +78,6 @@ get '/add_video' do
 	erb :add_video_dumb
 end
 
-post '/sign_up' do
-	sign_up_user(params)
-	erb :login
-end
-
-post '/log_in' do
-	log_in_user(params)
-	erb :login
-end
-
 get '/doneGames/:team_id' do
 	get_games_for_team(params[:team_id], false).sort_by{|cat| cat[:description]}.to_json
 end
@@ -73,8 +94,8 @@ get '/allStats/:vid_id/:team_id/:author_id' do
 	get_all_stats_from_game(params[:vid_id], params[:team_id], session[:authorId]);
 end
 
-get '/addStat/:vid_id/:team_id/:author_id/:fall_year/:player_id/:stat_name/:time/:player_in_id' do
-	add_stat(params)
+get '/addStat/:vid_id/:team_id/:fall_year/:player_id/:stat_name/:time/:player_in_id' do
+	add_stat(params, session[:authorId])
 end
 
 get '/deleteStat/:object_id' do
@@ -223,11 +244,11 @@ def get_all_stats_from_game(vid, team, author)
 end
 
 # Updated to new backend
-def add_stat(params)
+def add_stat(params, author_id)
 	new_stat = Parse::Object.new("Stats")
 	new_stat['vid_id'] = params['vid_id']
 	new_stat['team_id'] = params['team_id']
-	new_stat['author_id'] = params['author_id']
+	new_stat['author_id'] = author_id
 	new_stat['fall_year'] = params['fall_year']
 	new_stat['player_id'] = params['player_id']
 	new_stat['stat_name'] = params['stat_name']

@@ -40,3 +40,8 @@
   float: left;
   padding-left: 5px;
 }
+
+.help {
+  float: right;
+  padding-right: 5px;
+}

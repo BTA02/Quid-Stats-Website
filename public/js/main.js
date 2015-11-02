@@ -48,8 +48,6 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
     $scope.allGames = [];
     $http.get("/allGames/" + $scope.team).then(function(response) {
       $scope.allGames = response["data"];
-      console.log("all games 1");
-      console.log($scope.allGames);
     });
   }
 
@@ -95,7 +93,6 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
         } else {
           $scope.allStats[i]["player_in_name"] = inId;
         }
-        console.log($scope.allStats[i]);
         if ($scope.allStats[i]["stat_name"] === "SUB") {
           addSubToMap($scope.allStats[i]);
         }
@@ -120,7 +117,7 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
 
   $scope.switchGames = function() {
   	for (var i = 0; i < $scope.selectedGames.length; i++) {
-  		console.log($scope.selectedGames[i]);
+
   	}
   }
 
@@ -138,7 +135,7 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
   function removeSubFromMap(subStat) {
     // Didn't quite work. The index was -18
     var arrayAtTime = $scope.subMap.get(subStat["time"]);
-    console.log(arrayAtTime);
+
     if (arrayAtTime != null) {
       var index = -1;
       for(var i = 0; i < arrayAtTime.length; i++) {
@@ -147,11 +144,11 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
           break;
         }
       }
-      console.log(index);
+
       //finds the object index
       if (index > -1) {
         arrayAtTime.splice(index, 1);
-        console.log(arrayAtTime);
+
       }
     }
   }
@@ -246,8 +243,7 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
 
 
     $http.get("/addStat/" + $scope.selectedVideo 
-      + "/" + $scope.team 
-      + "/" + "nwlMkrbCJ9"  //meant to be author id here, will get eventually
+      + "/" + $scope.team
       + "/" + $scope.year
       + "/" + playerId 
       + "/" + stat 
@@ -269,7 +265,6 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
         } else {
           response["data"]["player_in_name"] = inId;
         }
-        console.log(response["data"]);
         $scope.allStats.push(response["data"]);
         if (stat === "SUB") {
           addSubToMap(response["data"]);
@@ -285,7 +280,6 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
     $http.get("/deleteStat/" + objId).then(function(response) {
       // do nothing for now
       //remove locally
-      console.log(response["data"]);
       var index = findStatIndex(response["data"]);
       if (index !== -1) {
         $scope.allStats.splice(index, 1);
@@ -308,7 +302,6 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
   // Viewing stats page
 
   $scope.calcStats = function() {
-    console.log($scope.selectedGames);
     var ids;
     if ($scope.selectedGames == null || $scope.selectedGames.length == 0) {
       alert("Please select some games");
@@ -376,7 +369,6 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
   }
 
   function search(nameKey, myArray){
-    console.log(myArray);
     for (var i=0; i < myArray.length; i++) {
       if (myArray[i].vid_id === nameKey) {
           return true;

@@ -1,0 +1,47 @@
+<html ng-app="statsApp">
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
+        <script src="/js/main.js"></script>
+        <script src="/js/login.js"></script>
+        <script src="angular-video/js/anguvideo.js"></script>
+        <script src="https://www.youtube.com/iframe_api"></script>
+        <script src="angular-youtube-embed/src/angular-youtube-embed.js"></script>
+
+        <link rel="stylesheet" type="text/css" href="/stylesheets/the.css">
+        <link rel="stylesheet" type="text/css" href="/stylesheets/header.css">
+        <link rel="stylesheet" type="text/css" href="/stylesheets/login.css"
+
+
+        <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" />
+        <title>Quidstats</title>
+    </head>
+
+  <body ng-controller="StatsController">
+        <header>
+            <div class="nav">
+              <ul>
+                <li class="username"><a href="/"><%=getUser()%> </a></li>
+                <li><a href="/record">Record Stats</a></li>
+                <li><a href="/stats">View Stats</a></li>
+                <li><a href="/add_team">Add Team</a></li>
+                <li><a href="/add_video">Add Video</a></li>
+                <li class="help"><a>Help</a></li>
+              </ul>
+            </div>
+        </header>
+
+        <div>
+            <div align="center">
+                <h3>Welcome, <%=getUser()%></h3>
+                <p></p>
+            </div>
+        </div>
+        <div align="center">
+            <!-- <button class="btn btn-danger btn-lg" href="/log_out">Logout</button> -->
+            <a href="/log_out">Logout</a>
+        </div>
+
+    </body>
+
+</html> 
