@@ -309,10 +309,6 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
     } else {
       ids = $scope.selectedGames.join(",");
     }
-  	//console.log($scope.selectedGames[0]);
-  	// var ids = $scope.selectedGames.map(function(i){
-  	// 	return i['id'];
-  	// });
     $scope.per = 0;
     $scope.per += $scope.perMinute;
   	$http.get("/calc_stats/" + $scope.statSelected + "/" + $scope.per + "?team_id=" + $scope.team + "&ids=" + ids).then(function(response) {

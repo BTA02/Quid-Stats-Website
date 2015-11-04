@@ -9,6 +9,7 @@
 
 	  	<link rel="stylesheet" type="text/css" href="/stylesheets/the.css">
 	  	<link rel="stylesheet" type="text/css" href="/stylesheets/header.css">
+	  	<link rel="stylesheet" type="text/css" href="/stylesheets/add_team.css">
 	  	<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 	  	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" />
 	    <title>Quidstats</title>
@@ -34,9 +35,8 @@
 	    	<p>Base the year on what year it is/was during the fall</p>
 			<p>Hint: We are currently in fall year 2015</p>
 
-		    <select name="teamSelect" ng-model="teamToAdd">
+		    <select name="teamSelect" ng-model="teamToAdd" ng-change="getRoster()">
 				<% @teams.each do |team| %>
-				<option value="">Select team</option>
 				<option value="new">New Team</option>
 				<option value="<%= team['objectId']%>"><%=team['team_name']%></option>
 				<%end%>
@@ -51,9 +51,18 @@
 		</div>
 
 		<!-- List of players -->
-		<div id="playersList">
-			<ul ng-model="roster">
-				<li ng-repeat="player in roster">{{player}}</li>
+		<div id="rosterContainer">
+			<ul class="playerList" ng-model="roster">
+				<li>
+					<input type="text" ng-model="newFirstName"/>
+					<input type="text" ng-model="newLastName"/>
+					<button type="submit" ng-click="addNewPlayer()">Add New Player</button>
+				</li>
+				<li ng-repeat="player in roster">
+					<input type="text" value="{{player.first_name}}"></input>
+					<input type="text" value="{{player.last_name}}"></input>
+					<button ng-click="savePlayer()">Save</button>
+				</li>
 		</div>
 
 

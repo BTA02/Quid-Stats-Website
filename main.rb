@@ -119,8 +119,8 @@ get '/addVideo/:video_id/:team_id/:fall_year/:description' do
 	add_video(params)
 end
 
-get '/roster/:team_id/:fall_year' do
-	get_roster(params)
+get '/addPlayer/:first_name/:last_name' do
+	add_player(params)
 end
 
 
@@ -308,6 +308,15 @@ def get_roster(params)
 		q.eq('fall_year', params['fall_year'])
 	end.get
 	resp.to_json
+end
+
+def add_player(params)
+	new_player = Parse::Object.new('Players')
+	new_player['first_name'] = params['first_name']
+	new_player['last_name'] = params['last_name']
+
+	result = new_player.save
+	result.to_json
 end
 
 
