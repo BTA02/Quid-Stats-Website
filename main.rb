@@ -12,14 +12,14 @@ configure do
 end
 
 helpers do
-  def getUser()
+  def get_user()
   	if !session[:username].nil?
     	"<p>"+session[:username]+"</p>"
     else
     	"<p>Login</p>"
     end
   end
-  def loggedIn()
+  def logged_in()
   	if !session[:username].nil?
   		return true
   	else
@@ -29,9 +29,7 @@ helpers do
 end
 
 get '/' do
-	pp 'logged'
-	pp loggedIn()
-	if loggedIn()
+	if logged_in()
 		@teams = get_teams
 		erb :logged_in
 	else
@@ -50,6 +48,8 @@ post '/log_in' do
 	redirect '/stats'
 end
 
+# ROUTES
+
 get '/log_out' do
 	session.clear
 	pp 'redirecting'
@@ -57,26 +57,39 @@ get '/log_out' do
 end
 
 get '/stats' do
+	if !logged_in()
+		redirect '/'
+	end
 	@teams = get_teams
 	erb :view_stats
 end
 
 get '/add_team' do
+	if !logged_in()
+		redirect '/'
+	end
+	@teams = get_teams
 	erb :add_team
 end
 
 get '/record' do
-	# the team id and vid id come thru this way
-	# author id has to be a cookie
+	if !logged_in
+		redirect '/'
+	end
 	@teams = get_teams
 	erb :record_stats
 
 end
 
 get '/add_video' do
+	if !logged_in
+		redirect '/'
+	end
 	@teams = get_teams
 	erb :add_video_dumb
 end
+
+# FUNCTION CALLS
 
 get '/doneGames/:team_id' do
 	get_games_for_team(params[:team_id], false).sort_by{|cat| cat[:description]}.to_json
@@ -104,6 +117,10 @@ end
 
 get '/addVideo/:video_id/:team_id/:fall_year/:description' do
 	add_video(params)
+end
+
+get '/roster/:team_id/:fall_year' do
+	get_roster(params)
 end
 
 
@@ -283,6 +300,14 @@ def add_video(params)
 
 	result = new_video.save
 	result.to_json
+end
+
+def get_roster(params)
+	resp = Parse::Query.new('Rosters').tap do |q|
+		q.eq('team_id', params['team_id'])
+		q.eq('fall_year', params['fall_year'])
+	end.get
+	resp.to_json
 end
 
 

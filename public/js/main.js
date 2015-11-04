@@ -377,6 +377,9 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
     return false;
   }
 
+  // Check if someone logged int, if not, 
+  // then send them to the main screen
+
 }]);
 
 

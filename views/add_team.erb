@@ -2,6 +2,7 @@
 	<head>
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
 	  	<script src="/js/main.js"></script>
+	  	<script src="/js/add_team.js"></script>
 	  	<script src="angular-video/js/anguvideo.js"></script>
 	  	<script src="https://www.youtube.com/iframe_api"></script>
 		<script src="angular-youtube-embed/src/angular-youtube-embed.js"></script>
@@ -17,7 +18,7 @@
 	  	<header>
 	      <div class="nav">
 	        <ul>
-				<li class="username"><a href="/"><%=getUser()%> </a></li>
+				<li class="username"><a href="/"><%=get_user()%> </a></li>
 	          	<li><a href="/record">Record Stats</a></li>
 	          	<li><a href="/stats">View Stats</a></li>
 	          	<li><a href="/add_team" class="active">Add Team</a></li>
@@ -26,6 +27,37 @@
 	        </ul>
 	      </div>
 	    </header>
+
+	    <!-- Teams list -->
+	    <div id="team-year" class="container-fluid" align="center">
+	    	<h2>To add or edit a team, first, select the team and the year.</h2>
+	    	<p>Base the year on what year it is/was during the fall</p>
+			<p>Hint: We are currently in fall year 2015</p>
+
+		    <select name="teamSelect" ng-model="teamToAdd">
+				<% @teams.each do |team| %>
+				<option value="">Select team</option>
+				<option value="new">New Team</option>
+				<option value="<%= team['objectId']%>"><%=team['team_name']%></option>
+				<%end%>
+			</select>
+
+			<select ng-model="rosterYear" ng-change="getRoster()">
+				<option value="2012">2012</option>
+				<option value="2013">2013</option>
+				<option value="2014">2014</option>
+				<option selected value="2015">2015</option>
+			</select>
+		</div>
+
+		<!-- List of players -->
+		<div id="playersList">
+			<ul ng-model="roster">
+				<li ng-repeat="player in roster">{{player}}</li>
+		</div>
+
+
+
 	</body>
 
 </html>
