@@ -359,6 +359,7 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
       // 
       $http.get("/addVideo/" + $scope.vidPreview + "/" + $scope.team + "/" + $scope.fallYear + "/" + $scope.vidDesc).then(function(response) {
         console.log(response["data"]);
+        location.reload();
       });
     }
     
