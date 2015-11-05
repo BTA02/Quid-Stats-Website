@@ -50,39 +50,39 @@
 			</select>
 		</div>
 
-
 		<hr>
 
-		<div ng-show="teamToAdd == 'new'"id="newTeamContainer" class="container-fluid" align="center">
-			Team Name: <input type="text" ng-model="newTeamName" />
+		<div ng-show="teamToAdd && rosterYear">
+			<div ng-show="teamToAdd == 'new'"id="newTeamContainer" class="container-fluid" align="center">
+				Team Name: <input type="text" ng-model="newTeamName" />
+			</div>
+
+			<br>
+
+			<!-- new player -->
+			<div id="addPlayerContainer" class="container-fluid" align="center">
+				First name: <input type="text" ng-model="newFirstName"/>
+				Last name: <input type="text" ng-model="newLastName"/>
+				<button type="submit" ng-click="addNewPlayer()">Add New Player</button>
+			</div>
+
+
+			<div class="container-fluid" align="center">
+				<button ng-click="saveRoster()">Save Roster</button>
+			</div>
+
+			
+			<!-- roster -->
+			<div id="rosterContainer">
+				<ul class="playerList" ng-model="roster">
+					<li ng-repeat="player in roster">
+						<input type="text" value="{{player.first_name}}"/>
+						<input type="text" value="{{player.last_name}}"/>
+						<button ng-click="updatePlayer(player)">Update</button>
+						<button ng-click="deletePlayer(player)">Delete</button>
+					</li>
+			</div>
 		</div>
-
-		<br>
-
-		<!-- new player -->
-		<div id="addPlayerContainer" class="container-fluid" align="center">
-			First name: <input type="text" ng-model="newFirstName"/>
-			Last name: <input type="text" ng-model="newLastName"/>
-			<button type="submit" ng-click="addNewPlayer()">Add New Player</button>
-		</div>
-
-
-		<div class="container-fluid" align="center">
-			<button ng-click="saveRoster()">Save Roster</button>
-		</div>
-
-		
-		<!-- roster -->
-		<div id="rosterContainer">
-			<ul class="playerList" ng-model="roster">
-				<li ng-repeat="player in roster">
-					<input type="text" value="{{player.first_name}}"/>
-					<input type="text" value="{{player.last_name}}"/>
-					<button ng-click="updatePlayer(player)">Update</button>
-					<button ng-click="deletePlayer(player)">Delete</button>
-				</li>
-		</div>
-
 
 
 	</body>

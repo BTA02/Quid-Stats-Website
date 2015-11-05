@@ -67,10 +67,12 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
       //   response["data"];
       // }
       $http.get("/newTeam/" + $scope.newTeamName + "/" + $scope.rosterYear + "/" + ids).then(function(response) {
-
+        response["data"];
+        location.reload();
+        // refresh
       });
     } else {
-
+      // $http.get("/updateTeam/" + $scope.)
     }
     // } else {
     //   $http.get("/updateTeam/" + $scope.teamToAdd + "/" + ids).then(function(response) {
