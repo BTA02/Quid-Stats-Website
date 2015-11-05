@@ -1,6 +1,23 @@
-.videoBoard > div {
+#vidContainer > div {
+    display: inline-block;
+}
+
+#vidContainer {
+    width: 100%;
+    white-space: nowrap;
+}
+
+.video {
+    width: 800px;
+}
+
+.score > p {
+}
+
+#scoreboard > div {
 	display: inline-block;
 }
-.videoBoard {
-	white-space: nowrap;
+
+#scoreboard {
+    white-space: nowrap;
 }

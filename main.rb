@@ -123,6 +123,10 @@ get '/addPlayer/:first_name/:last_name' do
 	add_player(params)
 end
 
+get 'updatePlayer/:player_id/:first_name/"last_name' do
+	update_player(params)
+end
+
 
 
 # This also takes the team_id and game_ids
@@ -317,6 +321,9 @@ def add_player(params)
 
 	result = new_player.save
 	result.to_json
+end
+
+def update_player(params)
 end
 
 

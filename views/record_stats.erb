@@ -6,7 +6,8 @@
   	<script src="https://www.youtube.com/iframe_api"></script>
 		<script src="angular-youtube-embed/src/angular-youtube-embed.js"></script>
     <link rel="stylesheet" type="text/css" href="/stylesheets/the.css">
-  	<link rel="stylesheet" type="text/css" href="/stylesheets/header.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/header.css">
+  	<link rel="stylesheet" type="text/css" href="/stylesheets/scoreboard.css">
   	<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
   	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" />
 
@@ -53,18 +54,22 @@
 
 
     <!-- Video player object -->
-    <div class="row">
-      <div class="score col-xs-1">
-        <p>HOME</p>
-        <p ng-model="homeScore">{{homeScore}}</p>
+    <div id="vidContainer" align="center">
+      <div id="scoreboard">
+        <div class="score">
+          <p>HOME</p>
+          <p ng-model="homeScore">{{homeScore}}</p>
+        </div>
+        <div class="score">
+          <p>AWAY</p>
+          <p ng-model="awayScore">{{awayScore}}</p>
+        </div>
       </div>
-  		<div class="container-flud col-xs-10" align="center">
-  			<youtube-video video-id="selectedVideo" player="videoPlayer" class="embed-responsive-item" player-width="'65%'"></youtube-video>
+
+  		<div class="container-fluid video" align="center">
+  			<youtube-video video-id="selectedVideo" player="videoPlayer" class="embed-responsive-item" player-width="'100%'"></youtube-video>
   		</div>
-      <div class="score col-xs-1">
-        <p>AWAY</p>
-        <p ng-model="awayScore">{{awayScore}}</p>
-      </div>
+
     </div>
 
     <!-- Buttons under the video -->

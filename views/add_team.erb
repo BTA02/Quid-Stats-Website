@@ -50,18 +50,30 @@
 			</select>
 		</div>
 
-		<!-- List of players -->
+
+		<hr>
+
+		<!-- new player -->
+		<div id="addPlayerContainer" class="container-fluid" align="center">
+			First name: <input type="text" ng-model="newFirstName"/>
+			Last name: <input type="text" ng-model="newLastName"/>
+			<button type="submit" ng-click="addNewPlayer()">Add New Player</button>
+		</div>
+
+
+		<div class="container-fluid" align="center">
+			<button ng-click="saveRoster()">Save Roster</button>
+		</div>
+
+		
+		<!-- roster -->
 		<div id="rosterContainer">
 			<ul class="playerList" ng-model="roster">
-				<li>
-					<input type="text" ng-model="newFirstName"/>
-					<input type="text" ng-model="newLastName"/>
-					<button type="submit" ng-click="addNewPlayer()">Add New Player</button>
-				</li>
 				<li ng-repeat="player in roster">
-					<input type="text" value="{{player.first_name}}"></input>
-					<input type="text" value="{{player.last_name}}"></input>
-					<button ng-click="savePlayer()">Save</button>
+					<input type="text" value="{{player.first_name}}"/>
+					<input type="text" value="{{player.last_name}}"/>
+					<button ng-click="updatePlayer(player)">Update</button>
+					<button ng-click="deletePlayer(player)">Delete</button>
 				</li>
 		</div>
 

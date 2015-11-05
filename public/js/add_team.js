@@ -16,14 +16,15 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
 
   $scope.getRoster = function() {
     $scope.roster = [];
-    $http.get("/allPlayers/" + $scope.teamToAdd + "/" + $scope.rosterYear).then(function(response) {
-        console.log(response["data"]);
+    $http.get("/allPlayers/" + $scope.teamToAdd 
+      + "/" + $scope.rosterYear).then(function(response) {
         $scope.roster = response["data"];
     });
   }
 
   $scope.addNewPlayer = function() {
-    $http.get("/addPlayer/" + $scope.newFirstName + "/" + $scope.newLastName).then(function(response) {
+    $http.get("/addPlayer/" + $scope.newFirstName.trim()
+      + "/" + $scope.newLastName.trim()).then(function(response) {
         // update the onscreen roster
         // the idea being, person adds a new player
         // new player automatically gets added to the current roster
@@ -33,12 +34,39 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
         console.log(response["data"]);
         var fname = response["data"]["first_name"].trim();
         var lname = response["data"]["last_name"].trim();
-        var newPlayerObj = {first_name:fname, last_name:lname};
+        var objId = response["data"]["objectId"];
+        var newPlayerObj = {first_name:fname, last_name:lname, objectId:objId};
         $scope.roster.splice(0, 0, newPlayerObj);
         $scope.newFirstName = "";
         $scope.newLastName = "";
     });
   }
+
+  $scope.saveRoster = function() {
+    console.log($scope.roster);
+    // take all the players 
+    // generate a full list of ids
+    // set that as the new field in rosters
+    // so, I need all the object ids
+    var ids = "";
+    for (var i = 0; i < $scope.roster.length; i++) {
+      ids += '"' + $scope.roster[i]["objectId"] + '"';
+      if (i != $scope.roster.length -1) {
+        ids += ",";
+      }
+    }
+    console.log(ids);
+  }
+
+  $scope.updatePlayer = function(player) {
+    $http.get("/updatePlayer/" 
+      + player["objectId"] 
+      + "/" + player["first_name"] 
+      + "/" + player["last_name"]).then(function(response) {
+        response["data"];
+    });
+  }
+
 
 
 }]);
