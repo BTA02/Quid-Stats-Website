@@ -36,8 +36,8 @@
 			<p>Hint: We are currently in fall year 2015</p>
 
 		    <select name="teamSelect" ng-model="teamToAdd" ng-change="getRoster()">
-				<% @teams.each do |team| %>
 				<option value="new">New Team</option>
+				<% @teams.each do |team| %>
 				<option value="<%= team['objectId']%>"><%=team['team_name']%></option>
 				<%end%>
 			</select>
@@ -52,6 +52,12 @@
 
 
 		<hr>
+
+		<div ng-show="teamToAdd == 'new'"id="newTeamContainer" class="container-fluid" align="center">
+			Team Name: <input type="text" ng-model="newTeamName" />
+		</div>
+
+		<br>
 
 		<!-- new player -->
 		<div id="addPlayerContainer" class="container-fluid" align="center">

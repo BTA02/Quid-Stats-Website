@@ -48,14 +48,34 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
     // generate a full list of ids
     // set that as the new field in rosters
     // so, I need all the object ids
-    var ids = "";
+    var ids = [];
     for (var i = 0; i < $scope.roster.length; i++) {
-      ids += '"' + $scope.roster[i]["objectId"] + '"';
-      if (i != $scope.roster.length -1) {
-        ids += ",";
-      }
+      ids.push($scope.roster[i]["objectId"]);
     }
     console.log(ids);
+    if ($scope.teamToAdd == "new") {
+      // creating a new team with the roster given
+      if ($scope.rosterYear == null) {
+        alert("Please select a year");
+        return;
+      }
+      if ($scope.newTeamName == null || $scope.newTeamName == "") {
+        alert("Please add a team name");
+        return;
+      }
+      // "/newTeam/" + $scope.newTeamName + "/" $scope.rosterYear + "/" + ids).then(function(response) {
+      //   response["data"];
+      // }
+      $http.get("/newTeam/" + $scope.newTeamName + "/" + $scope.rosterYear + "/" + ids).then(function(response) {
+
+      });
+    } else {
+
+    }
+    // } else {
+    //   $http.get("/updateTeam/" + $scope.teamToAdd + "/" + ids).then(function(response) {
+    //     response["data"];
+    // }
   }
 
   $scope.updatePlayer = function(player) {
