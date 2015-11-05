@@ -72,12 +72,12 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
         // refresh
       });
     } else {
-      // $http.get("/updateTeam/" + $scope.)
+      $http.get("/updateTeam/" + $scope.teamToAdd + "/" + $scope.rosterYear + "/" + ids).then(function(response) {
+        response["data"];
+        location.reload();
+      });
     }
-    // } else {
-    //   $http.get("/updateTeam/" + $scope.teamToAdd + "/" + ids).then(function(response) {
-    //     response["data"];
-    // }
+
   }
 
   $scope.updatePlayer = function(player) {

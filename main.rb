@@ -131,6 +131,9 @@ get '/newTeam/:team_name/:fall_year/:ids' do
 	add_new_team(params)
 end
 
+get '/updateTeam/:team_id/:fall_year/:ids' do
+	update_team(params)
+end
 
 
 # This also takes the team_id and game_ids
@@ -328,6 +331,7 @@ def add_player(params)
 end
 
 def update_player(params)
+
 end
 
 def add_new_team(params)
@@ -339,13 +343,26 @@ def add_new_team(params)
 	new_roster = Parse::Object.new('Rosters')
 	new_roster['team_id'] = result['objectId']
 	new_roster['fall_year'] = params['fall_year']
-	new_roster['player_ids'] = params['ids'].split(',');
+	new_roster['player_ids'] = params['ids'].split(',')
 	pp 'param'
 
 
 	second_result = new_roster.save
 
 	second_result.to_json
+end
+
+def update_team(params)
+	update_team = Parse::Query.new('Rosters').tap do |q|
+		q.eq('team_id', params['team_id'])
+		q.eq('fall_year', params['fall_year'])
+	end.get.first
+	pp params['ids']
+	pp update_team['player_ids']
+	update_team['player_ids'] = params['ids'].split(',')
+	pp update_team
+	result = update_team.save
+	result.to_json
 end
 
 
