@@ -86,13 +86,30 @@
       <div class="playerListHolder" ng-repeat="onPlayer in onFieldPlayers track by $index">
         <ul class="playerList">
           <!-- The onclick just changes the visibility of the popup div -->
-          <a href = "javascript:void(0)" ng-click="startSub(onPlayer.objectId)" onclick = "document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block'">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
-          <li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'SHOT')">Shot</li>
-          <li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'GOAL')">Goal</li>
-          <li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'ASSIST')">Assist</li>
-          <li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'TAKEAWAY')">Takeaway</li>
-          <li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'TURNOVER')">Turnover</li>
-          <li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'SNITCH_CATCH')">Snitch Catch</li>
+          <!-- Differentiate between positions -->
+          <div ng-show="$index < 3 || $index == 3">
+            <h5 ng-show="$index < 3">Chaser</h5>
+            <h5 ng-show="$index == 3">Keeper</h5>
+            <a href = "javascript:void(0)" ng-click="startSub(onPlayer.objectId)" onclick = "document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block'">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
+            <li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'SHOT')">Shot</li>
+            <li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'GOAL')">Goal</li>
+            <li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'ASSIST')">Assist</li>
+            <li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'TAKEAWAY')">Takeaway</li>
+            <li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'TURNOVER')">Turnover</li>
+          </div>
+
+          <div ng-show="$index > 3 && $index < 6">
+            <h5>Beater</h5>
+            <a href = "javascript:void(0)" ng-click="startSub(onPlayer.objectId)" onclick = "document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block'">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
+            <li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'TAKEAWAY')">Takeaway</li>
+          </div>
+
+          <div ng-show="$index == 6">
+            <h5>Seeker</h5>
+            <a href = "javascript:void(0)" ng-click="startSub(onPlayer.objectId)" onclick = "document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block'">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
+            <li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'SNITCH_CATCH')">Snitch Catch</li>
+          </div>
+
         </ul>
       </div>
     </div>

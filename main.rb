@@ -331,6 +331,15 @@ def add_player(params)
 end
 
 def update_player(params)
+	update_player = Parse::Query.new('Players').tap do |q|
+		q.eq('objectid', params['player_id'])
+	end.get.first
+
+	update_player['first_name'] = params['first_name']
+	update_player['last_name'] = params['last_name']
+
+	result = update_player.save
+	result.to_json
 
 end
 

@@ -119,8 +119,10 @@ class CalcStats
 				@stats_map[player_id][event["stat_name"].downcase] += 1
 			end				
 		end
+        pp @stats_map.values
 		if @per == 0
-			return @stats_map
+
+			return @stats_map.values
 		elsif @per == 1
 			@stats_map.update(@stats_map) { |key, val|
 				val.update(val) { |key1, val1|
@@ -139,7 +141,7 @@ class CalcStats
 				}
 			}
 		end
-		@stats_map
+		@stats_map.values
 
 	end
 

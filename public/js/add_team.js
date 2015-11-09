@@ -31,7 +31,6 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
         // then, you can hit 'save roster' at the bottom
         // i need an 'add existing player' button too
         // or, an 'add existing player' form to add or something like that
-        console.log(response["data"]);
         var fname = response["data"]["first_name"].trim();
         var lname = response["data"]["last_name"].trim();
         var objId = response["data"]["objectId"];
@@ -43,7 +42,7 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
   }
 
   $scope.saveRoster = function() {
-    console.log($scope.roster);
+
     // take all the players 
     // generate a full list of ids
     // set that as the new field in rosters
@@ -52,7 +51,7 @@ statsApp.controller('StatsController', ['$scope', '$http', function($scope, $htt
     for (var i = 0; i < $scope.roster.length; i++) {
       ids.push($scope.roster[i]["objectId"]);
     }
-    console.log(ids);
+
     if ($scope.teamToAdd == "new") {
       // creating a new team with the roster given
       if ($scope.rosterYear == null) {

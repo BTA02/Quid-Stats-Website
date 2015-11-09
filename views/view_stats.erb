@@ -87,27 +87,27 @@
 		  				<th ng-repeat="(key, val) in statsDisp[Object.keys(statsDisp)[0]]">{{key}}</th>
 		  			</thead> -->
 		  			<thead>
-		            <th>FIRST</th>
-		            <th>LAST</th>
-		            <th>SHOTS</th>
-		            <th>GOALS</th>
-		            <th>ASSISTS</th>
-		            <th>TURNOVERS</th>
-		            <th>TAKEAWAYS</th>
-		            <th>YELLOWS</th>
-		            <th>REDS</th>
-		            <th>SNITCHES</th>
-		            <th>PLUS</th>
-		            <th>MINUS</th>
-		            <th>NET</th>
-		            <th>RATIO</th>
-		            <th>TIME</th>
+		            <th ng-click="sortMap('FIRST')">FIRST</th>
+		            <th ng-click="sortMap('LAST')">LAST</th>
+		            <th ng-click="sortMap('SHOTS')">SHOTS</th>
+		            <th ng-click="sortMap('GOALS')">GOALS</th>
+		            <th ng-click="sortMap('ASSISTS')">ASSISTS</th>
+		            <th ng-click="sortMap('TURNOVERS')">TURNOVERS</th>
+		            <th ng-click="sortMap('TAKEAWAYS')">TAKEAWAYS</th>
+		            <th ng-click="sortMap('YELLOWS')">YELLOWS</th>
+		            <th ng-click="sortMap('REDS')">REDS</th>
+		            <th ng-click="sortMap('SNITCHES')">SNITCHES</th>
+		            <th ng-click="sortMap('PLUS')">PLUS</th>
+		            <th ng-click="sortMap('MINUS')">MINUS</th>
+		            <th ng-click="sortMap('NET')">NET</th>
+		            <th ng-click="sortMap('RATIO')">RATIO</th>
+		            <th ng-click="sortMap('TIME')">TIME</th>
 		            <!-- <th>GAIN CONTROL</th> -->
 		            <!-- <th>LOSE CONTROL</th> -->
 		         </thead>
 		  			<tbody>
 		  				<tr ng-repeat="row in statsDisp">
-		  					<td ng-repeat="(key, val) in row"> 
+		  					<td ng-repeat="(key, val) in row">
 		  						<p ng-if="key=='time'">{{val | time:'ss':'mm:ss'}}</p>
 		  						<p ng-if="key!='time'">{{val}}</p>
 	  						</td>

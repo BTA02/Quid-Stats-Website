@@ -195,7 +195,7 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
         $scope.awayScore += 1;
       }
       if ($scope.allStats[i]["stat_name"] === "SNITCH_CATCH") {
-        $scope.awayScore += 3;
+        $scope.homeScore += 3;
       }
       if ($scope.allStats[i]["stat_name"] === "AWAY_SNITCH_CATCH") {
         $scope.awayScore += 3;
@@ -319,7 +319,82 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
   			$scope.isPlusMinus = true;
   		}
   		$scope.statsDisp = response["data"];
+      // so, $scope.statsDisp has everything I could ever dream of
   	});
+  }
+
+  $scope.sortMap = function(category) {
+    category = convertCategoryName(category);
+    var aVal = 0;
+    var bVal = 0;
+    $scope.statsDisp.sort(function(a, b) {
+      // if (category == "first_name" || category == "last_name") {
+      //   return (a[category] > b[category]);
+      // }
+      if (category == "ratio") {
+        aVal = a[category].substr(0, a[category].indexOf(':'));
+        bVal = b[category].substr(0, b[category].indexOf(':'));
+      } else {
+        aVal = a[category];
+        bVal = b[category];
+      }
+      if (aVal == bVal ) {
+        return a["first_name"] < b["first_name"];
+      }
+      return (bVal - aVal);
+    });
+  }
+
+  function convertCategoryName(category) {
+    switch(category) {
+      case "FIRST":
+        return "first_name"
+        break;
+      case "LAST":
+        return "last_name"
+        break;
+      case "SHOTS":
+        return "shot"
+        break;
+      case "GOALS":
+        return "goal"
+        break;
+      case "ASSISTS":
+        return "assist"
+        break;
+      case "TURNOVERS":
+        return "turnover"
+        break;
+      case "TAKEAWAYS":
+        return "takeaway"
+        break;
+      case "YELLOWS":
+        return "yellow_card"
+        break;
+      case "REDS":
+        return "red_card"
+        break;
+      case "SNITCHES":
+        return "snitch_catch"
+        break;
+      case "PLUS":
+        return "plusses"
+        break;
+      case "MINUS":
+        return "minuses"
+        break;
+      case "NET":
+        return "net"
+        break;
+      case "RATIO":
+        return "ratio"
+        break;
+      case "TIME":
+        return "time"
+        break;
+      default:
+        return category;
+    }
   }
 
   $scope.selectedGames = [];
@@ -358,7 +433,6 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
       // if (exists in $scope.allGames)
       // 
       $http.get("/addVideo/" + $scope.vidPreview + "/" + $scope.team + "/" + $scope.fallYear + "/" + $scope.vidDesc).then(function(response) {
-        console.log(response["data"]);
         location.reload();
       });
     }
