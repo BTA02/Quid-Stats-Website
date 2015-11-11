@@ -154,6 +154,10 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
   }
 
   $interval( function(){
+    // I figured it out!!! what if submap isn't created?
+    if ($scope.subMap == null) {
+      $scope.subMap = new Map();
+    }
     if ($scope.videoPlayer != null) {
       $scope.updateOnFieldPlayers();
       $scope.updateScoreboard();
@@ -250,6 +254,11 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
       + "/" + $scope.videoPlayer.getCurrentTime() 
       + "/" + playerInId).then(function(response) {
         // handle errors here, if I get them
+
+        // kick the list to the end
+        // var objDiv = document.getElementById("statsList");
+        // objDiv.scrollRight = objDiv.scrollWidth;
+
         var id = response["data"]["player_id"];
         var inId = response["data"]["player_in_id"];
         var player = $scope.playersMap.get(id);
