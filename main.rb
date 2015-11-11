@@ -103,7 +103,7 @@ get '/allPlayers/:team_id/:fall_year' do
 	get_players_for_team(params[:team_id], params[:fall_year]).sort_by{|cat| cat[:description]}.to_json
 end
 
-get '/allStats/:vid_id/:team_id/:author_id' do
+get '/allStats/:vid_id/:team_id' do
 	get_all_stats_from_game(params[:vid_id], params[:team_id], session[:authorId]);
 end
 
@@ -147,6 +147,9 @@ get '/calc_stats/:stat_selected/:per' do
 		raw_stats_map_json = calc_stats.raw_stats.to_json
 	when 'beater_pairs'
 		pos_arr = [[4,5],[4,5]]
+		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
+	when 'chaser_beater_beater'
+		pos_arr = [[0,1,2],[4,5],[4,5]]
 		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
 	when 'chasers_pairs'
 		pos_arr = [[0,1,2],[0,1,2]]

@@ -19,15 +19,19 @@ class CalcStats
 	end
 
 	def get_stats_rows_from_games()
-		all_stats = Parse::Query.new("Stats").tap do |q|
-			q.eq('team_id', @team_id)
-			q.eq('author_id', @author_id)
-			q.value_in('vid_id', @game_ids)
-			q.order_by = "vid_id,time"
-			q.limit = 1000
-		end.get
-		# come back to this when I have too many games
-		all_stats
+		array_of_game_ids_sliced = @game_ids.each_slice(5).to_a
+		all_stats = []
+		array_of_game_ids_sliced.each do |array_of_ids|
+			stats_to_add = Parse::Query.new('Stats').tap do |q|
+				q.eq('team_id', @team_id)
+				q.eq('author_id', @author_id)
+				q.value_in('vid_id', array_of_ids)
+				q.order_by = "vid_id,time"
+				q.limit = 1000
+			end.get
+			all_stats.push(stats_to_add)
+		end
+		all_stats.flatten!
 	end
 
 	def raw_stats
@@ -119,7 +123,6 @@ class CalcStats
 				@stats_map[player_id][event["stat_name"].downcase] += 1
 			end				
 		end
-        pp @stats_map.values
 		if @per == 0
 
 			return @stats_map.values

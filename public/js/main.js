@@ -73,7 +73,7 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
     $scope.subMap = new Map();
     $scope.allStats = [];
     // $scope.gameTime = 0;
-    $http.get("/allStats/" + $scope.selectedVideo + "/" + $scope.team + "/" + "nwlMkrbCJ9").then(function(response) {
+    $http.get("/allStats/" + $scope.selectedVideo + "/" + $scope.team).then(function(response) {
       // this returns all the events from a single game
       $scope.allStats = response["data"];
       for (var i = 0; i < $scope.allStats.length; i++) {
