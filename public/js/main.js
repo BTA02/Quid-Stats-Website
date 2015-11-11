@@ -155,9 +155,6 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
 
   $interval( function(){
     // I figured it out!!! what if submap isn't created?
-    if ($scope.subMap == null) {
-      $scope.subMap = new Map();
-    }
     if ($scope.videoPlayer != null) {
       $scope.updateOnFieldPlayers();
       $scope.updateScoreboard();
