@@ -145,7 +145,6 @@ class CalcStats
 			}
 		end
 		@stats_map.values
-
 	end
 
 	def add_plus_minus_val(on_field_array, val)
@@ -179,8 +178,7 @@ class CalcStats
 			if (@stats_map.include?(player))
 				@stats_map[player]["time"] += time_to_add
 			end
-		end
-		
+		end		
 	end
 
 	def calc_plus_minus_stat(arrs)
@@ -313,6 +311,7 @@ class CalcStats
 				plus: 0,
 				minus: 0,
 				net: 0,
+				ratio: "",
 				time: 0
 			}
 		end
@@ -326,6 +325,16 @@ class CalcStats
 		when 'time'
 			combo_stat_map[cur_players][:time] += value
 		end
+		#ratio stuff
+		plus = combo_stat_map[cur_players][:plus]
+		minus = combo_stat_map[cur_players][:minus]
+		ratio = 0
+		if minus != 0
+			ratio = plus.to_f / minus.to_f
+		else
+			ratio = plus
+		end
+		combo_stat_map[cur_players][:ratio] = ratio.round(2).to_s + ':' + '1'
 	end
 
 	def sort_on_field_array_by_position(on_field_array)
@@ -359,7 +368,6 @@ class CalcStats
 		else	
 			"#{minutes}:#{seconds}"
 		end
-
 	end
 
 	def get_players_from_team
@@ -387,5 +395,9 @@ class CalcStats
 	def getStatsMap
 		@stats_map
 	end
+
+
+
+
 end
 

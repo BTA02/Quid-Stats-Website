@@ -264,7 +264,6 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
           response["data"]["player_name"] = player["first_name"] + ' ' + player["last_name"];
         } else {
           response["data"]["player_name"] = id;
-
         }
         if (playerIn) {
           response["data"]["player_in_name"] = playerIn["first_name"] + ' ' + playerIn["last_name"];
@@ -276,9 +275,14 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
           addSubToMap(response["data"]);
           applySub(response["data"]);
         }
+        if (stat === "SNITCH_CATCH" || stat === "AWAY_SNITCH_CATCH") {
+          $scope.addStat(null, null, "PAUSE_CLOCK");
+        }
+
         $scope.allStats.sort(function(a, b){
           return a["time"] - b["time"];
         })
+
     });
   }
 
@@ -415,6 +419,16 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
 
   $scope.seekToTime = function(time) {
     $scope.videoPlayer.seekTo(time-5);
+  }
+
+  $scope.adjustTime = function(val, curTime, id) {
+    var newTime = curTime + val;
+    $http.get("/updateStatTime/" + id + "/" + newTime).then(function(response) {
+      // update the stat box visuals
+      // maybe even resort?
+      // would reloading the list work better?
+
+    });
   }
 
   $scope.addVideo = function() {

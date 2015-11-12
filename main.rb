@@ -115,6 +115,11 @@ get '/deleteStat/:object_id' do
 	delete_stat(params[:object_id])
 end
 
+get '/updateStatTime/:object_id/:new_time' do
+	update_stat(params)
+
+end
+
 get '/addVideo/:video_id/:team_id/:fall_year/:description' do
 	add_video(params)
 end
@@ -123,7 +128,7 @@ get '/addPlayer/:first_name/:last_name' do
 	add_player(params)
 end
 
-get '/updatePlayer/:player_id/:first_name/"last_name' do
+get '/updatePlayer/:player_id/:first_name/:last_name' do
 	update_player(params)
 end
 
@@ -299,6 +304,19 @@ def delete_stat(id)
 	retObj.to_json
 
 end	
+
+def update_stat(params)
+	pp 'df'
+	pp params
+	update_stat = Parse::Query.new('Stats').tap do |q|
+		q.eq('objectid', params['object_id'])
+	end.get.first
+	pp update_stat
+	update_stat['time'] = params['new_time']
+
+	result = update_stat.save
+	result.to_json
+end
 
 def add_video(params)
 	video = params['video_id']

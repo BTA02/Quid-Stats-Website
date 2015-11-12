@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" href="/stylesheets/the.css">
     <link rel="stylesheet" type="text/css" href="/stylesheets/header.css">
   	<link rel="stylesheet" type="text/css" href="/stylesheets/scoreboard.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/record_stats.css">
   	<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
   	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" />
 
@@ -47,7 +48,11 @@
         <p>{{statObj.player_name}}</p>
         <p>{{statObj.player_in_name}}</p>
         <p>{{statObj.stat_name}}</p>
-        <p ng-click="seekToTime(statObj.time)">{{statObj.time | time:'ss':'mm:ss'}}</p>
+        <div class="timeOnStatRow">
+          <p ng-click="adjustTime(-1, statObj.time, statObj.objectId)">-</p>
+          <p ng-click="seekToTime(statObj.time)">{{statObj.time | time:'ss':'mm:ss'}}</p>
+          <p ng-click="adjustTime(1, statObj.time, statObj.objectId)">+</p>
+        </div>
         <button class="btn btn-danger btn-xs" ng-click="deleteStat(statObj.objectId)">Delete</button>
       </div>
     </div>
@@ -82,11 +87,12 @@
     </div>
 
     <!-- Players on pitch -->
-    <div class="container-fluid">
+    <div class="container-fluid playersOnPitch">
+
       <div class="playerListHolder" ng-repeat="onPlayer in onFieldPlayers track by $index">
+
         <ul class="playerList">
-          <!-- The onclick just changes the visibility of the popup div -->
-          <!-- Differentiate between positions -->
+          
           <div ng-show="$index < 3 || $index == 3">
             <h5 ng-show="$index < 3">Chaser</h5>
             <h5 ng-show="$index == 3">Keeper</h5>
@@ -111,6 +117,7 @@
           </div>
 
         </ul>
+
       </div>
     </div>
 
