@@ -42,6 +42,7 @@
 			<option value="chasers_pairs">Chaser Pairs</option>
 			<option value="chasers_trios">Chaser Lines</option>
 			<option value="quaffle_players">Quaffle Players</option>
+			<option value="full_line_up">Full Lineup</option>
 			<!-- <option value="seeker_performance">Seeker Performance</option> -->
 		</select>
 
@@ -66,19 +67,19 @@
 			<div class="col-lg-10">
 		  		<table ng-show="isPlusMinus" class="table" ng-model="statsDisp">
 		  			<thead>
-		  				<th>GROUP</th>
-		            	<th>PLUS</th>
-		            	<th>MINUS</th>
-		            	<th>NET</th>
-		            	<th>RATIO</th>
-		            	<th>TIME</th>
+		  				<th ng-click="sortPMMap('GROUP')">GROUP</th>
+		            	<th ng-click="sortPMMap('PLUS')">PLUS</th>
+		            	<th ng-click="sortPMMap('MINUS')">MINUS</th>
+		            	<th ng-click="sortPMMap('NET')">NET</th>
+		            	<th ng-click="sortPMMap('RATIO')">RATIO</th>
+		            	<th ng-click="sortPMMap('TIME')">TIME</th>
 		         	</thead>
 		  			<tbody>
-		  				<tr ng-repeat="(key,val) in statsDisp">
-		  					<td>{{key}}</td>
-		  					<td ng-repeat="(key1, val1) in val">
-		  						<p ng-if="key1=='time'">{{val1 | time:'ss':'mm:ss'}}</p>
-		  						<p ng-if="key1!='time'">{{val1}}</p>
+		  				<tr ng-repeat="row in statsDisp">
+		  					<td>{{row[0]}}</td>
+		  					<td ng-repeat="(key, val) in row[1]">
+		  						<p ng-if="key=='time'">{{val | time:'ss':'mm:ss'}}</p>
+		  						<p ng-if="key!='time'">{{val}}</p>
 	  						</td>
 		  				</tr>
 		  			</tbody>

@@ -124,7 +124,6 @@ class CalcStats
 			end				
 		end
 		if @per == 0
-
 			return @stats_map.values
 		elsif @per == 1
 			@stats_map.update(@stats_map) { |key, val|
@@ -292,13 +291,13 @@ class CalcStats
         	# why?
         	# im betting because i'm removing pairs with <5 seconds together
         	prettyTime = Time.at(v[:time]).utc.strftime("%M:%S")
-        	if v[:time] > 5
+        	if v[:time] > 0
         		# v[:time] = prettyTime
         		combo_stat_map_return[new_key] = v
         	end
         		
         }
-        combo_stat_map_return
+        combo_stat_map_return.to_a
 	end
 
 	def add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, value, category)
@@ -308,8 +307,8 @@ class CalcStats
 		end
 		if (combo_stat_map[cur_players].nil?)
 			combo_stat_map[cur_players] = {
-				plus: 0,
-				minus: 0,
+				plusses: 0,
+				minuses: 0,
 				net: 0,
 				ratio: "",
 				time: 0
@@ -317,17 +316,17 @@ class CalcStats
 		end
 		case category
 		when 'GOAL'
-			combo_stat_map[cur_players][:plus] += value
+			combo_stat_map[cur_players][:plusses] += value
 			combo_stat_map[cur_players][:net] += value
 		when 'AWAY_GOAL'
-			combo_stat_map[cur_players][:minus] += value
+			combo_stat_map[cur_players][:minuses] += value
 			combo_stat_map[cur_players][:net] -= value
 		when 'time'
 			combo_stat_map[cur_players][:time] += value
 		end
 		#ratio stuff
-		plus = combo_stat_map[cur_players][:plus]
-		minus = combo_stat_map[cur_players][:minus]
+		plus = combo_stat_map[cur_players][:plusses]
+		minus = combo_stat_map[cur_players][:minuses]
 		ratio = 0
 		if minus != 0
 			ratio = plus.to_f / minus.to_f

@@ -165,6 +165,9 @@ get '/calc_stats/:stat_selected/:per' do
 	when 'quaffle_players'
 		pos_arr = [[0,1,2,3],[0,1,2,3],[0,1,2,3],[0,1,2,3]]
 		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
+	when 'full_line_up'
+		pos_arr =[[0,1,2],[0,1,2],[0,1,2],[3],[4,5],[4,5]]
+		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
 	end
 
 

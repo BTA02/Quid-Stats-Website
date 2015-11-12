@@ -333,6 +333,27 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
   	});
   }
 
+  $scope.sortPMMap = function(category) {
+    category = convertCategoryName(category);
+    var aVal = 0;
+    var bVal = 0;
+    $scope.statsDisp.sort(function(a, b) {
+      console.log(category);
+      console.log(a[1]);
+      console.log(a[1][category]);
+      if (category == "ratio") {
+        aVal = a[1][category].substr(0, a[1][category].indexOf(':'));
+        bVal = b[1][category].substr(0, b[1][category].indexOf(':'));
+      } else {
+        aVal = a[1][category];
+        bVal = b[1][category];
+      }
+      // console.log(aVal);
+      // console.log(bVal);
+      return (bVal - aVal);
+    });
+  }
+
   $scope.sortMap = function(category) {
     category = convertCategoryName(category);
     var aVal = 0;
@@ -427,7 +448,6 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
       // update the stat box visuals
       // maybe even resort?
       // would reloading the list work better?
-
     });
   }
 
