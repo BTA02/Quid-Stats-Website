@@ -278,7 +278,7 @@ class CalcStats
         	# loop through the vals here, modding each one
         	if @per == 1 
 	        	v.update(v) { |key1, val1|
-	        		if key1 != :time && v[:time] != 0
+	        		if key1 != :time && v[:time] != 0 && key1 != :ratio
 	        			val1 = val1.to_f / (v[:time].to_f / 60.0)
 						val1.round(2)
 					else
