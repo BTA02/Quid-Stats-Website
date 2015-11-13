@@ -1,4 +1,4 @@
-var statsApp = angular.module('statsApp', ['youtube-embed'])
+var statsApp = angular.module('statsApp', ['youtube-embed', 'luegg.directives'])
 .filter('time', function() {
     var conversions = {
       'ss': angular.identity,
@@ -252,10 +252,6 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
       + "/" + playerInId).then(function(response) {
         // handle errors here, if I get them
 
-        // kick the list to the end
-        // var objDiv = document.getElementById("statsList");
-        // objDiv.scrollRight = objDiv.scrollWidth;
-
         var id = response["data"]["player_id"];
         var inId = response["data"]["player_in_id"];
         var player = $scope.playersMap.get(id);
@@ -271,6 +267,8 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
           response["data"]["player_in_name"] = inId;
         }
         $scope.allStats.push(response["data"]);
+
+
         if (stat === "SUB") {
           addSubToMap(response["data"]);
           applySub(response["data"]);
@@ -282,7 +280,6 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
         $scope.allStats.sort(function(a, b){
           return a["time"] - b["time"];
         })
-
     });
   }
 
@@ -306,7 +303,13 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
     }
   }
 
+  // function pushStatsListToBottom() {
+  //   var objDiv = document.getElementById("statsList");
+  //   console.log("objDiv");
+  //   console.log(objDiv.scrollHeight);
 
+  //   objDiv.scrollTop = objDiv.scrollHeight;
+  // }
 
 
   // Viewing stats page

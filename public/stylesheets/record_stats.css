@@ -1,4 +1,4 @@
-.timeOnStatRow > p {
+.timeOnStatColumn > p {
 	display: inline-block;
 	padding: 5px;
 }
@@ -36,20 +36,22 @@
 	filter: alpha(opacity=80);
 }
 
-#statsList > div {
-	display: inline-block;
-	border: solid 1px black;
-	width: 175px;
-}
-
 #statsList {
     text-align: center;
     /*margin: 0px auto;*/
-    width: 80%;
+    height: 400px;
+    width: 200px;
     overflow-x: scroll;
     white-space: nowrap;
     padding: 5px
 }
+
+#statsList > div {
+	/*display: inline-block;*/
+	border: solid 1px black;
+	width: 175px;
+}
+
 
 .playerList {
 	list-style: none;
