@@ -2,6 +2,7 @@
 	<head>
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
   	<script src="/js/main.js"></script>
+    <script src="/js/watch_film.js"></script>
   	<script src="angular-video/js/anguvideo.js"></script>
   	<script src="https://www.youtube.com/iframe_api"></script>
 		<script src="angular-youtube-embed/src/angular-youtube-embed.js"></script>
@@ -22,7 +23,7 @@
           <li class="username"><a href="/"><%=get_user()%> </a></li>
           <li><a href="/record">Record Stats</a></li>
           <li><a href="/stats">View Stats</a></li>
-          <li><a href="/watch" class="active">Watch Film</a></li>
+          <!-- <li><a href="/watch" class="active">Watch Film</a></li> -->
           <li><a href="/add_team">Add Team</a></li>
           <li><a href="/add_video">Add Video</a></li>
           <li class="help"><a>Help</a></li>
@@ -84,18 +85,19 @@
     <div class="container-fluid">
       <div name="statsFilter">
         <p>Stats selector</p>
-        <select>
-          <option>Shots</option>
-          <option>Goals</option>
-          <option>Assists</option>
-          <option>Turnovers</option>
-          <option>Takeaways</option>
+        <select ng-model="whichStats" ng-change="filterEvents">
+          <option value="all">All Stats</option>
+          <option value="shots">Shots</option>
+          <option value="goals">Goals</option>
+          <option value="assists">Assists</option>
+          <option value="turnovers">Turnovers</option>
+          <option value="takeaways">Takeaways</option>
         </select>
       </div>
 
       <div name="playerFilter">
         <p>Player selector</p>
-        <select>
+        <select ng-model="whichPlayers" ng-change="filterEvents">
           <option value="all">All Players</option>
           <option ng-repeat="player in allPlayers" value="{{player.objectId}}">{{player.first_name + ' ' + player.last_name}}</option>
 
