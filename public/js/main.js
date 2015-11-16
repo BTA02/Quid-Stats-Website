@@ -1,4 +1,4 @@
-var statsApp = angular.module('statsApp', ['youtube-embed', 'luegg.directives'])
+var statsApp = angular.module('statsApp', ['youtube-embed'])
 .filter('time', function() {
     var conversions = {
       'ss': angular.identity,
