@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "homepage": "https://github.com/BTA02/Quid-Stats-Website",
   "authors": [
+    "Andrew Axtell <andrew.axtell@gmail.com>",
     "David Brownman <beamneocube@gmail.com>"
+
   ],
   "license": "MIT",
   "ignore": [

@@ -20,7 +20,6 @@ app.filter('time', function() {
         // mm = Math.floor((totalSeconds % 3600) / 60),
         mm = Math.floor(totalSeconds / 60),
         ss = totalSeconds % 60;
-    
     format = format || 'hh:mm:ss';
     isPadded = angular.isDefined(isPadded)? isPadded: true;
     hh = isPadded? padding(hh, 2): hh;

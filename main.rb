@@ -69,6 +69,14 @@ get '/stats' do
 	erb :view_stats
 end
 
+get '/watch' do
+	if !logged_in?
+		redirect '/'
+	end
+	@teams = get_teams
+	erb :watch_film
+end
+
 get '/add_team' do
 	if !logged_in?
 		redirect '/'
