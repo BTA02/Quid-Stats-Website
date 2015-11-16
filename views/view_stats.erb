@@ -23,7 +23,7 @@
             <!-- <li><a href="/watch">Watch Film</a></li> -->
             <li><a href="/add_team">Add Team</a></li>
             <li><a href="/add_video">Add Video</a></li>
-            <li class="help"><a>Help</a></li>
+            <li class="help"><a href="" onclick = "document.getElementById('light_2').style.display='block';document.getElementById('fade').style.display='block'">Help</a></li>
         </ul>
       </div>
     </header>
@@ -121,6 +121,21 @@
 		  	</div>
 	  	</div>
   	</div>
+
+  	<div id="light_2" class="white_content">
+      <h4>This page is for viewing stats.</h4>
+      <h5>1. Select a team from the dropdown menu. Then, a list of finished games will appear on the left side of the screen.</h5>
+      <p>Don't see the game you want? It probably isn't finished yet. To 'finish' a game, record the stats for that game, and end it with a snitch catch. Only games with a snitch catch appear on the left side of the screen.</p>
+      <h5>2. Select a category of stat to look at. Raw stats is a good place to start.</h5>
+      <h5>3. Select some games by clicking the checkboxes next to each one.</h5>
+      <h5>4. Hit 'Go'. Your stats should appear</h5>
+      <p>You can sort by category (except names, because I can't get that to work for some reason). Just click on the category title and it will sort from most to least. Clicking again won't sort from least to most quite yet.</p>
+      <p>That ? player you see? That's nobody. I really should prevent it from showing up, but for now, it isn't a big deal. It doesn't affect any stats.</p>
+      <p>There are currently no way to take yellow or red cards. Still working on that. For now, there will just be 0's for everyone</p>
+
+      <a href = "javascript:void(0)" onclick = "document.getElementById('light_2').style.display='none';document.getElementById('fade').style.display='none'">Close<br></a>
+    </div>
+    <div id="fade" class="black_overlay"></div>
 
   	
   </body>
