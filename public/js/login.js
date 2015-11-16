@@ -1,29 +1,14 @@
-var statsApp = angular.module('statsApp', [])
-
-var page
+var statsApp = angular.module('statsApp', []);
 
 statsApp.controller('StatsController', ['$scope', '$http', function($scope, $http) {
-  
   $scope.checkPasswords = function() {
-  	if ($scope.pass1 == null) {
+  	if ($scope.pass1 === null) {
   		return false;
   	}
-    if ($scope.pass1.length == 0) {
+    if ($scope.pass1.length === 0) {
       return false;
     }
     return $scope.pass1 === $scope.pass2;
-  }
-
+  };
 }]);
-
-
-
-
-
-
-
-
-
-
-
 

@@ -1,0 +1,22 @@
+{
+  "name": "quidstatsio",
+  "version": "0.0.0",
+  "homepage": "https://github.com/BTA02/Quid-Stats-Website",
+  "authors": [
+    "David Brownman <beamneocube@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "directory": "public/lib",
+  "dependencies": {
+    "angular-youtube-mb": "~1.1.1",
+    "angular-scroll-glue": "~2.0.6",
+    "anguvideo": "~0.0.1"
+  }
+}

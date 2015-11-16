@@ -1,128 +1,96 @@
-<html ng-app="statsApp">
-	<head>
-		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
-	  	<script src="/js/main.js"></script>
-	  	<script src="angular-video/js/anguvideo.js"></script>
-	  	<script src="https://www.youtube.com/iframe_api"></script>
-		<script src="angular-youtube-embed/src/angular-youtube-embed.js"></script>
+<div name="header" class="container-fluid text-center">
+  <select name="teamSelect" ng-model="team" ng-change="getDoneGames()">
+    <option value="">Select a team</option>
+    <% @teams.each do |team| %>
+    <option value="<%= team['objectId'] %>"><%= team['team_name'] %></option>
+    <%end%>
+  </select>
+    <select name="statSelect" ng-model="statSelected">
+    <option value="raw_stats">Raw Stats</option>
+    <option value="beater_pairs">Beater Pairs</option>
+    <option value="chaser_beater_beater">Chaser Beater Beater</option>
+    <option value="chasers_pairs">Chaser Pairs</option>
+    <option value="chasers_trios">Chaser Lines</option>
+    <option value="quaffle_players">Quaffle Players</option>
+    <option value="full_line_up">Full Lineup</option>
+    <!-- <option value="seeker_performance">Seeker Performance</option> -->
+  </select>
 
-	  	<link rel="stylesheet" type="text/css" href="/stylesheets/the.css">
-	  	<link rel="stylesheet" type="text/css" href="/stylesheets/header.css">
-	  	<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-	  	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" />
-	    <title>Quidstats</title>
-	</head>
+<button class="btn btn-default" ng-click="calcStats()">Go</button>
+</div>
 
-  <body ng-controller="StatsController">
-  	<header>
-      <div class="nav">
-        <ul>
-            <li class="username"><a href="/"><%=get_user()%> </a></li>
-            <li><a href="/record">Record Stats</a></li>
-            <li><a href="/stats" class="active">View Stats</a></li>
-            <!-- <li><a href="/watch">Watch Film</a></li> -->
-            <li><a href="/add_team">Add Team</a></li>
-            <li><a href="/add_video">Add Video</a></li>
-            <li class="help"><a href="" onclick = "document.getElementById('light_2').style.display='block';document.getElementById('fade').style.display='block'">Help</a></li>
-        </ul>
-      </div>
-    </header>
+<div name="modifiers" class="container-fluid" align="center">
+<input type="checkbox" ng-model="perMinute" ng-true-value="1" ng-false-value="0">Per Minute</input>
+</div>
 
-  	<div name="header" class="container-fluid text-center">
-  		<select name="teamSelect" ng-model="team" ng-change="getDoneGames()">
-  			<option value="">Select a team</option>
-  			<% @teams.each do |team| %>
-  			<option value="<%= team['objectId']%>"><%=team['team_name']%></option>
-  			<%end%>
-  		</select>
-
-  		<select name="statSelect" ng-model="statSelected">
-  			<option value="raw_stats">Raw Stats</option>
-  			<option value="beater_pairs">Beater Pairs</option>
-  			<option value="chaser_beater_beater">Chaser Beater Beater</option>
-			<option value="chasers_pairs">Chaser Pairs</option>
-			<option value="chasers_trios">Chaser Lines</option>
-			<option value="quaffle_players">Quaffle Players</option>
-			<option value="full_line_up">Full Lineup</option>
-			<!-- <option value="seeker_performance">Seeker Performance</option> -->
-		</select>
-
-		<button class="btn btn-default" ng-click="calcStats()">Go</button>
-	</div>
-
-	<div name="modifiers" class="container-fluid" align="center">
-		<input type="checkbox" ng-model="perMinute" ng-true-value="1" ng-false-value="0">Per Minute</input>
-	</div>
-
-	<!-- Games selector -->
-	<div class="container-fluid">
-        <div class="row">
-			<div class="col-lg-2">
-				<h2>Games</h2>
-		  		<div ng-repeat="game in doneGames">
-					<input type="checkbox" value="game.vid_id" ng-click="toggleGame(game.vid_id)"> 
-					{{game.description}}
-				</div>
-			</div>
-	  	
-			<div class="col-lg-10">
-		  		<table ng-show="isPlusMinus" class="table" ng-model="statsDisp">
-		  			<thead>
-		  				<th ng-click="sortPMMap('GROUP')">GROUP</th>
-		            	<th ng-click="sortPMMap('PLUS')">PLUS</th>
-		            	<th ng-click="sortPMMap('MINUS')">MINUS</th>
-		            	<th ng-click="sortPMMap('NET')">NET</th>
-		            	<th ng-click="sortPMMap('RATIO')">RATIO</th>
-		            	<th ng-click="sortPMMap('TIME')">TIME</th>
-		         	</thead>
-		  			<tbody>
-		  				<tr ng-repeat="row in statsDisp">
-		  					<td>{{row[0]}}</td>
-		  					<td ng-repeat="(key, val) in row[1]">
-		  						<p ng-if="key=='time'">{{val | time:'ss':'mm:ss'}}</p>
-		  						<p ng-if="key!='time'">{{val}}</p>
-	  						</td>
-		  				</tr>
-		  			</tbody>
-		  		</table>
-
-		  		<table ng-hide="isPlusMinus" class="table table-striped table-condensed" ng-model="statsDisp">
-		  			<!-- <thead>
-		  				<th ng-repeat="(key, val) in statsDisp[Object.keys(statsDisp)[0]]">{{key}}</th>
-		  			</thead> -->
-		  			<thead>
-		            <th ng-click="sortMap('FIRST')">FIRST</th>
-		            <th ng-click="sortMap('LAST')">LAST</th>
-		            <th ng-click="sortMap('SHOTS')">SHOTS</th>
-		            <th ng-click="sortMap('GOALS')">GOALS</th>
-		            <th ng-click="sortMap('ASSISTS')">ASSISTS</th>
-		            <th ng-click="sortMap('TURNOVERS')">TURNOVERS</th>
-		            <th ng-click="sortMap('TAKEAWAYS')">TAKEAWAYS</th>
-		            <th ng-click="sortMap('YELLOWS')">YELLOWS</th>
-		            <th ng-click="sortMap('REDS')">REDS</th>
-		            <th ng-click="sortMap('SNITCHES')">SNITCHES</th>
-		            <th ng-click="sortMap('PLUS')">PLUS</th>
-		            <th ng-click="sortMap('MINUS')">MINUS</th>
-		            <th ng-click="sortMap('NET')">NET</th>
-		            <th ng-click="sortMap('RATIO')">RATIO</th>
-		            <th ng-click="sortMap('TIME')">TIME</th>
-		            <!-- <th>GAIN CONTROL</th> -->
-		            <!-- <th>LOSE CONTROL</th> -->
-		         </thead>
-		  			<tbody>
-		  				<tr ng-repeat="row in statsDisp">
-		  					<td ng-repeat="(key, val) in row">
-		  						<p ng-if="key=='time'">{{val | time:'ss':'mm:ss'}}</p>
-		  						<p ng-if="key!='time'">{{val}}</p>
-	  						</td>
-		  				</tr>
-		  			</tbody>
-		  		</table>
-		  	</div>
-	  	</div>
-  	</div>
-
-  	<div id="light_2" class="white_content">
+<!-- Games selector -->
+<div class="container-fluid">
+    <div class="row">
+  <div class="col-lg-2">
+    <h2>Games</h2>
+      <div ng-repeat="game in doneGames">
+      <input type="checkbox" value="game.vid_id" ng-click="toggleGame(game.vid_id)"> 
+      {{game.description}}
+    </div>
+  </div>
+  
+  <div class="col-lg-10">
+      <table ng-show="isPlusMinus" class="table" ng-model="statsDisp">
+        <thead>
+          <th ng-click="sortPMMap('GROUP')">GROUP</th>
+              <th ng-click="sortPMMap('PLUS')">PLUS</th>
+              <th ng-click="sortPMMap('MINUS')">MINUS</th>
+              <th ng-click="sortPMMap('NET')">NET</th>
+              <th ng-click="sortPMMap('RATIO')">RATIO</th>
+              <th ng-click="sortPMMap('TIME')">TIME</th>
+          </thead>
+        <tbody>
+          <tr ng-repeat="row in statsDisp">
+            <td>{{row[0]}}</td>
+            <td ng-repeat="(key, val) in row[1]">
+              <p ng-if="key=='time'">{{val}}</p>  <!-- | myTime: 'ss':'mm:ss' -->
+              <p ng-if="key!='time'">{{val}}</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <table ng-hide="isPlusMinus" class="table table-striped table-condensed" ng-model="statsDisp">
+        <!-- <thead>
+          <th ng-repeat="(key, val) in statsDisp[Object.keys(statsDisp)[0]]">{{key}}</th>
+        </thead> -->
+        <thead>
+            <th ng-click="sortMap('FIRST')">FIRST</th>
+            <th ng-click="sortMap('LAST')">LAST</th>
+            <th ng-click="sortMap('SHOTS')">SHOTS</th>
+            <th ng-click="sortMap('GOALS')">GOALS</th>
+            <th ng-click="sortMap('ASSISTS')">ASSISTS</th>
+            <th ng-click="sortMap('TURNOVERS')">TURNOVERS</th>
+            <th ng-click="sortMap('TAKEAWAYS')">TAKEAWAYS</th>
+            <th ng-click="sortMap('YELLOWS')">YELLOWS</th>
+            <th ng-click="sortMap('REDS')">REDS</th>
+            <th ng-click="sortMap('SNITCHES')">SNITCHES</th>
+            <th ng-click="sortMap('PLUS')">PLUS</th>
+            <th ng-click="sortMap('MINUS')">MINUS</th>
+            <th ng-click="sortMap('NET')">NET</th>
+            <th ng-click="sortMap('RATIO')">RATIO</th>
+            <th ng-click="sortMap('TIME')">TIME</th>
+            <!-- <th>GAIN CONTROL</th> -->
+            <!-- <th>LOSE CONTROL</th> -->
+         </thead>
+        <tbody>
+          <tr ng-repeat="row in statsDisp">
+            <td ng-repeat="(key, val) in row">
+              <p ng-if="key=='time'">{{val}}</p>  <!-- | myTime: 'ss':'mm:ss' -->
+              <p ng-if="key!='time'">{{val}}</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div id="light_2" class="white_content">
       <h4>This page is for viewing stats.</h4>
       <h5>1. Select a team from the dropdown menu. Then, a list of finished games will appear on the left side of the screen.</h5>
       <p>Don't see the game you want? It probably isn't finished yet. To 'finish' a game, record the stats for that game, and end it with a snitch catch. Only games with a snitch catch appear on the left side of the screen.</p>
@@ -136,7 +104,3 @@
       <a href = "javascript:void(0)" onclick = "document.getElementById('light_2').style.display='none';document.getElementById('fade').style.display='none'">Close<br></a>
     </div>
     <div id="fade" class="black_overlay"></div>
-
-  	
-  </body>
-</html>
