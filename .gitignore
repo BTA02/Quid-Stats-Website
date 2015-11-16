@@ -40,3 +40,6 @@ build/
 
 .env
 .DS_Store
+
+# js stuff
+public/lib

@@ -1,87 +1,50 @@
-<html ng-app="statsApp">
-	<head>
-		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
-	  	<script src="/js/main.js"></script>
-	  	<script src="/js/login.js"></script>
-	  	<script src="angular-video/js/anguvideo.js"></script>
-	  	<script src="https://www.youtube.com/iframe_api"></script>
-		<script src="angular-youtube-embed/src/angular-youtube-embed.js"></script>
+<div class="container">
+	<div class="welcome">
+		<h3 align="center">Welcome to QuidStats</h3>
 
-	  	<link rel="stylesheet" type="text/css" href="/stylesheets/the.css">
-	  	<link rel="stylesheet" type="text/css" href="/stylesheets/header.css">
-	  	<link rel="stylesheet" type="text/css" href="/stylesheets/login.css"
+		<h4>You must be logged in to view any pages. If you keep ending up on this page, it's because you aren't logged in</h4>
 
-
-	  	<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-	  	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" />
-	    <title>Quidstats</title>
-	</head>
-
-  <body ng-controller="StatsController">
-		<header>
-		    <div class="nav">
-		      <ul>
-		      	<li class="username"><a href="/"><%=get_user()%> </a></li>
-		        <li><a href="/record">Record Stats</a></li>
-		        <li><a href="/stats">View Stats</a></li>
-		        <li><a href="/add_team">Add Team</a></li>
-		        <li><a href="/add_video">Add Video</a></li>
-		        <li class="help"><a>Help</a></li>
-		      </ul>
-		    </div>
-	  	</header>
-
-  		<div class="container">
-		  	<div class="welcome">
-		  		<h3 align="center">Welcome to QuidStats</h3>
-
-		  		<h4>You must be logged in to view any pages. If you keep ending up on this page, it's because you aren't logged in</h4>
-
-		  		<p>The primary goal of this website is to provide a tool for taking statistics on quidditch matches. With that said, this is also a tool to help generate more public quidditch film. All team rosters and videos will be public. Any user can login, select any team, and watch any game that has been submitted. Users can also submit videos of any team. However, all stats will be private to a user. I understand teams like to keep their film private, but hopefully teams find that getting stats actually makes posting their video a net win for them. Videos must be public YouTube videos to work on this site. Don't try and cheat the system.</p>
-				
-				<p>Also, currently, there isn't a way to share stats with other users, so I suggest making an account for your entire organization.</p>
-		  	</div>
-	  	</div>
-		<!-- login form -->
-		<div>
-			<div class="login">
-				<div class="container-fluid form" align="center">
-					<h1>Login</h1>
-					<form action="/log_in" method="post">
-					 	<div class="form-group">
-					    	<label for="exampleInputEmail1">Email address</label>
-					    	<input name="email" type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
-					  	</div>
-					  	<div class="form-group">
-					    	<label for="exampleInputPassword1">Password</label>
-					    	<input name="password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-					  	</div>
-					  	<button type="submit" class="btn btn-default">Submit</button>
-					</form>
-				</div>
-
-				<div class="container-fluid form" align="center">
-					<h1>Sign-Up</h1>
-					<form action="/sign_up" method="post">
-					 	<div class="form-group">
-					    	<label for="exampleInputEmail1">Email address</label>
-					    	<input name="email" type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
-					  	</div>
-					  	<div class="form-group">
-					    	<label for="exampleInputPassword1">Password</label>
-					    	<input name="pass1" ng-model="pass1" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-					  	</div>
-					  	<div class="form-group">
-					    	<label for="exampleInputPassword2">Confirm Password</label>
-					    	<input name="pass2" ng-model="pass2" type="password" class="form-control" id="exampleInputPassword2" placeholder="Confirm Password">
-					  	</div>
-					  	<button type="submit" class="btn btn-default" ng-show="checkPasswords()">Submit</button>
-					  	<p ng-show="!checkPasswords()" style="color:red">Passwords do not match</p>
-					</form>
-				</div>
-			</div>
+		<p>The primary goal of this website is to provide a tool for taking statistics on quidditch matches. With that said, this is also a tool to help generate more public quidditch film. All team rosters and videos will be public. Any user can login, select any team, and watch any game that has been submitted. Users can also submit videos of any team. However, all stats will be private to a user. I understand teams like to keep their film private, but hopefully teams find that getting stats actually makes posting their video a net win for them. Videos must be public YouTube videos to work on this site. Don't try and cheat the system.</p>
+	
+	<p>Also, currently, there isn't a way to share stats with other users, so I suggest making an account for your entire organization.</p>
+	</div>
+</div>
+<!-- login form -->
+<div>
+	<div class="login">
+		<div class="container-fluid form" align="center">
+			<h1>Login</h1>
+			<form action="/log_in" method="post">
+			 	<div class="form-group">
+			    	<label for="exampleInputEmail1">Email address</label>
+			    	<input name="email" type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+			  	</div>
+			  	<div class="form-group">
+			    	<label for="exampleInputPassword1">Password</label>
+			    	<input name="password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+			  	</div>
+			  	<button type="submit" class="btn btn-default">Submit</button>
+			</form>
 		</div>
 
-	</body>
-
-</html>	
+		<div class="container-fluid form" align="center">
+			<h1>Sign-Up</h1>
+			<form action="/sign_up" method="post">
+			 	<div class="form-group">
+			    	<label for="exampleInputEmail1">Email address</label>
+			    	<input name="email" type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+			  	</div>
+			  	<div class="form-group">
+			    	<label for="exampleInputPassword1">Password</label>
+			    	<input name="pass1" ng-model="pass1" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+			  	</div>
+			  	<div class="form-group">
+			    	<label for="exampleInputPassword2">Confirm Password</label>
+			    	<input name="pass2" ng-model="pass2" type="password" class="form-control" id="exampleInputPassword2" placeholder="Confirm Password">
+			  	</div>
+			  	<button type="submit" class="btn btn-default" ng-show="checkPasswords()">Submit</button>
+			  	<p ng-show="!checkPasswords()" style="color:red">Passwords do not match</p>
+			</form>
+		</div>
+	</div>
+</div>

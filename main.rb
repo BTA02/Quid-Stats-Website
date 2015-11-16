@@ -2,7 +2,7 @@ require 'sinatra'
 require 'parse-ruby-client'
 require 'json'
 require 'pp'
-require 'net/http'
+
 require_relative 'calc_stats'
 require_relative 'raw_stats'
 
@@ -20,16 +20,16 @@ end
 helpers do
   def get_user
   	if !session[:username].nil?
-	  "<p>"+session[:username]+"</p>"
+	  	"<p>"+session[:username]+"</p>"
   	else
-  	  "<p>Login</p>"
-    end
+  		"<p>Login</p>"
+  	end
   end
 
   # ruby convention says methods that return bool should end with ?
   def logged_in?
   	# implicit return lets you clean this up a lot
-  	!session[:username].nil? || true
+  	!session[:username].nil?
   end
 end
 
@@ -190,6 +190,7 @@ def sign_up_user(params)
 	session[:authorId] = ret_val["objectId"]
 	session[:username] = ret_val["username"]
 	ret_val.to_json
+	# this should redirect to a logged in page
 end
 
 # what happenes if the password is wrong?

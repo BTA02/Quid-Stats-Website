@@ -1,38 +1,37 @@
-var statsApp = angular.module('statsApp', ['youtube-embed', 'luegg.directives'])
-.filter('time', function() {
-    var conversions = {
-      'ss': angular.identity,
-      'mm': function(value) { return value * 60; },
-      'hh': function(value) { return value * 3600; }
-    };
-    
-    var padding = function(value, length) {
-      var zeroes = length - ('' + (value)).length,
-          pad = '';
-      while(zeroes-- > 0) pad += '0';
-      return pad + value;
-    };
-    
-    return function(value, unit, format, isPadded) {
-      var totalSeconds = conversions[unit || 'ss'](value),
-          hh = Math.floor(totalSeconds / 3600),
-          // mm = Math.floor((totalSeconds % 3600) / 60),
-          mm = Math.floor(totalSeconds / 60),
-          ss = totalSeconds % 60;
-      
-      format = format || 'hh:mm:ss';
-      isPadded = angular.isDefined(isPadded)? isPadded: true;
-      hh = isPadded? padding(hh, 2): hh;
-      mm = isPadded? padding(mm, 2): mm;
-      ss = isPadded? padding(ss, 2): ss;
-      
-      return format.replace(/hh/, hh).replace(/mm/, mm).replace(/ss/, ss);
-    };
-  });
+var app = angular.module('statsApp', ['youtube-embed', 'luegg.directives']);
 
-var page;
+app.filter('time', function() {
+  var conversions = {
+    'ss': angular.identity,
+    'mm': function(value) { return value * 60; },
+    'hh': function(value) { return value * 3600; }
+  };
+  
+  var padding = function(value, length) {
+    var zeroes = length - ('' + (value)).length,
+        pad = '';
+    while(zeroes-- > 0) pad += '0';
+    return pad + value;
+  };
+  
+  return function(value, unit, format, isPadded) {
+    var totalSeconds = conversions[unit || 'ss'](value),
+        hh = Math.floor(totalSeconds / 3600),
+        // mm = Math.floor((totalSeconds % 3600) / 60),
+        mm = Math.floor(totalSeconds / 60),
+        ss = totalSeconds % 60;
+    
+    format = format || 'hh:mm:ss';
+    isPadded = angular.isDefined(isPadded)? isPadded: true;
+    hh = isPadded? padding(hh, 2): hh;
+    mm = isPadded? padding(mm, 2): mm;
+    ss = isPadded? padding(ss, 2): ss;
+    
+    return format.replace(/hh/, hh).replace(/mm/, mm).replace(/ss/, ss);
+  };
+});
 
-statsApp.controller('StatsController', ['$scope', '$http', '$interval', function($scope, $http, $interval) {
+app.controller('StatsController', ['$scope', '$http', '$interval', function($scope, $http, $interval) {
   
   $scope.getDoneGames = function() {
   	$scope.doneGames = [];
@@ -318,7 +317,7 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
 
   $scope.calcStats = function() {
     var ids;
-    if ($scope.selectedGames == null || $scope.selectedGames.length === 0) {
+    if ($scope.selectedGames === null || $scope.selectedGames.length === 0) {
       alert("Please select some games");
       return;
     } else {
@@ -499,15 +498,3 @@ statsApp.controller('StatsController', ['$scope', '$http', '$interval', function
   // then send them to the main screen
 
 }]);
-
-
-
-
-
-
-
-
-
-
-
-
