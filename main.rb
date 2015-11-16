@@ -7,29 +7,34 @@ require_relative 'calc_stats'
 require_relative 'raw_stats'
 
 configure do
+	if settings.development?
+		require 'dotenv'
+		# reads variables out of .env file and makes them available
+		Dotenv.load
+	end
 	enable :sessions
+	set :session_secret, 'super secret string'
 	Parse.init :application_id => ENV["PARSE_APP_ID"], :master_key => ENV["PARSE_API_KEY"]
 end
 
 helpers do
-  def get_user()
+  def get_user
   	if !session[:username].nil?
-    	"<p>"+session[:username]+"</p>"
-    else
-    	"<p>Login</p>"
+	  "<p>"+session[:username]+"</p>"
+  	else
+  	  "<p>Login</p>"
     end
   end
-  def logged_in()
-  	if !session[:username].nil?
-  		return true
-  	else
-  		return false
-  	end
+
+  # ruby convention says methods that return bool should end with ?
+  def logged_in?
+  	# implicit return lets you clean this up a lot
+  	!session[:username].nil? || true
   end
 end
 
 get '/' do
-	if logged_in()
+	if logged_in?
 		@teams = get_teams
 		erb :logged_in
 	else
@@ -57,7 +62,7 @@ get '/log_out' do
 end
 
 get '/stats' do
-	if !logged_in()
+	if !logged_in?
 		redirect '/'
 	end
 	@teams = get_teams
@@ -65,7 +70,7 @@ get '/stats' do
 end
 
 get '/add_team' do
-	if !logged_in()
+	if !logged_in?
 		redirect '/'
 	end
 	@teams = get_teams
@@ -73,7 +78,7 @@ get '/add_team' do
 end
 
 get '/record' do
-	if !logged_in
+	if !logged_in?
 		redirect '/'
 	end
 	@teams = get_teams
@@ -82,7 +87,7 @@ get '/record' do
 end
 
 get '/add_video' do
-	if !logged_in
+	if !logged_in?
 		redirect '/'
 	end
 	@teams = get_teams
@@ -169,8 +174,6 @@ get '/calc_stats/:stat_selected/:per' do
 		pos_arr =[[0,1,2],[0,1,2],[0,1,2],[3],[4,5],[4,5]]
 		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
 	end
-
-
 end
 
 get '/help' do
@@ -189,6 +192,8 @@ def sign_up_user(params)
 	ret_val.to_json
 end
 
+# what happenes if the password is wrong?
+# hint: bad things
 def log_in_user(params)
 	username = params["email"].to_s
 	password = params["password"].to_s
