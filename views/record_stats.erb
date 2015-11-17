@@ -25,7 +25,7 @@
           <!-- <li><a href="/watch">Watch Film</a></li> -->
           <li><a href="/add_team">Add Team</a></li>
           <li><a href="/add_video">Add Video</a></li>
-          <li class="help"><a>Help</a></li>
+          <li class="help"><a href="" onclick = "document.getElementById('light_2').style.display='block';document.getElementById('fade').style.display='block'">Help</a></li>
         </ul>
       </div>
     </header>
@@ -89,7 +89,7 @@
       <button class="btn btn-default" ng-click="addStat(null, null, 'START_CLOCK')">Game (Re)Start</button>
       <button class="btn btn-default" ng-click="addStat(null, null, 'PAUSE_CLOCK')">Game Stoppage</button>
       <button class="btn btn-default" ng-click="addStat(null, null, 'AWAY_GOAL')">Away Goal</button>
-      <button class="btn btn-default" ng-click="addStat(null, null, 'SNITCH_ON_PITCH')">Snitch on pitch</button>
+      <button class="btn btn-default" ng-click="addStat(null, null, 'SNITCH_ON_PITCH')">Seekers Released</button>
       <button class="btn btn-default" ng-click="addStat(null, null, 'AWAY_SNITCH_CATCH')">Opponent snitch catch</button>
     </div>
 
@@ -136,6 +136,30 @@
     </div>
     <div id="fade" class="black_overlay"></div>
 
+    <div id="light_2" class="white_content">
+      <h4>This page is for recording stats for a given game.</h4>
+      <h5>1. Select a team from the dropdown menu. Then, the next dropdown will automatically populate with all the games stored for that particular team.</h5>
+      <p>Don't see the game you want? Try adding it using the 'Add Video' tab</p>
+      <h5>2. Once your game is selected, the video will automatically load, as will some players.</h5>
+      <h5>3. If this is the first time you are taking stats on a game, the players that load will be 'chaserA', 'chaserB', and so on. Those are dummy players.</h5>
+      <h5>4. Now that everything has loaded, it's time to take stats.</h5>
+      <p>Adding a stat will automatically pause the video. Just go with it for now. If you hate it, let me know. I'm undecided on if it's a good thing or not.</p>
+      <p>a. Click on each dummy player, and sub in the starter at that position. Don't sub in a seeker yet.</p>
+      <p>b. Now start the video, and use 'Game (Re)Start' to start the game time on 'Brooms Up'. This button is also used after each stoppage of play, to indicate that the game clock is running.</p>
+      <p>c. Record each stat as they happen, when they happen in the video. Stats are added at the time on the youtube video. If you miss something, rewind the video, and add the stat when it happens.</p>
+      <p>d. When the clock stops, either for penalty or other reason, use the 'Game Stoppage' button. Use 'Game Restart' when the clock starts again.</p>
+      <p>e. Away goal means the other team scored, duh.</p>
+      <p>f. Seekers released in the end of the seeker floor. After selecting 'seekers released', sub in the seeker for the dummy player</p>
+      <p>g. Opponent snitch catch, it means they caught the snitch. This will automatically add a 'Game Stoppage' to the game, so once that button is clicked, you don't need to add any more events. Unless there is overtime, which I haven't worked on yet.</p>
+      <p>h. The events (shot, goal, assist, etc...) under each player are obvious. If a player does a thing, click the corresponding item in the list under their name. You'll notice that there is a very limited selection under each player. So it goes. If you want options added (especially for beater), let me know.</p>
+      <p>i. A goal will only show up as 'goal' on the sidebar, but when calculating stats, it goes down as a shot and goal. If a player shoots and scores, only record a goal.</p>
+      <h5>Events added automatically populate on the side of the video. If your event isn't in that list, then you should try adding it again, because it didn't save.</h5>
+      <h5>Clicking anywhere except the 'Delete' button on one of those cards to the right of the video jumps to 5 seconds before the timestamp of the event. It's a good way to watch things over again</h5>
+
+
+      <a href = "javascript:void(0)" onclick = "document.getElementById('light_2').style.display='none';document.getElementById('fade').style.display='none'">Close<br></a>
+    </div>
+    <div id="fade" class="black_overlay"></div>
 
 
 
