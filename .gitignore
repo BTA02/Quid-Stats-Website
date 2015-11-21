@@ -43,3 +43,6 @@ build/
 
 # js stuff
 public/lib
+
+# other
+npm-debug.log
