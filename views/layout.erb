@@ -2,7 +2,8 @@
 <html ng-app="statsApp">
   <head>
     <title> <%= @title || 'Quidstats' %> </title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="/stylesheets/the.css">
     <link rel="stylesheet" href="/stylesheets/header.css">
     <link rel="stylesheet" href="/stylesheets/login.css">
@@ -13,7 +14,7 @@
       <div class="nav">
         <ul>
           <li class="username"><a href="/"><%= get_user %> </a></li>
-          <li><a href="/record" class="active">Record Stats</a></li>
+          <li><a href="/record">Record Stats</a></li>
           <li><a href="/stats">View Stats</a></li>
           <li><a href="/add_team">Add Team</a></li>
           <li><a href="/add_video">Add Video</a></li>

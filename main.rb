@@ -70,7 +70,7 @@ get '/stats' do
 end
 
 get '/watch' do
-	if !logged_in()
+	if !logged_in?
 		redirect '/'
 	end
 	@teams = get_teams
