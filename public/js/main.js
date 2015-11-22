@@ -1,4 +1,4 @@
-var app = angular.module('statsApp', ['youtube-embed', 'luegg.directives']);
+var app = angular.module('app', ['youtube-embed', 'luegg.directives']);
 
 app.filter('time', function() {
   var conversions = {
@@ -338,7 +338,7 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
   };
 
   $scope.sortPMMap = function(category) {
-    category = convertCategoryName(category);
+    category = $scope.convertCategoryName(category);
     var aVal = 0;
     var bVal = 0;
     $scope.statsDisp.sort(function(a, b) {
@@ -359,7 +359,7 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
   };
 
   $scope.sortMap = function(category) {
-    category = convertCategoryName(category);
+    category = $scope.convertCategoryName(category);
     var aVal = 0;
     var bVal = 0;
     $scope.statsDisp.sort(function(a, b) {
@@ -380,7 +380,26 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     });
   };
 
-  function convertCategoryName(category) {
+  $scope.rawCategoriesToDisplay = [
+    'FIRST', 
+    'LAST', 
+    'SHOTS', 
+    'GOALS', 
+    'ASSISTS',
+    'POINTS',
+    'TURNOVERS', 
+    'TAKEAWAYS',
+    // 'YELLOWS',
+    // 'REDS',
+    'SNITCHES',
+    'PLUS',
+    'MINUS',
+    'NET',
+    'RATIO',
+    'TIME'
+  ];
+
+  $scope.convertCategoryName = function(category) {
     var ret;
     switch(category) {
       case "FIRST":
@@ -397,6 +416,9 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
         break;
       case "ASSISTS":
         ret = "assist";
+        break;
+      case "POINTS":
+        ret = "point";
         break;
       case "TURNOVERS":
         ret = "turnover";

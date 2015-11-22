@@ -59,30 +59,40 @@
         <!-- <thead>
           <th ng-repeat="(key, val) in statsDisp[Object.keys(statsDisp)[0]]">{{key}}</th>
         </thead> -->
-        <thead>
-            <th ng-click="sortMap('FIRST')">FIRST</th>
-            <th ng-click="sortMap('LAST')">LAST</th>
-            <th ng-click="sortMap('SHOTS')">SHOTS</th>
-            <th ng-click="sortMap('GOALS')">GOALS</th>
-            <th ng-click="sortMap('ASSISTS')">ASSISTS</th>
-            <th ng-click="sortMap('TURNOVERS')">TURNOVERS</th>
-            <th ng-click="sortMap('TAKEAWAYS')">TAKEAWAYS</th>
-            <th ng-click="sortMap('YELLOWS')">YELLOWS</th>
-            <th ng-click="sortMap('REDS')">REDS</th>
-            <th ng-click="sortMap('SNITCHES')">SNITCHES</th>
-            <th ng-click="sortMap('PLUS')">PLUS</th>
-            <th ng-click="sortMap('MINUS')">MINUS</th>
-            <th ng-click="sortMap('NET')">NET</th>
-            <th ng-click="sortMap('RATIO')">RATIO</th>
-            <th ng-click="sortMap('TIME')">TIME</th>
+        <!-- <thead> -->
+            <!-- <th ng-click="sortMap('FIRST')">FIRST</th> -->
+            <!-- <th ng-click="sortMap('LAST')">LAST</th> -->
+            <!-- <th ng-click="sortMap('SHOTS')">SHOTS</th> -->
+            <!-- <th ng-click="sortMap('GOALS')">GOALS</th> -->
+            <!-- <th ng-click="sortMap('ASSISTS')">ASSISTS</th> -->
+            <!-- <th ng-click="sortMap('TURNOVERS')">TURNOVERS</th> -->
+            <!-- <th ng-click="sortMap('TAKEAWAYS')">TAKEAWAYS</th> -->
+            <!-- <th ng-click="sortMap('YELLOWS')">YELLOWS</th> -->
+            <!-- <th ng-click="sortMap('REDS')">REDS</th> -->
+            <!-- <th ng-click="sortMap('SNITCHES')">SNITCHES</th> -->
+            <!-- <th ng-click="sortMap('PLUS')">PLUS</th> -->
+            <!-- <th ng-click="sortMap('MINUS')">MINUS</th> -->
+            <!-- <th ng-click="sortMap('NET')">NET</th> -->
+            <!-- <th ng-click="sortMap('RATIO')">RATIO</th> -->
+            <!-- <th ng-click="sortMap('TIME')">TIME</th> -->
             <!-- <th>GAIN CONTROL</th> -->
             <!-- <th>LOSE CONTROL</th> -->
-         </thead>
+         <!-- </thead> -->
+         <thead>
+          <th ng-repeat="cat in rawCategoriesToDisplay" ng-click="sortMap(cat)">{{cat}}</th>
+        </thead>
+
         <tbody>
           <tr ng-repeat="row in statsDisp">
-            <td ng-repeat="(key, val) in row">
-              <p ng-if="key=='time'">{{val}}</p>  <!-- | myTime: 'ss':'mm:ss' -->
+            <!-- <td ng-repeat="(key, val) in row">
+              <p ng-if="key=='time'">{{val | time:'ss':'mm:ss'}}</p>
               <p ng-if="key!='time'">{{val}}</p>
+            </td> -->
+            <td ng-repeat="(key, val) in row">
+              <!-- <p>{{row[rawCategoriesToDisplay[$index]}}</p> -->
+              <!-- <p>{{row[rawCategoriesToDisplay[$index]]}}</p> -->
+              <!-- <p ng-if="key=='time'">{{row[convertCategoryName(rawCategoriesToDisplay[$index])] | time:'ss':'mm:ss'}}</p> -->
+              <p ng-if="key!='time'">{{row[convertCategoryName(rawCategoriesToDisplay[$index])]}}</p>
             </td>
           </tr>
         </tbody>
