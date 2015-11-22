@@ -92,7 +92,8 @@
               <!-- <p>{{row[rawCategoriesToDisplay[$index]}}</p> -->
               <!-- <p>{{row[rawCategoriesToDisplay[$index]]}}</p> -->
               <!-- <p ng-if="key=='time'">{{row[convertCategoryName(rawCategoriesToDisplay[$index])] | time:'ss':'mm:ss'}}</p> -->
-              <p ng-if="key!='time'">{{row[convertCategoryName(rawCategoriesToDisplay[$index])]}}</p>
+              <p ng-if="rawCategoriesToDisplay[$index]=='TIME'">{{row[convertCategoryName(rawCategoriesToDisplay[$index])] | time:'ss':'mm:ss'}}</p>
+              <p ng-if="rawCategoriesToDisplay[$index]!='TIME'">{{row[convertCategoryName(rawCategoriesToDisplay[$index])]}}</p>
             </td>
           </tr>
         </tbody>
