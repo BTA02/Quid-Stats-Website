@@ -102,6 +102,10 @@ get '/add_video' do
 	erb :add_video_dumb
 end
 
+get '/public' do
+	erb :public
+end
+
 # FUNCTION CALLS
 
 get '/doneGames/:team_id' do
