@@ -1,4 +1,6 @@
 <!-- HERE WE GO!!! -->
 <div class="container-fluid">
-	<a ng-repeat="user in users" href="">UserNum</a>
+	<% @users.each do |user| %>
+		<a href="/public/<%=user['objectId']%>/stats"><%= user['username'] %></a>
+	<%end%>
 </div>

@@ -1,8 +1,8 @@
 <div name="header" class="container-fluid text-center">
-  <select name="teamSelect" ng-model="team" ng-change="getDoneGames()">
+  <select name="teamSelect" ng-model="team" ng-change="getDoneGames('<%= @userId %>')">
     <option value="">Select a team</option>
     <% @teams.each do |team| %>
-    <option value="<%= team['objectId'] %>"><%= team['team_name'] %></option>
+      <option value="<%= team['objectId'] %>"><%= team['team_name'] %></option>
     <%end%>
   </select>
     <select name="statSelect" ng-model="statSelected">

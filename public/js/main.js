@@ -33,19 +33,19 @@ app.filter('time', function() {
 
 app.controller('StatsController', ['$scope', '$http', '$interval', function($scope, $http, $interval) {
   
-  $scope.getDoneGames = function() {
-  	$scope.doneGames = [];
-  	$http.get("/doneGames/" + $scope.team).then(function(response) {
-  		$scope.doneGames = response.data;
-  	});
+  $scope.getDoneGames = function(userId) {
+    $scope.doneGames = [];
+    $http.get("/doneGames/" + $scope.team + "/" + userId).then(function(response) {
+      $scope.doneGames = response.data;
+    });
     $scope.selectedGames = [];
   };
 
   // Recording stats section
 
-  $scope.getAllGames = function() {
+  $scope.getAllGames = function(userId) {
     $scope.allGames = [];
-    $http.get("/allGames/" + $scope.team).then(function(response) {
+    $http.get("/allGames/" + $scope.team + "/" + userId).then(function(response) {
       $scope.allGames = response.data;
     });
   };
@@ -391,7 +391,7 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     'TAKEAWAYS',
     // 'YELLOWS',
     // 'REDS',
-    'SNITCHES',
+    // 'SNITCHES',
     'PLUS',
     'MINUS',
     'NET',
@@ -519,8 +519,5 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
   $scope.filterEvents = function() {
     
   }
-
-  // Check if someone logged int, if not, 
-  // then send them to the main screen
 
 }]);
