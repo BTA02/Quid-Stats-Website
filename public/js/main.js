@@ -325,7 +325,7 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     }
     $scope.per = 0;
     $scope.per += $scope.perMinute;
-    
+
   	$http.get("/calcStats/" + userId + "/" + $scope.statSelected + "/" + $scope.per + "?team_id=" + $scope.team + "&ids=" + ids).then(function(response) {
   		if ($scope.statSelected == "raw_stats") {
   			$scope.isPlusMinus = false;
@@ -380,6 +380,15 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
       return (bVal - aVal);
     });
   };
+
+  $scope.pmCategoriesToDisplay = [
+    'GROUP',
+    'PLUS',
+    'MINUS',
+    'NET',
+    'RATIO',
+    'TIME'
+  ];
 
   $scope.rawCategoriesToDisplay = [
     'FIRST', 
