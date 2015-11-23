@@ -339,6 +339,7 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
   };
 
   $scope.sortPMMap = function(category) {
+    alert(category);
     category = $scope.convertCategoryName(category);
     var aVal = 0;
     var bVal = 0;
