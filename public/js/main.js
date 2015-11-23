@@ -315,7 +315,7 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
 
   // Viewing stats page
 
-  $scope.calcStats = function() {
+  $scope.calcStats = function(userId) {
     var ids;
     if ($scope.selectedGames === null || $scope.selectedGames.length === 0) {
       alert("Please select some games");
@@ -325,7 +325,8 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     }
     $scope.per = 0;
     $scope.per += $scope.perMinute;
-  	$http.get("/calc_stats/" + $scope.statSelected + "/" + $scope.per + "?team_id=" + $scope.team + "&ids=" + ids).then(function(response) {
+    
+  	$http.get("/calcStats/" + userId + "/" + $scope.statSelected + "/" + $scope.per + "?team_id=" + $scope.team + "&ids=" + ids).then(function(response) {
   		if ($scope.statSelected == "raw_stats") {
   			$scope.isPlusMinus = false;
   			// sort the data?

@@ -168,13 +168,18 @@ get '/updateTeam/:team_id/:fall_year/:ids' do
 	update_team(params)
 end
 
+get '/calcStats/:user_id/:stat_selected/:per' do
+	if params[:user_id] == 'me'
+		user_id = session[:authorId]
+	else
+		user_id = params[:user_id]
+	end
 
-# This also takes the team_id and game_ids
-get '/calc_stats/:stat_selected/:per' do
 	stat_selected = params[:stat_selected]
 	team_id = params[:team_id]
 	game_ids = params[:ids].split(",")
-	calc_stats = CalcStats.new(team_id, game_ids, session[:authorId], params[:per])
+	# calc_stats = CalcStats.new(team_id, game_ids, session[:authorId], params[:per])
+	calc_stats = CalcStats.new(team_id, game_ids, user_id, params[:per])
 	case stat_selected
 	when 'raw_stats'
 		raw_stats_map_json = calc_stats.raw_stats.to_json
@@ -258,6 +263,7 @@ def get_all_games_for_team(params)
 	ret
 end
 
+# This function needs re-writing
 def get_done_games_for_team(params)
 	team_id = params[:team_id]
 	if params[:user_id] == 'me'
@@ -265,50 +271,88 @@ def get_done_games_for_team(params)
 	else
 		user_id = params[:user_id]
 	end
-	# okay, so what is the form? take the userId, if it's me, do one thing, right?
-	#  what about something totaly different?
-	# gets video ids by team id
-	# so, instead, what i really want is video ids by team id and author id
-	# 1. get the video ids that i'm allowed to have
-	# 2. get stats using the user_id
 
-	if params[:user_id] == 'me'
-		vids = Parse::Query.new("Videos").tap do |q|
-			q.eq("team_id", team_id)
-		end.get
-		ids = []
-		vids.each do |e|
-			ids.push(e['vid_id'])
+	vids = Parse::Query.new("Videos").tap do |q|
+		q.eq("team_id", team_id)
+	end.get
+	ids = []
+	vids.each do |e|
+		ids.push(e['vid_id'])
+	end
+	catch_names = ['SNITCH_CATCH', 'AWAY_SNITCH_CATCH']
+	done_games = Parse::Query.new("Stats").tap do |q|
+		q.eq("team_id", team_id)
+		q.value_in("vid_id", ids)
+		q.eq("author_id", user_id)
+		q.value_in("stat_name", catch_names)
+	end.get
+	resp = []
+	# add all videos found in both sets (by id) to a var called resp
+	vids.each do |vid|
+		id_of_game = vid['vid_id']
+		done_games.each do |done_game|
+			if done_game['vid_id'] == id_of_game
+				resp.push(vid)
+				break
+			end
 		end
-		catch_names = ['SNITCH_CATCH', 'AWAY_SNITCH_CATCH']
-		# get all games with a snitch catch, by row in stat table
-		done_games = Parse::Query.new("Stats").tap do |q|
-			q.eq("team_id", team_id)
-			q.value_in("vid_id", ids)
-			q.eq("author_id", user_id)
-			q.value_in("stat_name", catch_names)
+	end
+	ret = []
+	resp.each do |e|
+		ret << {
+			description: e['description'], 
+			vid_id: e['vid_id'], 
+			team_id: e['team_id'],	
+			fall_year: e['fall_year']
+		}
+	end
+	if params[:user_id] == 'me'
+		ret
+	else
+		# vids = all videos for a team, period.
+		# doneGames = all videos for a team that have stats for them, taken by the userId
+		# I want to loop through all videos I can have (public vids)
+		# and compare them to what the user in question has accomplished
+		public_vids = Parse::Query.new("Permissions").tap do |q|
+			q.eq('team_id', team_id)
+			q.eq('author_id', user_id)
 		end.get
-		resp = []
-		# add all videos found in both sets (by id) to a var called resp
-		vids.each do |vid|
+
+		public_and_done_vids = []
+
+		public_vids.each do |vid|
 			id_of_game = vid['vid_id']
 			done_games.each do |done_game|
 				if done_game['vid_id'] == id_of_game
-					resp.push(vid)
+					public_and_done_vids.push(vid)
 					break
 				end
 			end
 		end
-		ret = []
-		resp.each do |e|
-			ret << {
+
+		final_game_set = []
+
+		vids.each do |vid|
+			id_of_game = vid['vid_id']
+			public_and_done_vids.each do |done_and_public_game|
+				if done_and_public_game['vid_id'] == id_of_game
+					final_game_set.push(vid)
+					break
+				end
+			end
+		end
+
+		public_and_done_vids_ret = []
+
+		final_game_set.each do |e|
+			public_and_done_vids_ret << {
 				description: e['description'], 
 				vid_id: e['vid_id'], 
 				team_id: e['team_id'],	
 				fall_year: e['fall_year']
 			}
 		end
-		ret
+		public_and_done_vids_ret
 	end
 end
 
