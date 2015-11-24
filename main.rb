@@ -123,7 +123,7 @@ get '/doneGames/:team_id/:user_id' do
 	get_done_games_for_team(params).sort_by{|cat| cat[:description]}.to_json
 end
 
-get '/allGames/:team_id/:user_id' do
+get '/allGames/:team_id' do
 	get_all_games_for_team(params).sort_by{|cat| cat[:description]}.to_json
 end
 
@@ -241,12 +241,8 @@ def get_users
 	Parse::Query.new("_User").get
 end
 
-
-# Updated to new backend
-# Needs tons of work
 def get_all_games_for_team(params)
 	team_id = params[:team_id]
-	user_id = params[:user_id]
 
 	resp = Parse::Query.new("Videos").tap do |q|
 		q.eq("team_id", team_id)

@@ -43,9 +43,9 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
 
   // Recording stats section
 
-  $scope.getAllGames = function(userId) {
+  $scope.getAllGames = function() {
     $scope.allGames = [];
-    $http.get("/allGames/" + $scope.team + "/" + userId).then(function(response) {
+    $http.get("/allGames/" + $scope.team).then(function(response) {
       $scope.allGames = response.data;
     });
   };
@@ -56,7 +56,6 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     $scope.selectedVideo = idAndYear[0];
     $scope.year = idAndYear[1];
     $scope.allPlayers = [];
-    // initVals();
     $http.get("/allPlayers/" + $scope.team + "/" + $scope.year).then(function(response) {
       $scope.allPlayers = response.data;
       $scope.playersMap = new Map();
@@ -123,7 +122,8 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
   // All subbing stuff
   function addSubToMap(subStat) {
     var arrayAtTime = $scope.subMap.get(subStat.time);
-    if (arrayAtTime !== null) {
+    console.log(arrayAtTime);
+    if (arrayAtTime !== null && arrayAtTime !== undefined) {
       arrayAtTime.push(subStat);
     } else {
       arrayAtTime = [subStat];
@@ -304,14 +304,6 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     }
   }
 
-  // function pushStatsListToBottom() {
-  //   var objDiv = document.getElementById("statsList");
-  //   console.log("objDiv");
-  //   console.log(objDiv.scrollHeight);
-
-  //   objDiv.scrollTop = objDiv.scrollHeight;
-  // }
-
 
   // Viewing stats page
 
@@ -343,9 +335,6 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     var aVal = 0;
     var bVal = 0;
     $scope.statsDisp.sort(function(a, b) {
-      console.log(category);
-      console.log(a[1]);
-      console.log(a[1][category]);
       if (category == "ratio") {
         aVal = a[1][category].substr(0, a[1][category].indexOf(':'));
         bVal = b[1][category].substr(0, b[1][category].indexOf(':'));
@@ -353,8 +342,6 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
         aVal = a[1][category];
         bVal = b[1][category];
       }
-      // console.log(aVal);
-      // console.log(bVal);
       return (bVal - aVal);
     });
   };
@@ -494,7 +481,6 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     $scope.fallYear = null;
     $scope.vidDesc = null;
 
-    // alert($scope.vidPreview + ' ' + $scope.teamVidToAdd + ' ' + $scope.fallYear);
     if ($scope.team === null) {
       alert("Please select a team");
     }
