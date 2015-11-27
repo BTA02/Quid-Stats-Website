@@ -2,6 +2,7 @@ require 'sinatra'
 require 'parse-ruby-client'
 require 'json'
 require 'pp'
+require 'tilt/erb'
 
 require_relative 'calc_stats'
 require_relative 'raw_stats'
@@ -102,7 +103,12 @@ get '/add_video' do
 end
 
 get '/public/all' do
+	@teams = get_teams
 	@users = get_users
+	@user_public_map = Hash.new
+	build_public_teams_map
+	# @public_teams_available_map
+	# build_teams_available_public_map
 	erb :public
 end
 
@@ -234,11 +240,16 @@ def log_in_user(params)
 end 
 
 def get_teams
-	Parse::Query.new("Teams").get
+	teams_array = Parse::Query.new("Teams").get
+	@teams_map = Hash.new
+	teams_array.each do |team|
+		@teams_map[team['objectId']] = team
+	end
+	teams_array
 end
 
 def get_users
-	Parse::Query.new("_User").get
+	user_list = Parse::Query.new("_User").get
 end
 
 def get_all_games_for_team(params)
@@ -485,6 +496,19 @@ def update_team(params)
 	update_team['player_ids'] = params['ids'].split(',')
 	result = update_team.save
 	result.to_json
+end
+
+def build_public_teams_map
+	@users.each do |user|
+		set_of_public_teams = Set.new
+		permissions_rows = Parse::Query.new('Permissions').tap do |q|
+			q.eq('author_id', user['objectId'])
+		end.get
+		permissions_rows.each do |permission|
+			set_of_public_teams << @teams_map[permission['team_id']]
+		end
+		@user_public_map[user['objectId']] = set_of_public_teams
+	end
 end
 
 

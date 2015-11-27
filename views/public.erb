@@ -1,6 +1,17 @@
-<!-- HERE WE GO!!! -->
-<div class="container-fluid">
+<!-- Left side-->
+<div class="side">
 	<% @users.each do |user| %>
 		<a href="/public/<%=user['objectId']%>/stats"><%= user['username'] %></a>
+		<!-- A list of teams avaiable from this particular user -->
+		<% list_of_teams = @user_public_map[user['objectId']] %>
+		<% pp 'here2' %>
+		<% pp list_of_teams %>
+		<h5>Stats available for:</h5>
+		<ul>
+			<% list_of_teams.each do |team| %>
+				<li><%= team['team_name'] %></li>
+			<%end%>
+		</ul>
+		<hr>
 	<%end%>
 </div>
