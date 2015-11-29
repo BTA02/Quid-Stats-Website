@@ -4,8 +4,6 @@
 		<a href="/public/<%=user['objectId']%>/stats"><%= user['username'] %></a>
 		<!-- A list of teams avaiable from this particular user -->
 		<% list_of_teams = @user_public_map[user['objectId']] %>
-		<% pp 'here2' %>
-		<% pp list_of_teams %>
 		<h5>Stats available for:</h5>
 		<ul>
 			<% list_of_teams.each do |team| %>

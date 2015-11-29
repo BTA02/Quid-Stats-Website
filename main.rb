@@ -36,7 +36,7 @@ end
 
 get '/' do
 	if logged_in?
-		@teams = get_teams
+		@teams = get_all_teams
 		erb :logged_in
 	else
 		erb :login
@@ -64,7 +64,7 @@ get '/stats' do
 	if !logged_in?
 		redirect '/'
 	end
-	@teams = get_teams
+	@teams = get_relevant_teams
 	@userId = "me"
 	erb :view_stats
 end
@@ -73,7 +73,7 @@ get '/watch' do
 	if !logged_in?
 		redirect '/'
 	end
-	@teams = get_teams
+	@teams = get_all_teams
 	erb :watch_film
 end
 
@@ -81,7 +81,7 @@ get '/add_team' do
 	if !logged_in?
 		redirect '/'
 	end
-	@teams = get_teams
+	@teams = get_all_teams
 	erb :add_team
 end
 
@@ -89,7 +89,7 @@ get '/record' do
 	if !logged_in?
 		redirect '/'
 	end
-	@teams = get_teams
+	@teams = get_all_teams
 	erb :record_stats
 
 end
@@ -98,15 +98,15 @@ get '/add_video' do
 	if !logged_in?
 		redirect '/'
 	end
-	@teams = get_teams
+	@teams = get_all_teams
 	erb :add_video_dumb
 end
 
 get '/public/all' do
-	@teams = get_teams
+	@teams = get_all_teams
 	@users = get_users
 	@user_public_map = Hash.new
-	build_public_teams_map
+	build_public_teams_map(@users)
 	# @public_teams_available_map
 	# build_teams_available_public_map
 	erb :public
@@ -114,12 +114,19 @@ end
 
 get '/public/:userId/stats' do
 	@userId = params[:userId]
-	@teams = get_teams
+	@teams = get_all_teams
+	@user_public_map = Hash.new
+	dummy_array = []
+	dummy_array << {
+		"objectId" => params[:userId]
+	}
+	build_public_teams_map(dummy_array)
+	@teams = @user_public_map.values[0].to_a
 	erb :view_stats
 end
 
 get '/public/:userId/record' do
-	@teams = get_teams
+	@teams = get_all_teams
 	# erb :public_stats
 end
 
@@ -237,14 +244,25 @@ def log_in_user(params)
 	session[:authorId] = user["objectId"]
 	session[:username] = user["username"]
 	user.to_json
-end 
+end
 
-def get_teams
+def get_all_teams
 	teams_array = Parse::Query.new("Teams").get
 	@teams_map = Hash.new
 	teams_array.each do |team|
 		@teams_map[team['objectId']] = team
 	end
+	teams_array
+end
+
+# gets teams that I actually have stats for
+# only going to be used in view stats, I think
+def get_relevant_teams
+	teams_array = Parse::Query.new("Teams").get
+	# this gets all teams
+	# now, pare this down based on what stats i actually have
+	
+	
 	teams_array
 end
 
@@ -498,8 +516,8 @@ def update_team(params)
 	result.to_json
 end
 
-def build_public_teams_map
-	@users.each do |user|
+def build_public_teams_map(users)
+	users.each do |user|
 		set_of_public_teams = Set.new
 		permissions_rows = Parse::Query.new('Permissions').tap do |q|
 			q.eq('author_id', user['objectId'])
