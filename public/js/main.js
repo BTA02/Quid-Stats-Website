@@ -37,8 +37,11 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     $scope.doneGames = [];
     $http.get("/doneGames/" + $scope.team + "/" + userId).then(function(response) {
       $scope.doneGames = response.data;
+      for (var i = 0; i < $scope.doneGames.length; i++) {
+        var gameId = $scope.doneGames[i]['vid_id'];
+        $scope.selectedGames[gameId] = false;
+      }
     });
-    $scope.selectedGames = [];
   };
 
   // Recording stats section
@@ -113,16 +116,9 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     $scope.onFieldPlayers = [chaserA, chaserB, chaserC, keeper, beaterA, beaterB, seeker];
   }
 
-  $scope.switchGames = function() {
-  	for (var i = 0; i < $scope.selectedGames.length; i++) {
-
-  	}
-  };
-
   // All subbing stuff
   function addSubToMap(subStat) {
     var arrayAtTime = $scope.subMap.get(subStat.time);
-    console.log(arrayAtTime);
     if (arrayAtTime !== null && arrayAtTime !== undefined) {
       arrayAtTime.push(subStat);
     } else {
@@ -304,17 +300,21 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     }
   }
 
-
-  // Viewing stats page
-
   $scope.calcStats = function(userId) {
-    var ids;
-    if ($scope.selectedGames === null || $scope.selectedGames.length === 0) {
+    console.log($scope.selectedGames);
+    var ids = "";
+    for (var i = 0; i < $scope.doneGames.length; i++) {
+      var id = $scope.doneGames[i]['vid_id'];
+      if ($scope.selectedGames[id] == true) {
+        ids += id;
+        ids += ',';
+      }
+    }
+    if (ids == "") {
       alert("Please select some games");
       return;
-    } else {
-      ids = $scope.selectedGames.join(",");
     }
+
     $scope.per = 0;
     $scope.per += $scope.perMinute;
 
@@ -453,15 +453,18 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     return ret;
   }
 
-  $scope.selectedGames = [];
-  $scope.toggleGame = function(id) {  
-    var index = $scope.selectedGames.indexOf(id);
-    if (index > -1) {
-      $scope.selectedGames.splice(index, 1);
-    } else {
-      $scope.selectedGames.push(id);
+  $scope.selectedGames = {};
+  $scope.changeAllSelected = function() {
+    $scope.allSelected = false;
+  }
+
+  $scope.selectAll = function(allBool) {
+    for (var i = 0; i < $scope.doneGames.length; i++) {
+      var id = $scope.doneGames[i]['vid_id'];
+      $scope.selectedGames[id] = allBool;
     }
-  };
+    $scope.allSelected = allBool;
+  }
 
   $scope.seekToTime = function(time) {
     $scope.videoPlayer.seekTo(time-5);

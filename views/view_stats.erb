@@ -28,9 +28,10 @@
     <div class="row">
   <div class="col-lg-2">
     <h2>Games</h2>
-      <div ng-repeat="game in doneGames">
-      <input type="checkbox" value="game.vid_id" ng-click="toggleGame(game.vid_id)"> 
-      {{game.description}}
+    <button ng-if="!allSelected" ng-click="selectAll(true)">Select All</button>
+    <button ng-if="allSelected" ng-click="selectAll(false)">Deselect All</button>
+    <div ng-repeat="game in doneGames">
+      <input type="checkbox" ng-model="selectedGames[game.vid_id]" ng-click="changeAllSelected()">{{game.description}}</input>
     </div>
   </div>
   
