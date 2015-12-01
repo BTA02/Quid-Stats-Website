@@ -464,8 +464,12 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     $scope.allSelected = allBool;
   }
 
-  $scope.seekToTime = function(time) {
-    $scope.videoPlayer.seekTo(time-5);
+  $scope.seekToTime = function(statName, time) {
+    if (statName == 'SUB' || statName == 'PAUSE_CLOCK' || statName == 'START_CLOCK') {
+      $scope.videoPlayer.seekTo(time);
+    } else {
+      $scope.videoPlayer.seekTo(time-5);
+    }
   };
 
   $scope.adjustTime = function(val, curTime, id) {
@@ -478,6 +482,9 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
   };
 
   $scope.togglePublic = function() {
+    if ($scope.statsPublic) {
+      alert("You have now made the stats for this game publically available. This will also show your username under the 'Public Stats' tab. You may undo this at any time by flipping the switch back to private");
+    }
     var data = {
         team_id : $scope.team,
         vid_id : $scope.selectedVideo,
@@ -490,6 +497,10 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     $scope.vidPreview = null;
     $scope.fallYear = null;
     $scope.vidDesc = null;
+
+    console.log($scope.vidPreview);
+    console.log($scope.fallYear);
+    console.log($scope.vidDesc);
 
     if ($scope.team === null) {
       alert("Please select a team");
@@ -523,8 +534,19 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
 
   // Log in functions
 
+  $scope.checkUsername = function() {
+    if ($scope.signupUsername == null) {
+      return true;
+    }
+    if ($scope.signupUsername.match(/^[a-zA-Z0-9_]*$/)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   $scope.checkPasswords = function() {
-    if ($scope.pass1 === null) {
+    if ($scope.pass1 == null) {
       return false;
     }
     if ($scope.pass1.length === 0) {

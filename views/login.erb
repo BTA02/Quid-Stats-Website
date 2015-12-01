@@ -34,12 +34,13 @@
 			<form action="/sign_up" method="post">
 			 	<div class="form-group">
 			    	<label for="signupUsername">Username</label>
-			    	<input name="signupUsername" class="form-control" id="signupUsername" placeholder="Username">
+			    	<input ng-model="signupUsername" name="signupUsername" class="form-control" id="signupUsername" placeholder="Username">
 			  	</div>
 			  	<div class="form-group">
 			    	<label for="signupPassword1">Password</label>
 			    	<input name="signupPassword1" ng-model="pass1" type="password" class="form-control" id="signupPassword1" placeholder="Password">
 			  	</div>
+			  	<p ng-show="!checkUsername()" style"color:red">Invalid</p>
 			  	<div class="form-group">
 			    	<label for="signupPassword2">Confirm Password</label>
 			    	<input name="signupPassword2" ng-model="pass2" type="password" class="form-control" id="signupPassword2" placeholder="Confirm Password">
@@ -50,3 +51,12 @@
 		</div>
 	</div>
 </div>
+
+<div id="helpText" class="white_content">
+	<a href = "javascript:void(0)" onclick = "document.getElementById('helpText').style.display='none';document.getElementById('fade').style.display='none'">Close<br></a>
+	
+	<h4>This is a sign up page.</h4>
+
+	<a href = "javascript:void(0)" onclick = "document.getElementById('helpText').style.display='none';document.getElementById('fade').style.display='none'">Close<br></a>
+</div>
+<div id="fade" class="black_overlay"></div>
