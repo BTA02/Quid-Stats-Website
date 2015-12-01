@@ -2,11 +2,13 @@
 	<div class="welcome">
 		<h3 align="center">Welcome to QuidStats</h3>
 
-		<h4>You must be logged in to view any pages. If you keep ending up on this page, it's because you aren't logged in</h4>
+		<h4>You must be logged in to view any pages (except Public Stats). If you keep ending up on this page, it's because you aren't logged in</h4>
 
 		<p>The primary goal of this website is to provide a tool for taking statistics on quidditch matches. With that said, this is also a tool to help generate more public quidditch film. All team rosters and videos will be public. Any user can login, select any team, and watch any game that has been submitted. Users can also submit videos of any team. However, all stats will be private to a user. I understand teams like to keep their film private, but hopefully teams find that getting stats actually makes posting their video a net win for them. Videos must be public YouTube videos to work on this site. Don't try and cheat the system.</p>
 	
-	<p>Also, currently, there isn't a way to share stats with other users, so I suggest making an account for your entire organization.</p>
+		<p>Also, currently, there isn't a way to share stats privately with other users, so I suggest making an account for your entire organization.</p>
+
+		<p>After signing up, you will not be automatically logged in. You will need to do that separatly in order to view the rest of the site.</p> 
 	</div>
 </div>
 <!-- login form -->
@@ -32,15 +34,15 @@
 			<form action="/sign_up" method="post">
 			 	<div class="form-group">
 			    	<label for="signupUsername">Username</label>
-			    	<input class="form-control" id="signupUsername" placeholder="Username">
+			    	<input name="signupUsername" class="form-control" id="signupUsername" placeholder="Username">
 			  	</div>
 			  	<div class="form-group">
 			    	<label for="signupPassword1">Password</label>
-			    	<input ng-model="pass1" type="password" class="form-control" id="signupPassword1" placeholder="Password">
+			    	<input name="signupPassword1" ng-model="pass1" type="password" class="form-control" id="signupPassword1" placeholder="Password">
 			  	</div>
 			  	<div class="form-group">
 			    	<label for="signupPassword2">Confirm Password</label>
-			    	<input ng-model="pass2" type="password" class="form-control" id="signupPassword2" placeholder="Confirm Password">
+			    	<input name="signupPassword2" ng-model="pass2" type="password" class="form-control" id="signupPassword2" placeholder="Confirm Password">
 			  	</div>
 			  	<button type="submit" class="btn btn-default" ng-show="checkPasswords()">Submit</button>
 			  	<p ng-show="!checkPasswords()" style="color:red">Passwords do not match</p>

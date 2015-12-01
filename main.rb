@@ -37,7 +37,7 @@ end
 get '/' do
 	if logged_in?
 		@teams = get_all_teams
-		erb :logged_in
+		erb :account
 	else
 		erb :login
 	end
@@ -217,6 +217,22 @@ get '/calcStats/:user_id/:stat_selected/:per' do
 	end
 end
 
+get '/videoPermissions/:team_id/:vid_id' do
+	if get_video_permissions(params)
+		return 'true'
+	else
+		return 'false'
+	end
+end
+
+post '/setPermissions' do
+	vals = JSON.parse(request.body.string)
+	pp 'vals'
+	pp vals
+	toggle_permissions(vals)
+	'finished'
+end
+
 get '/help' do
 	send_file 'views/help.html'
 end
@@ -227,11 +243,7 @@ def sign_up_user(params)
 	user[:username] = params["signupUsername"].to_s
 	user[:password] = params["signupPassword1"].to_s
 	ret_val = user.save
-	session[:sessionToken] = ret_val["sessionToken"]
-	session[:authorId] = ret_val["objectId"]
-	session[:username] = ret_val["username"]
 	ret_val.to_json
-	# this should redirect to a logged in page
 end
 
 # what happenes if the password is wrong?
@@ -526,6 +538,47 @@ def build_public_teams_map(users)
 			set_of_public_teams << @teams_map[permission['team_id']]
 		end
 		@user_public_map[user['objectId']] = set_of_public_teams
+	end
+end
+
+def get_video_permissions(params)
+	permission = Parse::Query.new('Permissions').tap do |q|
+		q.eq('author_id', session[:authorId])
+		q.eq('team_id', params[:team_id])
+		q.eq('vid_id', params[:vid_id])
+	end.get
+
+	if permission.length == 0
+		false
+	else
+		true
+	end
+end
+
+def toggle_permissions(params)
+	set_to = params['privacy']
+
+	permission = Parse::Query.new('Permissions').tap do |q|
+		q.eq('author_id', session[:authorId])
+		q.eq('team_id', params['team_id'])
+		q.eq('vid_id', params['vid_id'])
+	end.get
+
+	pp 'permission'
+	pp permission.length
+	if set_to
+		if permission.length != 0
+			# do nothing, already public
+		else
+			new_permission = Parse::Object.new('Permissions')
+			new_permission['team_id'] = params['team_id']
+			new_permission['vid_id'] = params['vid_id']
+			new_permission['author_id'] = session[:authorId]
+			result = new_permission.save
+		end
+	else
+		permission_row = permission.first
+		permission_row.parse_delete
 	end
 end
 

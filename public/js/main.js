@@ -73,12 +73,9 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     setOnFieldToBlank();
     $scope.subMap = new Map();
     $scope.allStats = [];
-    // $scope.gameTime = 0;
     $http.get("/allStats/" + $scope.selectedVideo + "/" + $scope.team).then(function(response) {
-      // this returns all the events from a single game
       $scope.allStats = response.data;
       for (var i = 0; i < $scope.allStats.length; i++) {
-        // add the player names to the objects here
         var id = $scope.allStats[i].player_id;
         var inId = $scope.allStats[i].player_in_id;
         var player = $scope.playersMap.get(id);
@@ -98,10 +95,13 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
           addSubToMap($scope.allStats[i]);
         }
       }
-      // I need to think about this, what do I need?
-      // Well, ideally, the statObj would have the player object
-      // But it doesn't
-      // So, dynamically, I need to add the value, right?
+    });
+    $http.get("/videoPermissions/" + $scope.team + "/" + $scope.selectedVideo).then(function(response) {
+      if (response.data == 'true') {
+        $scope.statsPublic = true;
+      } else {
+        $scope.statsPublic = false;
+      }
     });
   }
 
@@ -150,7 +150,7 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
 
   $interval( function(){
     // I figured it out!!! what if submap isn't created?
-    if ($scope.videoPlayer !== null) {
+    if ($scope.videoPlayer !== null && $scope.videoPlayer !== undefined) {
       $scope.updateOnFieldPlayers();
       $scope.updateScoreboard();
     }
@@ -179,7 +179,6 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     var pauseEnd = 0;
     $scope.homeScore = 0;
     $scope.awayScore = 0;
-    // $scope.gameTime = $scope.videoPlayer.getCurrentTime();
     for (var i = 0; i < $scope.allStats.length; i++) {
       if ($scope.allStats[i].time > endTime) {
         break;
@@ -301,7 +300,6 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
   }
 
   $scope.calcStats = function(userId) {
-    console.log($scope.selectedGames);
     var ids = "";
     for (var i = 0; i < $scope.doneGames.length; i++) {
       var id = $scope.doneGames[i]['vid_id'];
@@ -479,6 +477,15 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     });
   };
 
+  $scope.togglePublic = function() {
+    var data = {
+        team_id : $scope.team,
+        vid_id : $scope.selectedVideo,
+        privacy : $scope.statsPublic
+    };
+    $http.post("/setPermissions", data).then(function(response) {});
+  }
+
   $scope.addVideo = function() {
     $scope.vidPreview = null;
     $scope.fallYear = null;
@@ -503,7 +510,6 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
         location.reload();
       });
     }
-    
   };
 
   function search(nameKey, myArray){
@@ -515,8 +521,67 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     return false;
   }
 
-  $scope.filterEvents = function() {
-    
+  // Log in functions
+
+  $scope.checkPasswords = function() {
+    if ($scope.pass1 === null) {
+      return false;
+    }
+    if ($scope.pass1.length === 0) {
+      return false;
+    }
+    return $scope.pass1 === $scope.pass2;
+  };
+
+  // Add team functions
+  
+  $scope.getRoster = function() {
+    $scope.roster = [];
+    $http.get("/allPlayers/" + $scope.teamToAdd 
+      + "/" + $scope.rosterYear).then(function(response) {
+        $scope.roster = response["data"];
+    });
+  }
+
+  $scope.addNewPlayer = function() {
+    $http.get("/addPlayer/" + $scope.newFirstName.trim()
+      + "/" + $scope.newLastName.trim()).then(function(response) {
+        var fname = response["data"]["first_name"].trim();
+        var lname = response["data"]["last_name"].trim();
+        var objId = response["data"]["objectId"];
+        var newPlayerObj = {first_name:fname, last_name:lname, objectId:objId};
+        $scope.roster.splice(0, 0, newPlayerObj);
+        $scope.newFirstName = "";
+        $scope.newLastName = "";
+    });
+  }
+
+  $scope.saveRoster = function() {
+    var ids = [];
+    for (var i = 0; i < $scope.roster.length; i++) {
+      ids.push($scope.roster[i]["objectId"]);
+    }
+
+    if ($scope.teamToAdd == "new") {
+      // creating a new team with the roster given
+      if ($scope.rosterYear == null) {
+        alert("Please select a year");
+        return;
+      }
+      if ($scope.newTeamName == null || $scope.newTeamName == "") {
+        alert("Please add a team name");
+        return;
+      }
+      $http.get("/newTeam/" + $scope.newTeamName + "/" + $scope.rosterYear + "/" + ids).then(function(response) {
+        response["data"];
+        location.reload();
+      });
+    } else {
+      $http.get("/updateTeam/" + $scope.teamToAdd + "/" + $scope.rosterYear + "/" + ids).then(function(response) {
+        response["data"];
+        location.reload();
+      });
+    }
   }
 
 }]);
