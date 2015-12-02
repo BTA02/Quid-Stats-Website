@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html ng-app="app">
+  <head>
+    <title> <%= @title || 'Quidstats' %> </title>
+    <!-- I don't know why, but this works, and just this -->
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css"  media="screen">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"  />
+
+
+    <link rel="stylesheet" href="/stylesheets/add_team.css">
+    <link rel="stylesheet" href="/stylesheets/header.css">
+    <link rel="stylesheet" href="/stylesheets/login.css">
+    <link rel="stylesheet" href="/stylesheets/public.css">
+    <link rel="stylesheet" href="/stylesheets/record_stats.css">
+    <link rel="stylesheet" href="/stylesheets/scoreboard.css">
+    <link rel="stylesheet" href="/stylesheets/the.css">
+    <link rel="stylesheet" href="/stylesheets/watch_film.css">
+    <link rel="stylesheet" href="/stylesheets/switch.css">
+  </head>
+
+  <body ng-controller="StatsController">
+    <header>
+      <div class="nav">
+        <ul>
+          <li class="username"><a href="/"><%= get_user %> </a></li>
+          <li><a href="/public/all">Public Stats</a></li>
+          <li><a href="/stats">My Stats</a></li>
+          <li><a href="/record">Record Stats</a></li>
+          <li><a href="/add_team">Edit Rosters</a></li>
+          <li><a href="/add_video">Add Video</a></li>
+          <li class="help" onclick = "document.getElementById('helpText').style.display='block';document.getElementById('fade').style.display='block'"><a href="">Help</a></li>
+        </ul>
+      </div>
+    </header>
+
+    <%= yield %>
+
+    <script src="/lib/angular/angular.min.js"></script>
+    <script src="/lib/anguvideo/js/anguvideo.js"></script>
+    <script src="/lib/angular-youtube-mb/dist/angular-youtube-embed.min.js"></script>
+    <script src="/lib/angular-scroll-glue/src/scrollglue.js"></script>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <script src="/js/main.js"></script>
+  </body>
+</html>

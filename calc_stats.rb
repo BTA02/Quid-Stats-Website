@@ -72,6 +72,7 @@ class CalcStats
 						"shot" => 0,
 						"goal" => 0,
 						"assist" => 0,
+						"point" => 0,
 						"turnover" => 0,
 						"takeaway" => 0,
 						"yellow_card" => 0,
@@ -81,9 +82,9 @@ class CalcStats
 						"minuses" => 0,
 						"net" => 0,
 						"ratio" =>'',
-						"time" => 0
-						# "gain_control" => 0,
-						# "lose_control" => 0
+						"time" => 0,
+						"gain_control" => 0,
+						"lose_control" => 0
 					}
 				end
 			end
@@ -118,7 +119,11 @@ class CalcStats
 			elsif event_type == "GOAL"
 				@stats_map[player_id][event["stat_name"].downcase] += 1
 				@stats_map[player_id]["shot"] += 1
+				@stats_map[player_id]["point"] += 1
 				add_plus_minus_val(on_field_array, 1)
+			elsif event_type == "ASSIST"
+				@stats_map[player_id][event["stat_name"].downcase] += 1
+				@stats_map[player_id]["point"] += 1
 			else
 				@stats_map[player_id][event["stat_name"].downcase] += 1
 			end				

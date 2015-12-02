@@ -1,105 +1,68 @@
-<html ng-app="statsApp">
-	<head>
-		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.min.js"></script>
-	  	<script src="/js/main.js"></script>
-	  	<script src="/js/add_team.js"></script>
-	  	<script src="angular-video/js/anguvideo.js"></script>
-	  	<script src="https://www.youtube.com/iframe_api"></script>
-		<script src="angular-youtube-embed/src/angular-youtube-embed.js"></script>
+<!-- Teams list -->
+<div id="team-year" class="container-fluid" align="center">
+	<h2>To add or edit a team, first, select the team and the year.</h2>
+	<p>Base the year on what year it is/was during the fall</p>
+	<p>Hint: We are currently in fall year 2015</p>
 
-	  	<link rel="stylesheet" type="text/css" href="/stylesheets/the.css">
-	  	<link rel="stylesheet" type="text/css" href="/stylesheets/header.css">
-	  	<link rel="stylesheet" type="text/css" href="/stylesheets/add_team.css">
-	  	<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-	  	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" />
-	    <title>Quidstats</title>
-	</head>
+    <select name="teamSelect" ng-model="teamToAdd" ng-change="getRoster()">
+		<option value="new">New Team</option>
+		<% @teams.each do |team| %>
+		<option value="<%= team['objectId']%>"><%=team['team_name']%></option>
+		<%end%>
+	</select>
 
-	<body ng-controller="StatsController">
-	  	<header>
-	      <div class="nav">
-	        <ul>
-				<li class="username"><a href="/"><%=get_user()%> </a></li>
-	          	<li><a href="/record">Record Stats</a></li>
-	          	<li><a href="/stats">View Stats</a></li>
-	          	<!-- <li><a href="/watch">Watch Film</a></li> -->
-	          	<li><a href="/add_team" class="active">Add Team</a></li>
-	          	<li><a href="/add_video">Add Video</a></li>
-	          	<li class="help"><a href="" onclick = "document.getElementById('light_2').style.display='block';document.getElementById('fade').style.display='block'">Help</a></li>
-	        </ul>
-	      </div>
-	    </header>
+	<select ng-model="rosterYear" ng-change="getRoster()">
+		<option value="2012">2012</option>
+		<option value="2013">2013</option>
+		<option value="2014">2014</option>
+		<option selected value="2015">2015</option>
+	</select>
 
-	    <!-- Teams list -->
-	    <div id="team-year" class="container-fluid" align="center">
-	    	<h2>To add or edit a team, first, select the team and the year.</h2>
-	    	<p>Base the year on what year it is/was during the fall</p>
-			<p>Hint: We are currently in fall year 2015</p>
+	<h4 ng-show="teamToAdd && rosterYear" style="color:red">You must hit "Save Roster" after you are done adding players. If you forget to do this, all your work will be lost</h4>
+</div>
 
-		    <select name="teamSelect" ng-model="teamToAdd" ng-change="getRoster()">
-				<option value="new">New Team</option>
-				<% @teams.each do |team| %>
-				<option value="<%= team['objectId']%>"><%=team['team_name']%></option>
-				<%end%>
-			</select>
+<hr>
 
-			<select ng-model="rosterYear" ng-change="getRoster()">
-				<option value="2012">2012</option>
-				<option value="2013">2013</option>
-				<option value="2014">2014</option>
-				<option selected value="2015">2015</option>
-			</select>
-		</div>
+<div ng-show="teamToAdd && rosterYear">
+	<div ng-show="teamToAdd == 'new'"id="newTeamContainer" class="container-fluid" align="center">
+		Team Name: <input type="text" ng-model="newTeamName" />
+	</div>
 
-		<hr>
+	<br>
 
-		<div ng-show="teamToAdd && rosterYear">
-			<div ng-show="teamToAdd == 'new'"id="newTeamContainer" class="container-fluid" align="center">
-				Team Name: <input type="text" ng-model="newTeamName" />
-			</div>
-
-			<br>
-
-			<!-- new player -->
-			<div id="addPlayerContainer" class="container-fluid" align="center">
-				First name: <input type="text" ng-model="newFirstName"/>
-				Last name: <input type="text" ng-model="newLastName"/>
-				<button type="submit" ng-click="addNewPlayer()">Add New Player</button>
-			</div>
+	<!-- new player -->
+	<div id="addPlayerContainer" class="container-fluid" align="center">
+		First name: <input type="text" ng-model="newFirstName"/>
+		Last name: <input type="text" ng-model="newLastName"/>
+		<button type="submit" ng-click="addNewPlayer()">Add New Player</button>
+	</div>
 
 
-			<div class="container-fluid" align="center">
-				<button ng-click="saveRoster()">Save Roster</button>
-			</div>
+	<div class="container-fluid" align="center">
+		<button ng-click="saveRoster()">Save Roster</button>
+	</div>
 
-			
-			<!-- roster -->
-			<div id="rosterContainer">
-				<ul class="playerList" ng-model="roster">
-					<li ng-repeat="player in roster">
-						<!-- <input type="text" value="{{player.first_name}}"/>
-						<input type="text" value="{{player.last_name}}"/> -->
-						<p>{{player.first_name + ' ' + player.last_name}}</p>
-						<!-- <button ng-click="updatePlayer(player)">Update</button> -->
-						<!-- <button ng-click="deletePlayer(player)">Delete</button> -->
-					</li>
-			</div>
-		</div>
+	
+	<!-- roster -->
+	<div id="rosterContainer">
+		<ul class="playerList" ng-model="roster">
+			<li ng-repeat="player in roster">
+				<p>{{player.first_name + ' ' + player.last_name}}</p>
+			</li>
+	</div>
+</div>
 
-	<div id="light_2" class="white_content">
-      <h4>This page is for adding / editing your roster.</h4>
-      <h5>1. Select a team from the dropdown menu. Or, choose 'New Team' if you want to add a new team to the database.</h5>
-      <h5>2. The next dropdown is for the year of the roster. So, if you want to add a team for this season, use 2015. The year is based on the fall year for that season.</h5>
-      <h5>3. If you selected a new team, then give it a name, and start adding players.</h5>
-      <p>4. Once you're done adding players, you MUST hit 'Save Roster'. If you don't, all your work will be for naught.</p>
-      <h5>5. Once you've saved your roster, the page will reload. Double check everything worked by selecting your team from the dropdown. Your roster should populate.</h5>
-      <h5>There currently is no way to edit a player if you misspell their name. Sorry. Live with the misspelling while I implement updating players</h5> 
+<div id="helpText" class="white_content">
+	<a href = "javascript:void(0)" onclick = "document.getElementById('helpText').style.display='none';document.getElementById('fade').style.display='none'">Close<br></a>
+	
+	<h4>This page is for adding / editing your roster.</h4>
+	<h5>1. Select a team from the dropdown menu. Or, choose 'New Team' if you want to add a new team to the database.</h5>
+	<h5>2. The next dropdown is for the year of the roster. So, if you want to add a team for this season, use 2015. The year is based on the fall year for that season.</h5>
+	<h5>3. If you selected a new team, then give it a name, and start adding players.</h5>
+	<p>4. Once you're done adding players, you MUST hit 'Save Roster'. If you don't, all your work will be for naught.</p>
+	<h5>5. Once you've saved your roster, the page will reload. Double check everything worked by selecting your team from the dropdown. Your roster should populate.</h5>
+	<h5>There currently is no way to edit a player if you misspell their name. Sorry. Live with the misspelling while I implement updating players</h5> 
 
-      <a href = "javascript:void(0)" onclick = "document.getElementById('light_2').style.display='none';document.getElementById('fade').style.display='none'">Close<br></a>
-    </div>
-    <div id="fade" class="black_overlay"></div>
-
-
-	</body>
-
-</html>
+	<a href = "javascript:void(0)" onclick = "document.getElementById('helpText').style.display='none';document.getElementById('fade').style.display='none'">Close<br></a>
+</div>
+<div id="fade" class="black_overlay"></div>

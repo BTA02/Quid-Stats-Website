@@ -2,38 +2,47 @@ require 'sinatra'
 require 'parse-ruby-client'
 require 'json'
 require 'pp'
-require 'net/http'
+require 'tilt/erb'
+
 require_relative 'calc_stats'
 require_relative 'raw_stats'
 
 configure do
+	if settings.development?
+		require 'dotenv'
+		# reads variables out of .env file and makes them available
+		Dotenv.load
+	end
 	enable :sessions
+	set :session_secret, 'super secret string'
 	Parse.init :application_id => ENV["PARSE_APP_ID"], :master_key => ENV["PARSE_API_KEY"]
 end
 
 helpers do
-  def get_user()
-  	if !session[:username].nil?
-    	"<p>"+session[:username]+"</p>"
-    else
-    	"<p>Login</p>"
-    end
-  end
-  def logged_in()
-  	if !session[:username].nil?
-  		return true
-  	else
-  		return false
-  	end
-  end
+	def h(text)
+		Rack::Utils.escape_html(text)
+	end
+
+	def get_user
+		if !session[:username].nil?
+	  	"<p>"+h(session[:username])+"</p>"
+		else
+			"<p>Login</p>"
+		end
+	end
+
+	# ruby convention says methods that return bool should end with ?
+	def logged_in?
+		# implicit return lets you clean this up a lot
+		!session[:username].nil?
+	end
 end
 
 get '/' do
-	if logged_in()
-		@teams = get_teams
-		erb :logged_in
+	if logged_in?
+		@teams = get_all_teams
+		erb :account
 	else
-		pp 'serving'
 		erb :login
 	end
 end
@@ -52,59 +61,87 @@ end
 
 get '/log_out' do
 	session.clear
-	pp 'redirecting'
 	redirect '/'
 end
 
 get '/stats' do
-	if !logged_in()
+	if !logged_in?
 		redirect '/'
 	end
-	@teams = get_teams
+	@teams = get_relevant_teams
+	@userId = "me"
 	erb :view_stats
 end
 
 get '/watch' do
-	if !logged_in()
+	if !logged_in?
 		redirect '/'
 	end
-	@teams = get_teams
+	@teams = get_all_teams
 	erb :watch_film
 end
 
 get '/add_team' do
-	if !logged_in()
+	if !logged_in?
 		redirect '/'
 	end
-	@teams = get_teams
+	@teams = get_all_teams
 	erb :add_team
 end
 
 get '/record' do
-	if !logged_in
+	if !logged_in?
 		redirect '/'
 	end
-	@teams = get_teams
+	@teams = get_all_teams
 	erb :record_stats
 
 end
 
 get '/add_video' do
-	if !logged_in
+	if !logged_in?
 		redirect '/'
 	end
-	@teams = get_teams
+	@teams = get_all_teams
 	erb :add_video_dumb
+end
+
+get '/public/all' do
+	@teams = get_all_teams
+	@users = get_users
+	@user_public_map = Hash.new
+	build_public_teams_map(@users)
+	# @public_teams_available_map
+	# build_teams_available_public_map
+	erb :public
+end
+
+get '/public/:userId/stats' do
+	@userId = params[:userId]
+	@teams = get_all_teams
+	@user_public_map = Hash.new
+	dummy_array = []
+	dummy_array << {
+		"objectId" => params[:userId]
+	}
+	build_public_teams_map(dummy_array)
+	@teams = @user_public_map.values[0].to_a
+	erb :view_stats
+end
+
+get '/public/:userId/record' do
+	@teams = get_all_teams
+	# erb :public_stats
 end
 
 # FUNCTION CALLS
 
-get '/doneGames/:team_id' do
-	get_games_for_team(params[:team_id], false).sort_by{|cat| cat[:description]}.to_json
+get '/doneGames/:team_id/:user_id' do
+	get_done_games_for_team(params).sort_by{|cat| cat[:description]}.to_json
 end
 
 get '/allGames/:team_id' do
-	get_games_for_team(params[:team_id], true).sort_by{|cat| cat[:description]}.to_json
+	get_all_games_for_team(params).sort_by{|cat| cat[:description]}.to_json
 end
 
 get '/allPlayers/:team_id/:fall_year' do
@@ -148,13 +185,18 @@ get '/updateTeam/:team_id/:fall_year/:ids' do
 	update_team(params)
 end
 
+get '/calcStats/:user_id/:stat_selected/:per' do
+	if params[:user_id] == 'me'
+		user_id = session[:authorId]
+	else
+		user_id = params[:user_id]
+	end
 
-# This also takes the team_id and game_ids
-get '/calc_stats/:stat_selected/:per' do
 	stat_selected = params[:stat_selected]
 	team_id = params[:team_id]
 	game_ids = params[:ids].split(",")
-	calc_stats = CalcStats.new(team_id, game_ids, session[:authorId], params[:per])
+	# calc_stats = CalcStats.new(team_id, game_ids, session[:authorId], params[:per])
+	calc_stats = CalcStats.new(team_id, game_ids, user_id, params[:per])
 	case stat_selected
 	when 'raw_stats'
 		raw_stats_map_json = calc_stats.raw_stats.to_json
@@ -177,8 +219,22 @@ get '/calc_stats/:stat_selected/:per' do
 		pos_arr =[[0,1,2],[0,1,2],[0,1,2],[3],[4,5],[4,5]]
 		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
 	end
+end
 
+get '/videoPermissions/:team_id/:vid_id' do
+	if get_video_permissions(params)
+		return 'true'
+	else
+		return 'false'
+	end
+end
 
+post '/setPermissions' do
+	vals = JSON.parse(request.body.string)
+	pp 'vals'
+	pp vals
+	toggle_permissions(vals)
+	'finished'
 end
 
 get '/help' do
@@ -188,78 +244,156 @@ end
 def sign_up_user(params)
 	#params has username and password
 	user = Parse::Object.new("_User")
-	user[:username] = params["email"].to_s
-	user[:password] = params["pass1"].to_s
+	user[:username] = params["signupUsername"].to_s
+	user[:password] = params["signupPassword1"].to_s
 	ret_val = user.save
-	session[:sessionToken] = ret_val["sessionToken"]
-	session[:authorId] = ret_val["objectId"]
-	session[:username] = ret_val["username"]
 	ret_val.to_json
 end
 
+# what happenes if the password is wrong?
+# hint: bad things
 def log_in_user(params)
-	username = params["email"].to_s
-	password = params["password"].to_s
+	username = params["loginUsername"].to_s
+	password = params["loginPassword"].to_s
 	user = Parse::User.authenticate(username, password)
 	session[:sessionToken] = user["sessionToken"]
 	session[:authorId] = user["objectId"]
 	session[:username] = user["username"]
 	user.to_json
-end 
-
-def get_teams
-	Parse::Query.new("Teams").get
 end
 
+def get_all_teams
+	teams_array = Parse::Query.new("Teams").get
+	@teams_map = Hash.new
+	teams_array.each do |team|
+		@teams_map[team['objectId']] = team
+	end
+	teams_array
+end
 
-# Updated to new backend
-# Needs tons of work
-def get_games_for_team(team_id, all)
-	if !team_id.nil?
-		if !all
-			# done games
-			# refactor this one day
-			vids = Parse::Query.new("Videos").tap do |q|
-				q.eq("team_id", team_id)
-			end.get
-			ids = []
-			vids.each do |e|
-				ids.push(e['vid_id'])
+# gets teams that I actually have stats for
+# only going to be used in view stats, I think
+def get_relevant_teams
+	teams_array = Parse::Query.new("Teams").get
+	# this gets all teams
+	# now, pare this down based on what stats i actually have
+	
+	
+	teams_array
+end
+
+def get_users
+	user_list = Parse::Query.new("_User").get
+end
+
+def get_all_games_for_team(params)
+	team_id = params[:team_id]
+
+	resp = Parse::Query.new("Videos").tap do |q|
+		q.eq("team_id", team_id)
+	end.get
+	ret = []	
+	resp.each do |e|
+		ret << {
+			description: e['description'], 
+			vid_id: e['vid_id'], 
+			team_id: e['team_id'],	
+			fall_year: e['fall_year']
+		}
+	end
+	ret
+end
+
+# This function needs re-writing
+def get_done_games_for_team(params)
+	team_id = params[:team_id]
+	if params[:user_id] == 'me'
+		user_id = session[:authorId]
+	else
+		user_id = params[:user_id]
+	end
+
+	vids = Parse::Query.new("Videos").tap do |q|
+		q.eq("team_id", team_id)
+	end.get
+	ids = []
+	vids.each do |e|
+		ids.push(e['vid_id'])
+	end
+	catch_names = ['SNITCH_CATCH', 'AWAY_SNITCH_CATCH']
+	done_games = Parse::Query.new("Stats").tap do |q|
+		q.eq("team_id", team_id)
+		q.value_in("vid_id", ids)
+		q.eq("author_id", user_id)
+		q.value_in("stat_name", catch_names)
+	end.get
+	resp = []
+	# add all videos found in both sets (by id) to a var called resp
+	vids.each do |vid|
+		id_of_game = vid['vid_id']
+		done_games.each do |done_game|
+			if done_game['vid_id'] == id_of_game
+				resp.push(vid)
+				break
 			end
-			catch_names = ['SNITCH_CATCH', 'AWAY_SNITCH_CATCH']
-			# get all games with a snitch catch, by row in stat table
-			done_games = Parse::Query.new("Stats").tap do |q|
-				q.eq("team_id", team_id)
-				q.value_in("vid_id", ids)
-				q.eq("author_id", session[:authorId])
-				q.value_in("stat_name", catch_names)
-			end.get
-			resp = []
-			# add all videos found in both sets (by id) to a var called resp
-			vids.each do |vid|
-				id_of_game = vid['vid_id']
-				done_games.each do |done_game|
-					if done_game['vid_id'] == id_of_game
-						resp.push(vid)
-						break
-					end
+		end
+	end
+	ret = []
+	resp.each do |e|
+		ret << {
+			description: e['description'], 
+			vid_id: e['vid_id'], 
+			team_id: e['team_id'],	
+			fall_year: e['fall_year']
+		}
+	end
+	if params[:user_id] == 'me'
+		ret
+	else
+		# vids = all videos for a team, period.
+		# doneGames = all videos for a team that have stats for them, taken by the userId
+		# I want to loop through all videos I can have (public vids)
+		# and compare them to what the user in question has accomplished
+		public_vids = Parse::Query.new("Permissions").tap do |q|
+			q.eq('team_id', team_id)
+			q.eq('author_id', user_id)
+		end.get
+
+		public_and_done_vids = []
+
+		public_vids.each do |vid|
+			id_of_game = vid['vid_id']
+			done_games.each do |done_game|
+				if done_game['vid_id'] == id_of_game
+					public_and_done_vids.push(vid)
+					break
 				end
 			end
-		else
-			resp = Parse::Query.new("Videos").tap do |q|
-				q.eq("team_id", team_id)
-			end.get
 		end
-		ret = []
-		resp.each do |e|
-			ret << {
+
+		final_game_set = []
+
+		vids.each do |vid|
+			id_of_game = vid['vid_id']
+			public_and_done_vids.each do |done_and_public_game|
+				if done_and_public_game['vid_id'] == id_of_game
+					final_game_set.push(vid)
+					break
+				end
+			end
+		end
+
+		public_and_done_vids_ret = []
+
+		final_game_set.each do |e|
+			public_and_done_vids_ret << {
 				description: e['description'], 
 				vid_id: e['vid_id'], 
 				team_id: e['team_id'],	
 				fall_year: e['fall_year']
 			}
 		end
-		ret
+		public_and_done_vids_ret
 	end
 end
 
@@ -317,12 +451,9 @@ def delete_stat(id)
 end	
 
 def update_stat(params)
-	pp 'df'
-	pp params
 	update_stat = Parse::Query.new('Stats').tap do |q|
 		q.eq('objectid', params['object_id'])
 	end.get.first
-	pp update_stat
 	update_stat['time'] = params['new_time']
 
 	result = update_stat.save
@@ -385,8 +516,6 @@ def add_new_team(params)
 	new_roster['team_id'] = result['objectId']
 	new_roster['fall_year'] = params['fall_year']
 	new_roster['player_ids'] = params['ids'].split(',')
-	pp 'param'
-
 
 	second_result = new_roster.save
 
@@ -398,12 +527,63 @@ def update_team(params)
 		q.eq('team_id', params['team_id'])
 		q.eq('fall_year', params['fall_year'])
 	end.get.first
-	pp params['ids']
-	pp update_team['player_ids']
 	update_team['player_ids'] = params['ids'].split(',')
-	pp update_team
 	result = update_team.save
 	result.to_json
+end
+
+def build_public_teams_map(users)
+	users.each do |user|
+		set_of_public_teams = Set.new
+		permissions_rows = Parse::Query.new('Permissions').tap do |q|
+			q.eq('author_id', user['objectId'])
+		end.get
+		permissions_rows.each do |permission|
+			set_of_public_teams << @teams_map[permission['team_id']]
+		end
+		@user_public_map[user['objectId']] = set_of_public_teams
+	end
+end
+
+def get_video_permissions(params)
+	permission = Parse::Query.new('Permissions').tap do |q|
+		q.eq('author_id', session[:authorId])
+		q.eq('team_id', params[:team_id])
+		q.eq('vid_id', params[:vid_id])
+	end.get
+
+	if permission.length == 0
+		false
+	else
+		true
+	end
+end
+
+def toggle_permissions(params)
+	set_to = params['privacy']
+
+	permission = Parse::Query.new('Permissions').tap do |q|
+		q.eq('author_id', session[:authorId])
+		q.eq('team_id', params['team_id'])
+		q.eq('vid_id', params['vid_id'])
+	end.get
+
+	pp 'permission'
+	pp permission.length
+	if set_to
+		if permission.length != 0
+			# do nothing, already public
+		else
+			new_permission = Parse::Object.new('Permissions')
+			new_permission['team_id'] = params['team_id']
+			new_permission['vid_id'] = params['vid_id']
+			new_permission['author_id'] = session[:authorId]
+			result = new_permission.save
+		end
+	else
+		permission_row = permission.first
+		permission_row.parse_delete
+	end
 end
 
 
