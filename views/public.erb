@@ -1,7 +1,7 @@
 <!-- Left side-->
 <div class="side">
 	<% @users.each do |user| %>
-		<a href="/public/<%=user['objectId']%>/stats"><%= user['username'] %></a>
+		<a href="/public/<%=user['objectId']%>/stats"><%= h user['username'] %></a>
 		<!-- A list of teams avaiable from this particular user -->
 		<% list_of_teams = @user_public_map[user['objectId']] %>
 		<h5>Stats available for:</h5>

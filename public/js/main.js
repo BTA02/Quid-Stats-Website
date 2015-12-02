@@ -494,18 +494,10 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
   }
 
   $scope.addVideo = function() {
-    $scope.vidPreview = null;
-    $scope.fallYear = null;
-    $scope.vidDesc = null;
-
-    console.log($scope.vidPreview);
-    console.log($scope.fallYear);
-    console.log($scope.vidDesc);
-
-    if ($scope.team === null) {
+    if ($scope.team == null) {
       alert("Please select a team");
     }
-    else if ($scope.fallYear === null) {
+    else if ($scope.fallYear == null) {
       alert("Please select a fall year");
     }
     else if ($scope.vidPreview === null) {
@@ -535,8 +527,9 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
   // Log in functions
 
   $scope.checkUsername = function() {
-    if ($scope.signupUsername == null) {
-      return true;
+    if ($scope.signupUsername == null || 
+      ($scope.signupUsername.length < 3 || $scope.signupUsername.length > 20)) {
+      return false;
     }
     if ($scope.signupUsername.match(/^[a-zA-Z0-9_]*$/)) {
       return true;
@@ -549,10 +542,10 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     if ($scope.pass1 == null) {
       return false;
     }
-    if ($scope.pass1.length === 0) {
+    if ($scope.pass1.length == 0) {
       return false;
     }
-    return $scope.pass1 === $scope.pass2;
+    return $scope.pass1 == $scope.pass2;
   };
 
   // Add team functions

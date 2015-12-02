@@ -19,19 +19,23 @@ configure do
 end
 
 helpers do
-  def get_user
-  	if !session[:username].nil?
-	  	"<p>"+session[:username]+"</p>"
-  	else
-  		"<p>Login</p>"
-  	end
-  end
+	def h(text)
+		Rack::Utils.escape_html(text)
+	end
 
-  # ruby convention says methods that return bool should end with ?
-  def logged_in?
-  	# implicit return lets you clean this up a lot
-  	!session[:username].nil?
-  end
+	def get_user
+		if !session[:username].nil?
+	  	"<p>"+h(session[:username])+"</p>"
+		else
+			"<p>Login</p>"
+		end
+	end
+
+	# ruby convention says methods that return bool should end with ?
+	def logged_in?
+		# implicit return lets you clean this up a lot
+		!session[:username].nil?
+	end
 end
 
 get '/' do
