@@ -59,12 +59,12 @@
 	<button class="btn btn-default" ng-click="addStat(null, null, 'START_CLOCK')">Game (Re)Start</button>
 	<button class="btn btn-default" ng-click="addStat(null, null, 'PAUSE_CLOCK')">Game Stoppage</button>
 	<button class="btn btn-default" ng-click="addStat(null, null, 'AWAY_GOAL')">Away Goal</button>
-	<button class="btn btn-default" ng-click="addStat(null, null, 'SNITCH_ON_PITCH')">Snitch on pitch</button>
+	<button class="btn btn-default" ng-click="addStat(null, null, 'SEEKERS_RELEASED')">Seekers Released</button>
 	<button class="btn btn-default" ng-click="addStat(null, null, 'AWAY_SNITCH_CATCH')">Opponent snitch catch</button>
 </div>
 
 <!-- Players on pitch -->
-<div class="container-fluid playersOnPitch">
+<div class="container playersOnPitch">
 	<div class="playerListHolder" ng-repeat="onPlayer in onFieldPlayers track by $index">
 		<ul class="playerList">
 			<div ng-show="$index < 3 || $index == 3">

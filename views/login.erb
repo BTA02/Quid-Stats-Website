@@ -1,4 +1,4 @@
-<div class="container">
+<div class="left-div">
 	<div class="welcome">
 		<h3 align="center">Welcome to QuidStats</h3>
 
@@ -12,43 +12,41 @@
 	</div>
 </div>
 <!-- login form -->
-<div>
-	<div class="login">
-		<div class="container-fluid form" align="center">
-			<h1>Login</h1>
-			<form action="/log_in" method="post">
-			 	<div class="form-group">
-			    	<label for="loginUsername">Username</label>
-			    	<input name="loginUsername" class="form-control" id="loginUsername" placeholder="Username">
-			  	</div>
-			  	<div class="form-group">
-			    	<label for="loginPassword">Password</label>
-			    	<input name="loginPassword" type="password" class="form-control" id="loginPassword" placeholder="Password">
-			  	</div>
-			  	<button type="submit" class="btn btn-default">Submit</button>
-			</form>
-		</div>
+<div class="right-div">
+	<div class="container-fluid form" align="center">
+		<h1>Login</h1>
+		<form action="/log_in" method="post">
+		 	<div class="form-group">
+		    	<label for="loginUsername">Username</label>
+		    	<input name="loginUsername" class="form-control" id="loginUsername" placeholder="Username">
+		  	</div>
+		  	<div class="form-group">
+		    	<label for="loginPassword">Password</label>
+		    	<input name="loginPassword" type="password" class="form-control" id="loginPassword" placeholder="Password">
+		  	</div>
+		  	<button type="submit" class="btn btn-default">Submit</button>
+		</form>
+	</div>
 
-		<div class="container-fluid form" align="center">
-			<h1>Sign-Up</h1>
-			<form action="/sign_up" method="post">
-			 	<div class="form-group">
-			    	<label for="signupUsername">Username</label>
-			    	<input ng-model="signupUsername" name="signupUsername" class="form-control" id="signupUsername" placeholder="Username">
-			  	</div>
-			  	<div class="form-group">
-			    	<label for="signupPassword1">Password</label>
-			    	<input name="signupPassword1" ng-model="pass1" type="password" class="form-control" id="signupPassword1" placeholder="Password">
-			  	</div>
-			  	<div class="form-group">
-			    	<label for="signupPassword2">Confirm Password</label>
-			    	<input name="signupPassword2" ng-model="pass2" type="password" class="form-control" id="signupPassword2" placeholder="Confirm Password">
-			  	</div>
-			  	<button type="submit" class="btn btn-default" ng-show="checkPasswords()">Submit</button>
-			  	<p ng-show="!checkUsername()" style="color:red">Invalid username</p>
-			  	<p ng-show="!checkPasswords()" style="color:red">Passwords do not match</p>
-			</form>
-		</div>
+	<div class="container-fluid form" align="center">
+		<h1>Sign-Up</h1>
+		<form action="/sign_up" method="post">
+		 	<div class="form-group">
+		    	<label for="signupUsername">Username</label>
+		    	<input ng-model="signupUsername" name="signupUsername" class="form-control" id="signupUsername" placeholder="Username">
+		  	</div>
+		  	<div class="form-group">
+		    	<label for="signupPassword1">Password</label>
+		    	<input name="signupPassword1" ng-model="pass1" type="password" class="form-control" id="signupPassword1" placeholder="Password">
+		  	</div>
+		  	<div class="form-group">
+		    	<label for="signupPassword2">Confirm Password</label>
+		    	<input name="signupPassword2" ng-model="pass2" type="password" class="form-control" id="signupPassword2" placeholder="Confirm Password">
+		  	</div>
+		  	<button type="submit" class="btn btn-default" ng-show="checkPasswords()">Submit</button>
+		  	<p ng-show="!checkUsername()" style="color:red">Invalid username</p>
+		  	<p ng-show="!checkPasswords()" style="color:red">Passwords do not match</p>
+		</form>
 	</div>
 </div>
 

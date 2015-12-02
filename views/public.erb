@@ -1,5 +1,5 @@
 <!-- Left side-->
-<div class="side">
+<div class="publicUsers">
 	<% @users.each do |user| %>
 		<a href="/public/<%=user['objectId']%>/stats"><%= h user['username'] %></a>
 		<!-- A list of teams avaiable from this particular user -->
