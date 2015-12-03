@@ -1,0 +1,9 @@
+{
+  "name": "quidstats",
+  "dependencies": {
+    "bower": "~1.6"
+  },
+  "scripts": {
+    "postinstall": "bower install"
+  }
+}
