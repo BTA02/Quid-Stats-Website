@@ -22,7 +22,7 @@
     <header>
       <div class="nav">
         <ul>
-          <li class="username"><a href="/"><%= get_user %> </a></li>
+          <li class="username"><a href="/"><%= h(session[:username]) || 'Login' %> </a></li>
           <li><a href="/public/all">Public Stats</a></li>
           <li><a href="/stats">My Stats</a></li>
           <li><a href="/record">Record Stats</a></li>

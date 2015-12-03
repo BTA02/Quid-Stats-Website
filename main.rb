@@ -23,14 +23,6 @@ helpers do
 		Rack::Utils.escape_html(text)
 	end
 
-	def get_user
-		if !session[:username].nil?
-	  	"<p>"+h(session[:username])+"</p>"
-		else
-			"<p>Login</p>"
-		end
-	end
-
 	# ruby convention says methods that return bool should end with ?
 	def logged_in?
 		# implicit return lets you clean this up a lot
@@ -283,7 +275,7 @@ def get_relevant_teams
 end
 
 def get_users
-	user_list = Parse::Query.new("_User").get
+	Parse::Query.new("_User").get
 end
 
 def get_all_games_for_team(params)
@@ -445,9 +437,8 @@ def delete_stat(id)
 		q.eq("objectId", id);
 	end.get.first
 	retObj = stat_to_del.clone
-	resp = stat_to_del.parse_delete
+	stat_to_del.parse_delete
 	retObj.to_json
-
 end	
 
 def update_stat(params)
@@ -578,7 +569,7 @@ def toggle_permissions(params)
 			new_permission['team_id'] = params['team_id']
 			new_permission['vid_id'] = params['vid_id']
 			new_permission['author_id'] = session[:authorId]
-			result = new_permission.save
+			new_permission.save
 		end
 	else
 		permission_row = permission.first

@@ -35,14 +35,14 @@
     </div>
   </div>
   
-  <div class="col-lg-10">
+  <div class="col-lg-10" ng-show="statsDisp">
       <table ng-show="isPlusMinus" class="table" ng-model="statsDisp">
         <thead>
           <th ng-repeat="cat in pmCategoriesToDisplay" ng-click="sortPMMap(cat)">{{cat}}</th>
         </thead>
         <tbody>
           <tr ng-repeat="row in statsDisp">
-            <td>{{row[0]}}</td> <!-- This is group, I think -->
+            <td>{{row[0].join(', ')}}</td> <!-- This is group, I think -->
             <td ng-repeat="(key, val) in row[1]">
               <p ng-if="pmCategoriesToDisplay[$index+1]=='TIME'">{{row[1][convertCategoryName(pmCategoriesToDisplay[$index+1])] | time:'ss':'mm:ss'}}</p>
               <p ng-if="pmCategoriesToDisplay[$index+1]!='TIME'">{{row[1][convertCategoryName(pmCategoriesToDisplay[$index+1])]}}</p>
