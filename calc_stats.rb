@@ -111,7 +111,7 @@ class CalcStats
 				start_time = event["time"]
 			elsif event_type == "AWAY_GOAL"
 				add_plus_minus_val(on_field_array, -1)
-			elsif event_type == "SNITCH_ON_PITCH"
+			elsif event_type == "SEEKERS_RELEASED"
 			elsif event_type == "AWAY_SNITCH_CATCH"
 			
 			elsif event_type == "SNITCH_CATCH"
