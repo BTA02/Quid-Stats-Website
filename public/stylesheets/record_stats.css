@@ -1,10 +1,16 @@
 .timeOnStatColumn > p {
 	display: inline-block;
 	padding: 5px;
+	text-decoration: underline;
+}
+
+.timeOnStatColumn > p:hover {
+	cursor: pointer;
 }
 
 .clickList:hover {
-	background: red;
+	color: red;
+	cursor: pointer;
 }
 
 #statsList {
