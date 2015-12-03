@@ -61,6 +61,7 @@ class CalcStats
 					last_name = '?'
 					player_index = @players.find_index { |item| 
 						item['objectId'] == player_id
+						
 					}
 					if !player_index.nil?
 						first_name = @players[player_index]['first_name']
