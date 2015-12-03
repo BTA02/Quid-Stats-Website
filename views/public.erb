@@ -1,16 +1,18 @@
 <!-- Left side-->
 <div class="publicUsers">
 	<% @users.each do |user| %>
-		<a href="/public/<%=user['objectId']%>/stats"><%= h user['username'] %></a>
-		<!-- A list of teams avaiable from this particular user -->
 		<% list_of_teams = @user_public_map[user['objectId']] %>
-		<h5>Stats available for:</h5>
-		<ul>
-			<% list_of_teams.each do |team| %>
-				<li><%= team['team_name'] %></li>
-			<%end%>
-		</ul>
-		<hr>
+		<div ng-show="<%= list_of_teams.length != 0 %>">
+			<a href="/public/<%=user['objectId']%>/stats"><%= h user['username'] %></a>
+			<!-- A list of teams avaiable from this particular user -->
+			<h5>Stats available for:</h5>
+			<ul>
+				<% list_of_teams.each do |team| %>
+					<li><%= team['team_name'] %></li>
+				<%end%>
+			</ul>
+			<hr>
+		</div>
 	<%end%>
 </div>
 

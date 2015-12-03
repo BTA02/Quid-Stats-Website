@@ -223,8 +223,6 @@ end
 
 post '/setPermissions' do
 	vals = JSON.parse(request.body.string)
-	pp 'vals'
-	pp vals
 	toggle_permissions(vals)
 	'finished'
 end
@@ -559,8 +557,6 @@ def toggle_permissions(params)
 		q.eq('vid_id', params['vid_id'])
 	end.get
 
-	pp 'permission'
-	pp permission.length
 	if set_to
 		if permission.length != 0
 			# do nothing, already public
