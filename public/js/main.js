@@ -149,20 +149,19 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
   }
 
   $interval( function(){
-    // I figured it out!!! what if submap isn't created?
     if ($scope.videoPlayer !== null && $scope.videoPlayer !== undefined) {
       $scope.updateOnFieldPlayers();
       $scope.updateScoreboard();
     }
   }, 500);
 
-
+  // this could be a ton better
   $scope.updateOnFieldPlayers = function() {
     var startTime = 0;
     var endTime = $scope.videoPlayer.getCurrentTime() + 1;
     setOnFieldToBlank();
     for (var i = startTime; i < endTime; i++) {
-      if ($scope.subMap.get(i) !== null) {
+      if ($scope.subMap.get(i) !== null && $scope.subMap.get(i) !== undefined) {
         var arrayOfSubs = $scope.subMap.get(i);
         for (var j = 0; j < arrayOfSubs.length; j++) {
           applySub(arrayOfSubs[j]);
@@ -462,6 +461,10 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
       $scope.selectedGames[id] = allBool;
     }
     $scope.allSelected = allBool;
+  }
+
+  $scope.instantReplay = function() {
+    $scope.seekToTime("", $scope.videoPlayer.getCurrentTime());
   }
 
   $scope.seekToTime = function(statName, time) {
