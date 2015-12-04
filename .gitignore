@@ -46,3 +46,4 @@ public/lib
 
 # other
 npm-debug.log
+node_modules
