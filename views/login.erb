@@ -13,6 +13,8 @@
 </div>
 <!-- login form -->
 <div class="right-div">
+	
+
 	<div class="container-fluid form" align="center">
 		<h1>Login</h1>
 		<form action="/log_in" method="post">
@@ -43,12 +45,19 @@
 		    	<label for="signupPassword2">Confirm Password</label>
 		    	<input name="signupPassword2" ng-model="pass2" type="password" class="form-control" id="signupPassword2" placeholder="Confirm Password">
 		  	</div>
-		  	<button type="submit" class="btn btn-default" ng-show="checkPasswords()">Submit</button>
+		  	<button type="submit" class="btn btn-default" ng-show="checkPasswords() && checkUsername()">Submit</button>
 		  	<p ng-show="signupUsername && !checkUsername()" style="color:red">Invalid username</p>
 		  	<p ng-show="(pass1 || pass2) && !checkPasswords()" style="color:red">Passwords do not match</p>
 		</form>
 	</div>
 </div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
 <div id="helpText" class="white_content">
 	<a href = "javascript:void(0)" onclick = "document.getElementById('helpText').style.display='none';document.getElementById('fade').style.display='none'">Close<br></a>

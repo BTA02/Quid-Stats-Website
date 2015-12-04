@@ -531,7 +531,7 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
 
   $scope.checkUsername = function() {
     if ($scope.signupUsername == null || 
-      ($scope.signupUsername.length < 3 || $scope.signupUsername.length > 20)) {
+      ($scope.signupUsername.length < 5 || $scope.signupUsername.length > 20)) {
       return false;
     }
     if ($scope.signupUsername.match(/^[a-zA-Z0-9_]*$/)) {
