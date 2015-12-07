@@ -42,3 +42,12 @@
 	opacity:.90;
 	filter: alpha(opacity=90);
 }
+
+.nav .dropdown-menu {
+	display: hidden;
+}
+
+.nav:hover .dropdown-menu {
+	display: block;
+
+}
