@@ -77,6 +77,7 @@ get '/add_team' do
 	if !logged_in?
 		redirect '/'
 	end
+	@all_players_array = get_all_players
 	@teams = get_all_teams
 	erb :add_team
 end
@@ -521,6 +522,9 @@ def update_team(params)
 	result.to_json
 end
 
+# this needs to be re-written
+# just make one call to get all the permissions from the table
+# I have to do that anyway, might as well be now
 def build_public_teams_map(users)
 	users.each do |user|
 		set_of_public_teams = Set.new
@@ -572,6 +576,11 @@ def toggle_permissions(params)
 		permission_row.parse_delete
 	end
 end
+
+def get_all_players
+	Parse::Query.new("Players").get
+end
+
 
 
 
