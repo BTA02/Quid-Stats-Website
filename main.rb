@@ -522,13 +522,13 @@ def update_team(params)
 end
 
 def build_public_teams_map(users)
+	permissions_rows = Parse::Query.new('Permissions').get
 	users.each do |user|
 		set_of_public_teams = Set.new
-		permissions_rows = Parse::Query.new('Permissions').tap do |q|
-			q.eq('author_id', user['objectId'])
-		end.get
 		permissions_rows.each do |permission|
-			set_of_public_teams << @teams_map[permission['team_id']]
+			if permission['author_id'] == user['objectId']
+				set_of_public_teams << @teams_map[permission['team_id']]
+			end
 		end
 		@user_public_map[user['objectId']] = set_of_public_teams
 	end
