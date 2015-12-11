@@ -77,9 +77,7 @@ get '/add_team' do
 	if !logged_in?
 		redirect '/'
 	end
-
 	@teams = get_all_teams
-	
 	erb :add_team
 end
 
