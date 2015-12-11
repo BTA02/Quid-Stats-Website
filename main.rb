@@ -77,8 +77,9 @@ get '/add_team' do
 	if !logged_in?
 		redirect '/'
 	end
-	@all_players_array = get_all_players
+
 	@teams = get_all_teams
+	
 	erb :add_team
 end
 
@@ -136,6 +137,11 @@ end
 get '/allGames/:team_id' do
 	get_all_games_for_team(params).sort_by{|cat| cat[:description]}.to_json
 end
+
+get '/allPlayers' do 
+	get_all_players.sort_by{|cat| cat[:description]}.to_json
+end
+
 
 get '/allPlayers/:team_id/:fall_year' do
 	get_players_for_team(params[:team_id], params[:fall_year]).sort_by{|cat| cat[:description]}.to_json
@@ -577,8 +583,12 @@ def toggle_permissions(params)
 	end
 end
 
+# to make this better, just wait until a few letters have been typed
+# then look it all up
 def get_all_players
-	Parse::Query.new("Players").get
+	Parse::Query.new("Players").tap do |q|
+		q.limit = 1000
+	end.get
 end
 
 

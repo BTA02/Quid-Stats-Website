@@ -559,6 +559,10 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
       + "/" + $scope.rosterYear).then(function(response) {
         $scope.roster = response["data"];
     });
+    $http.get("/allPlayers").then(function(response) {
+      $scope.people = response["data"];
+    })
+
   }
 
   $scope.addNewPlayer = function() {
@@ -572,6 +576,12 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
         $scope.newFirstName = "";
         $scope.newLastName = "";
     });
+  }
+
+  $scope.addExistingPlayer = function() {
+    $scope.$broadcast('angucomplete-alt:clearInput', 'autocomplete');
+    var existingPlayerObj = {first_name:______, last_name:_____, objectId:_____};
+    $scope.roser.splice(0, 0, existingPlayerObj);
   }
 
   $scope.saveRoster = function() {
