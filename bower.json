@@ -20,5 +20,8 @@
     "angular-scroll-glue": "~2.0.6",
     "anguvideo": "~0.0.1",
     "angucomplete-alt": "~2.1.0"
+  },
+  "resolutions": {
+    "angular": "1.4.8"
   }
 }
