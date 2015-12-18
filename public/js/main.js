@@ -566,22 +566,37 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
   }
 
   $scope.addNewPlayer = function() {
-    $http.get("/addPlayer/" + $scope.newFirstName.trim()
-      + "/" + $scope.newLastName.trim()).then(function(response) {
+    firstNameElt = document.getElementById('autocompleteFirst_value');
+    lastNameElt = document.getElementById('autocompleteLast_value');
+    var newFirstName = firstNameElt.value;
+    var newLastName = lastNameElt.value;
+
+    $http.get("/addPlayer/" + newFirstName.trim()
+      + "/" + newLastName.trim()).then(function(response) {
         var fname = response["data"]["first_name"].trim();
         var lname = response["data"]["last_name"].trim();
         var objId = response["data"]["objectId"];
         var newPlayerObj = {first_name:fname, last_name:lname, objectId:objId};
         $scope.roster.splice(0, 0, newPlayerObj);
-        $scope.newFirstName = "";
-        $scope.newLastName = "";
+        // $scope.$broadcast('angucomplete-alt:clearInput', 'autocompleteFirst');
+        // $scope.$broadcast('angucomplete-alt:clearInput', 'autocompleteLast');
+        newFirstName = "";
+        newLastName = "";
     });
   }
 
-  $scope.addExistingPlayer = function() {
-    $scope.$broadcast('angucomplete-alt:clearInput', 'autocomplete');
-    var existingPlayerObj = {first_name:______, last_name:_____, objectId:_____};
-    $scope.roser.splice(0, 0, existingPlayerObj);
+  $scope.addExistingPlayer = function(selected) {
+    var existingPlayerObj = {
+      first_name: selected.originalObject.first_name,
+      last_name: selected.originalObject.last_name,
+      objectId: selected.originalObject.objectId
+    };
+    $scope.roster.splice(0, 0, existingPlayerObj);
+    console.log("roster");
+    console.log($scope.roster);
+    $scope.$broadcast('angucomplete-alt:clearInput', 'autocompleteFirst');
+    $scope.$broadcast('angucomplete-alt:clearInput', 'autocompleteLast');
+
   }
 
   $scope.saveRoster = function() {

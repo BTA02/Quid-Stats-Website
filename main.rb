@@ -258,7 +258,9 @@ def log_in_user(params)
 end
 
 def get_all_teams
-	teams_array = Parse::Query.new("Teams").get
+	teams_array = Parse::Query.new("Teams").tap do |q|
+		q.order_by = 'team_name'
+	end.get
 	@teams_map = Hash.new
 	teams_array.each do |team|
 		@teams_map[team['objectId']] = team
@@ -269,8 +271,10 @@ end
 # gets teams that I actually have stats for
 # only going to be used in view stats, I think
 def get_relevant_teams
-	teams_array = Parse::Query.new("Teams").get
-	# this gets all teams
+	teams_array = Parse::Query.new("Teams").tap do |q|
+		q.order_by = 'team_name'
+	end.get
+	# this just gets all teams for now
 	# now, pare this down based on what stats i actually have
 	
 	

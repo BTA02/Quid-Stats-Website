@@ -1,14 +1,17 @@
 #addPlayerContainer {
     padding: 10px;
-    width: 500px;
+}
+
+#addPlayerContainer > div {
+    display: inline-block;
+}
+
+.angucomplete-holder {
+    width: 200px;
 }
 
 #rosterContainer {
     padding: 10px;
-}
-
-#autocomplete {
-	width: 300px;
 }
 
 .angucomplete-dropdown {
@@ -21,9 +24,6 @@
     cursor: pointer;
     z-index: 9999;
     position: absolute;
-    /*top: 32px;
-    left: 0px;
-    */
     margin-top: -6px;
     background-color: #ffffff;
 }
@@ -46,30 +46,4 @@
 
 .angucomplete-selected-row {
     color: red;
-}
-
-.angucomplete-image-holder {
-    padding-top: 2px;
-    float: left;
-    margin-right: 10px;
-    margin-left: 5px;
-}
-
-.angucomplete-image {
-    height: 34px;
-    width: 34px;
-    border-radius: 50%;
-    border-color: #ececec;
-    border-style: solid;
-    border-width: 1px;
-}
-
-.angucomplete-image-default {
-    /* Add your own default image here
-     background-image: url('/assets/default.png');
-    */
-    background-position: center;
-    background-size: contain;
-    height: 34px;
-    width: 34px;
 }
