@@ -136,6 +136,11 @@ get '/allGames/:team_id' do
 	get_all_games_for_team(params).sort_by{|cat| cat[:description]}.to_json
 end
 
+get '/allPlayers' do 
+	get_all_players.sort_by{|cat| cat[:description]}.to_json
+end
+
+
 get '/allPlayers/:team_id/:fall_year' do
 	get_players_for_team(params[:team_id], params[:fall_year]).sort_by{|cat| cat[:description]}.to_json
 end
@@ -253,7 +258,9 @@ def log_in_user(params)
 end
 
 def get_all_teams
-	teams_array = Parse::Query.new("Teams").get
+	teams_array = Parse::Query.new("Teams").tap do |q|
+		q.order_by = 'team_name'
+	end.get
 	@teams_map = Hash.new
 	teams_array.each do |team|
 		@teams_map[team['objectId']] = team
@@ -264,8 +271,10 @@ end
 # gets teams that I actually have stats for
 # only going to be used in view stats, I think
 def get_relevant_teams
-	teams_array = Parse::Query.new("Teams").get
-	# this gets all teams
+	teams_array = Parse::Query.new("Teams").tap do |q|
+		q.order_by = 'team_name'
+	end.get
+	# this just gets all teams for now
 	# now, pare this down based on what stats i actually have
 	
 	
@@ -521,6 +530,9 @@ def update_team(params)
 	result.to_json
 end
 
+# this needs to be re-written
+# just make one call to get all the permissions from the table
+# I have to do that anyway, might as well be now
 def build_public_teams_map(users)
 	permissions_rows = Parse::Query.new('Permissions').get
 	users.each do |user|
@@ -572,6 +584,15 @@ def toggle_permissions(params)
 		permission_row.parse_delete
 	end
 end
+
+# to make this better, just wait until a few letters have been typed
+# then look it all up
+def get_all_players
+	Parse::Query.new("Players").tap do |q|
+		q.limit = 1000
+	end.get
+end
+
 
 
 
