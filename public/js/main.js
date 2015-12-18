@@ -46,6 +46,28 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
 
   // Recording stats section
 
+  $scope.filterEvents = function() {
+    if (!$scope.playerFilter || !$scope.eventFilter) {
+      return;
+    }
+    // no matter what, take scope.originalStats and filter them
+    $scope.allStats = [];
+    for (var i = 0; i < $scope.originalStats.length; i++) {
+      // loop and keep only what i need
+      if ($scope.playerFilter) {
+      }
+      if ($scope.eventFilter) {
+        console.log("eventFilter working");
+        if ($scope.eventFilter == $scope.originalStats[i].stat_name) {
+          $scope.allStats.push($scope.originalStats[i]);
+        } else if ($scope.eventFilter == "allEvents") {
+          $scope.allStats.push($scope.originalStats[i]);
+        }
+      }
+    }
+
+  }
+
   $scope.getAllGames = function() {
     $scope.allGames = [];
     $http.get("/allGames/" + $scope.team).then(function(response) {
@@ -95,6 +117,7 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
           addSubToMap($scope.allStats[i]);
         }
       }
+      $scope.originalStats = $scope.allStats;
     });
     $http.get("/videoPermissions/" + $scope.team + "/" + $scope.selectedVideo).then(function(response) {
       if (response.data == 'true') {
@@ -178,20 +201,20 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     var pauseEnd = 0;
     $scope.homeScore = 0;
     $scope.awayScore = 0;
-    for (var i = 0; i < $scope.allStats.length; i++) {
-      if ($scope.allStats[i].time > endTime) {
+    for (var i = 0; i < $scope.originalStats.length; i++) {
+      if ($scope.originalStats[i].time > endTime) {
         break;
       }
-      if ($scope.allStats[i].stat_name === "GOAL") {
+      if ($scope.originalStats[i].stat_name === "GOAL") {
         $scope.homeScore += 1;
       }
-      if ($scope.allStats[i].stat_name === "AWAY_GOAL") {
+      if ($scope.originalStats[i].stat_name === "AWAY_GOAL") {
         $scope.awayScore += 1;
       }
-      if ($scope.allStats[i].stat_name === "SNITCH_CATCH") {
+      if ($scope.originalStats[i].stat_name === "SNITCH_CATCH") {
         $scope.homeScore += 3;
       }
-      if ($scope.allStats[i].stat_name === "AWAY_SNITCH_CATCH") {
+      if ($scope.originalStats[i].stat_name === "AWAY_SNITCH_CATCH") {
         $scope.awayScore += 3;
       }
       // if ($scope.allStats[i]["stat_name"] === "PAUSE_CLOCK") {
@@ -261,7 +284,7 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
         } else {
           response.data.player_in_name = inId;
         }
-        $scope.allStats.push(response.data);
+        $scope.originalStats.push(response.data);
 
 
         if (stat === "SUB") {
@@ -272,9 +295,10 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
           $scope.addStat(null, null, "PAUSE_CLOCK");
         }
 
-        $scope.allStats.sort(function(a, b){
+        $scope.originalStats.sort(function(a, b){
           return a.time - b.time;
         });
+        $scope.filterEvents;
     });
   };
 
@@ -284,15 +308,16 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
       //remove locally
       var index = findStatIndex(response.data);
       if (index !== -1) {
-        $scope.allStats.splice(index, 1);
+        $scope.originalStats.splice(index, 1);
       }
       removeSubFromMap(response.data);
+      $scope.filterEvents
     });
   };
 
   function findStatIndex(stat) {
-    for (var i = 0; i < $scope.allStats.length; i++) {
-      if ($scope.allStats[i].objectId == stat.objectId) {
+    for (var i = 0; i < $scope.originalStats.length; i++) {
+      if ($scope.originalStats[i].objectId == stat.objectId) {
         return i;
       }
     }
