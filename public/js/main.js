@@ -31,6 +31,19 @@ app.filter('time', function() {
   };
 });
 
+app.filter('statNameFilter', function() {
+
+  return function(value) {
+    var ret = value.replace(/_/g, ' ');
+    ret = ret.toLowerCase();
+    ret = ret.replace( /\b\w/g, function (m) {
+      return m.toUpperCase();
+    })
+    return ret;
+  }
+
+});
+
 app.controller('StatsController', ['$scope', '$http', '$interval', function($scope, $http, $interval) {
   
   $scope.getDoneGames = function(userId) {
@@ -53,19 +66,18 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     // no matter what, take scope.originalStats and filter them
     $scope.allStats = [];
     for (var i = 0; i < $scope.originalStats.length; i++) {
-      // loop and keep only what i need
-      if ($scope.playerFilter) {
+      if ( ($scope.playerFilter == $scope.originalStats[i].player_id
+              || $scope.playerFilter == $scope.originalStats[i].player_in_id
+              || $scope.playerFilter == "allPlayers")
+          && ($scope.eventFilter == $scope.originalStats[i].stat_name
+              || $scope.eventFilter == "allEvents") ) {
+        $scope.allStats.push($scope.originalStats[i]);
+      } else if ($scope.eventFilter == "AWAY_GOAL" 
+        && $scope.originalStats[i].stat_name == "AWAY_GOAL") {
+        $scope.allStats.push($scope.originalStats[i]);
       }
-      if ($scope.eventFilter) {
-        console.log("eventFilter working");
-        if ($scope.eventFilter == $scope.originalStats[i].stat_name) {
-          $scope.allStats.push($scope.originalStats[i]);
-        } else if ($scope.eventFilter == "allEvents") {
-          $scope.allStats.push($scope.originalStats[i]);
-        }
-      }
-    }
 
+    }
   }
 
   $scope.getAllGames = function() {
@@ -95,6 +107,8 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     setOnFieldToBlank();
     $scope.subMap = new Map();
     $scope.allStats = [];
+    $scope.eventFilter = "allEvents";
+    $scope.playerFilter = "allPlayers";
     $http.get("/allStats/" + $scope.selectedVideo + "/" + $scope.team).then(function(response) {
       $scope.allStats = response.data;
       for (var i = 0; i < $scope.allStats.length; i++) {

@@ -16,7 +16,7 @@
 #statsList {
     text-align: center;
     /*margin: 0px auto;*/
-    height: 400px;
+    height: 350px;
     width: 200px;
     overflow-x: scroll;
     white-space: nowrap;
