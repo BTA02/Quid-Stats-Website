@@ -362,7 +362,11 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
   			$scope.isPlusMinus = true;
   		}
   		$scope.statsDisp = response.data;
-      // so, $scope.statsDisp has everything I could ever dream of
+      if ($scope.isPlusMinus) {
+        $scope.sortPMMap("GROUP");
+      } else {
+        $scope.sortMap("first_name");
+      }
   	});
   };
 
@@ -370,13 +374,21 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     category = $scope.convertCategoryName(category);
     var aVal = 0;
     var bVal = 0;
+    console.log(category);
     $scope.statsDisp.sort(function(a, b) {
       if (category == "ratio") {
         aVal = a[1][category].substr(0, a[1][category].indexOf(':'));
         bVal = b[1][category].substr(0, b[1][category].indexOf(':'));
+      } else if (category == "GROUP") {
+        aVal = a[0][0];
+        bVal = b[0][0];
+        return aVal.localeCompare(bVal);
       } else {
         aVal = a[1][category];
         bVal = b[1][category];
+      }
+      if (aVal == bVal) {
+        return a[0][0].localeCompare(b[0][0]);
       }
       return (bVal - aVal);
     });
@@ -387,9 +399,31 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     var aVal = 0;
     var bVal = 0;
     $scope.statsDisp.sort(function(a, b) {
-      // if (category == "first_name" || category == "last_name") {
-      //   return (a[category] > b[category]);
-      // }
+      // names stuff
+      if (category == "first_name") {
+        if (a[category] == "?") {
+          return 1;
+        } else if (b[category] == "?") {
+          return -1;
+        }
+        var retVal = a[category].localeCompare(b[category]);
+        if (retVal == 0) {
+          return (a["last_name"].localeCompare(b["last_name"]));
+        }
+        return retVal;
+      } else if (category == "last_name") {
+        if (a[category] == "?") {
+          return 1;
+        } else if (b[category] == "?") {
+          return -1;
+        }
+        var retVal = a[category].localeCompare(b[category]);
+        if (retVal == 0) {
+          return (a["first_name"].localeCompare(b["first_name"]));
+        }
+        return retVal;
+      }
+      // numbers stuff
       if (category == "ratio") {
         aVal = a[category].substr(0, a[category].indexOf(':'));
         bVal = b[category].substr(0, b[category].indexOf(':'));
@@ -397,8 +431,14 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
         aVal = a[category];
         bVal = b[category];
       }
-      if (aVal == bVal ) {
-        return a.first_name < b.first_name;
+      if (aVal == bVal) {
+        var fNameVal = a["first_name"].localeCompare(b["first_name"]);
+        var lNameVal = a["last_name"].localeCompare(b["last_name"]);
+        if (fNameVal != 0) {
+          return fNameVal;
+        } else {
+          return lNameVal;
+        }
       }
       return (bVal - aVal);
     });
