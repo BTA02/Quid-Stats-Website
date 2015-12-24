@@ -82,6 +82,8 @@
 	<button class="btn btn-default" ng-click="instantReplay()">Instant Replay</button>
 	<button class="btn btn-default" ng-click="addStat(null, null, 'START_CLOCK')">Game (Re)Start</button>
 	<button class="btn btn-default" ng-click="addStat(null, null, 'PAUSE_CLOCK')">Game Stoppage</button>
+	<button class="btn btn-default" ng-click="addCard('YELLOW_CARD')" style="background-color:yellow;">Yellow Card</button>
+	<button class="btn btn-default" ng-click="addCard('RED_CARD')" style="color:white; background-color:red;">Red Card</button>
 	<button class="btn btn-default" ng-click="addStat(null, null, 'AWAY_GOAL')">Away Goal</button>
 	<button class="btn btn-default" ng-click="addStat(null, null, 'SEEKERS_RELEASED')">Seekers Released</button>
 	<button class="btn btn-default" ng-click="addStat(null, null, 'AWAY_SNITCH_CATCH')">Opponent snitch catch</button>
@@ -94,7 +96,7 @@
 			<div ng-show="$index < 3 || $index == 3">
 				<h5 ng-show="$index < 3">Chaser</h5>
 				<h5 ng-show="$index == 3">Keeper</h5>
-				<a href = "javascript:void(0)" ng-click="startSub(onPlayer.objectId)" onclick = "document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block'">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
+				<a href = "javascript:void(0)" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
 				<li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'SHOT')">Shot</li>
 				<li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'GOAL')">Goal</li>
 				<li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'ASSIST')">Assist</li>
@@ -144,7 +146,7 @@
 <!-- Div for picking subs, starts just not-visible -->
 <div id="light" class="white_content">
 	<a href = "javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">Close<br></a>
-	<a ng-repeat="allPlayer in allPlayers" ng-click="subPlayer(allPlayer.objectId)" href = "javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">{{allPlayer.first_name+' '+allPlayer.last_name}}<br></a>
+	<a ng-repeat="allPlayer in allPlayers" ng-click="playerClicked(allPlayer.objectId)" href = "javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">{{allPlayer.first_name+' '+allPlayer.last_name}}<br></a>
 	<a href = "javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">Close<br></a>
 </div>
 <div id="fade" class="black_overlay"/>

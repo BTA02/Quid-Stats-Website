@@ -259,13 +259,26 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     }
   }
 
+  $scope.addCard = function(cardType) {
+    $scope.statType = cardType;
+    $scope.videoPlayer.pauseVideo();
+    document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block';
+
+  }
+
   $scope.startSub = function(playerId) {
+    $scope.statType = "SUB";
     $scope.videoPlayer.pauseVideo();
     $scope.subbingPlayer = playerId;
+    document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block';
   };
 
-  $scope.subPlayer = function(playerInId) {
-    $scope.addStat($scope.subbingPlayer, playerInId, "SUB");
+  $scope.playerClicked = function(playerInId) {
+    if ($scope.statType == "SUB") {
+      $scope.addStat($scope.subbingPlayer, playerInId, "SUB");
+    } else if ($scope.statType == "YELLOW_CARD" || $scope.statType == "RED_CARD") {
+      $scope.addStat(playerInId, "null", $scope.statType);
+    }
   };
 
   $scope.addStat = function(playerId, playerInId, stat) {
