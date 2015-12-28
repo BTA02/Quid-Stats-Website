@@ -484,6 +484,23 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     'RATIO',
     'TIME'
   ];
+  
+  $scope.beaterCategoriesToDisplay = [
+    'FIRST',
+    'LAST',
+    'BEATS_THROWN',
+    'BEATS_HIT',
+    'BEAT_PERCENT'
+  ];
+  
+  $scope.otherCategoriesToDisplay = [
+    'FIRST',
+    'LAST',
+    'SNITCH_CATCHES',
+    'TIME_SEEKING',
+    'YELLOWS',
+    'REDS'
+  ];
 
   $scope.convertCategoryName = function(category) {
     var ret;
