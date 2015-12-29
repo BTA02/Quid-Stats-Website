@@ -193,6 +193,12 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
   }, 500);
 
   // this could be a ton better
+  // Right now, if I try and switch two players in place, it doesn't work.
+  // i.e. I have Ben Griessmann, Ben Griessmann, and try to sub in a player for him
+  // there is no rhyme or reason as to which gets subbed out
+  // an idea is a new type of thing called a "swap", but I don't like that
+  // beacuse I don't know if it'll play nicely with my backend.
+  // Solutions: figure out how to do the subbing ri
   $scope.updateOnFieldPlayers = function() {
     var startTime = 0;
     var endTime = $scope.videoPlayer.getCurrentTime() + 1;
@@ -200,6 +206,10 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     for (var i = startTime; i < endTime; i++) {
       if ($scope.subMap.get(i) !== null && $scope.subMap.get(i) !== undefined) {
         var arrayOfSubs = $scope.subMap.get(i);
+        console.log("time");
+        console.log(i);
+        console.log("subs");
+        console.log(arrayOfSubs);
         for (var j = 0; j < arrayOfSubs.length; j++) {
           applySub(arrayOfSubs[j]);
         }
@@ -254,7 +264,7 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
       }
     }
     //index coming back as -1 each time
-    if (index !== -1) {
+    if (index != -1) {
       $scope.onFieldPlayers[index] = $scope.playersMap.get(sub.player_in_id);
     }
   }
@@ -263,8 +273,11 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     $scope.statType = cardType;
     $scope.videoPlayer.pauseVideo();
     document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block';
+    // I need to consider what I want to do with the keeper, if they get a penalty.
+    // Maybe just let the person sub the people as needed, and make sure that type of thing
+    // will work
 
-  }
+  };
 
   $scope.startSub = function(playerId) {
     $scope.statType = "SUB";
