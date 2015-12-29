@@ -127,7 +127,7 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
         } else {
           $scope.allStats[i].player_in_name = inId;
         }
-        if ($scope.allStats[i].stat_name === "SUB") {
+        if ($scope.allStats[i].stat_name === "SUB" || $scope.allStats[i].stat_name === "SWAP") {
           addSubToMap($scope.allStats[i]);
         }
       }
@@ -192,13 +192,8 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     }
   }, 500);
 
-  // this could be a ton better
-  // Right now, if I try and switch two players in place, it doesn't work.
-  // i.e. I have Ben Griessmann, Ben Griessmann, and try to sub in a player for him
-  // there is no rhyme or reason as to which gets subbed out
-  // an idea is a new type of thing called a "swap", but I don't like that
-  // beacuse I don't know if it'll play nicely with my backend.
-  // Solutions: figure out how to do the subbing ri
+  // went with "SWAP" as an option
+  // will need to add "SWAP" to my subMap things
   $scope.updateOnFieldPlayers = function() {
     var startTime = 0;
     var endTime = $scope.videoPlayer.getCurrentTime() + 1;
@@ -255,12 +250,20 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     }
     
   };
-
+  
+  // this needs to deal with swaps properly
   function applySub(sub) {
     var index = -1;
+    var swapIndex = -1;
+    // loop through the on field players, getting index of the sub.player_id
+    // once i have that, do stuff
+    // what if i have both, so in this case, a swap?
     for (var i = 0; i < $scope.onFieldPlayers.length; i++) {
       if ($scope.onFieldPlayers[i].objectId == sub.player_id) {
         index = i;
+      }
+      if ($scope.onFieldPlayers[i].objectId == sub.player_in_id) {
+        swapIndex = -1;
       }
     }
     //index coming back as -1 each time
@@ -285,12 +288,23 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     $scope.subbingPlayer = playerId;
     document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block';
   };
+  
+  $scope.startSwap = function(playerId) {
+    $scope.statType = "SWAP";
+    $scope.videoPlayer.pauseVideo();
+    $scope.subbingPlayer = playerId;
+    document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block';
+  };
 
   $scope.playerClicked = function(playerInId) {
     if ($scope.statType == "SUB") {
       $scope.addStat($scope.subbingPlayer, playerInId, "SUB");
     } else if ($scope.statType == "YELLOW_CARD" || $scope.statType == "RED_CARD") {
       $scope.addStat(playerInId, "null", $scope.statType);
+      // close the thing
+      $scope.startSwap(playerInId);
+    } else if ($scope.statType == "SWAP") {
+      $scope.addStat($scope.subbingPlayer, playerInId, "SWAP");
     }
   };
 
@@ -327,7 +341,7 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
         $scope.originalStats.push(response.data);
 
 
-        if (stat === "SUB") {
+        if (stat === "SUB" || stat == "SWAP") {
           addSubToMap(response.data);
           applySub(response.data);
         }
@@ -714,8 +728,6 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
       objectId: selected.originalObject.objectId
     };
     $scope.roster.splice(0, 0, existingPlayerObj);
-    console.log("roster");
-    console.log($scope.roster);
     $scope.$broadcast('angucomplete-alt:clearInput', 'autocompleteFirst');
     $scope.$broadcast('angucomplete-alt:clearInput', 'autocompleteLast');
 

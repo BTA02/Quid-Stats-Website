@@ -244,6 +244,18 @@ class CalcStats
 				end
 				ind = on_field_array.index(event['player_id'])
 				on_field_array[ind] = event["player_in_id"]
+			when 'SWAP'
+				if start_time != -1
+					time_to_add = event["time"] - start_time
+					all_combos.each do |combo|
+						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, time_to_add, 'time')
+					end
+					start_time = event["time"]
+				end
+				ind = on_field_array.index(event['player_id'])
+				ind2 = on_field_array.index(event['player_in_id']);
+				on_field_array[ind] = event["player_in_id"]
+				on_field_array[ind2] = event["player_in"];
     		when 'PAUSE_CLOCK'
     			if start_time != -1
 					time_to_add = event["time"] - start_time
