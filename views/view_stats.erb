@@ -36,9 +36,9 @@
   </div>
   
   <div class="col-lg-10" ng-show="statsDisp">
-      <table ng-show="isPlusMinus" class="table" ng-model="statsDisp">
-        <thead>
-          <th ng-repeat="cat in pmCategoriesToDisplay" ng-click="sortPMMap(cat)">{{cat}}</th>
+      <table ng-show="isPlusMinus" class="table table-striped tabled-condensed" ng-model="statsDisp">
+        <thead class="statsHeaders">
+          <th class="statsHeader" ng-repeat="cat in pmCategoriesToDisplay" ng-click="sortPMMap(cat)">{{cat}}</th>
         </thead>
         <tbody>
           <tr ng-repeat="row in statsDisp">
@@ -53,8 +53,8 @@
       </table>
       
       <table ng-hide="isPlusMinus" class="table table-striped table-condensed" ng-model="statsDisp">
-         <thead>
-          <th ng-repeat="cat in rawCategoriesToDisplay" ng-click="sortMap(cat)">{{cat}}</th>
+         <thead class="statsHeaders">
+          <th class="statsHeader" ng-repeat="cat in rawCategoriesToDisplay" ng-click="sortMap(cat)">{{cat}}</th>
         </thead>
 
         <tbody>

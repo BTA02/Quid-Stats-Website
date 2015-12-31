@@ -99,6 +99,16 @@ class CalcStats
 				end
 				ind = on_field_array.index(event["player_id"])
 				on_field_array[ind] = player_id
+			elsif event_type == "SWAP"
+				if start_time != -1
+						time_to_add = event["time"] - start_time
+						add_time_to_each_player(on_field_array, time_to_add)
+						start_time = event["time"]
+					end
+					ind = on_field_array.index(event["player_id"])
+				ind2 = on_field_array.index(event['player_in_id']);
+				on_field_array[ind] = event["player_in`_id"]
+				on_field_array[ind2] = event["player_in"];
 			elsif event_type == "PAUSE_CLOCK"
 				if start_time != -1
 					time_to_add = event["time"] - start_time
@@ -244,6 +254,18 @@ class CalcStats
 				end
 				ind = on_field_array.index(event['player_id'])
 				on_field_array[ind] = event["player_in_id"]
+			when 'SWAP'
+				if start_time != -1
+					time_to_add = event["time"] - start_time
+					all_combos.each do |combo|
+						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, time_to_add, 'time')
+					end
+					start_time = event["time"]
+				end
+				ind = on_field_array.index(event['player_id'])
+				ind2 = on_field_array.index(event['player_in_id'])
+				on_field_array[ind] = event["player_in_id"]
+				on_field_array[ind2] = event["player_id"]
     		when 'PAUSE_CLOCK'
     			if start_time != -1
 					time_to_add = event["time"] - start_time
@@ -292,11 +314,9 @@ class CalcStats
 
 	        	}
 	        end
-        	# this is cheating
-        	# why?
-        	# im betting because i'm removing pairs with <5 seconds together
+        	# this is cheating, sort of
         	prettyTime = Time.at(v[:time]).utc.strftime("%M:%S")
-        	if v[:time] > 0
+        	if v[:time] >= 0
         		# v[:time] = prettyTime
         		combo_stat_map_return[new_key] = v
         	end
