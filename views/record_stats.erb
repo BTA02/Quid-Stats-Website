@@ -145,8 +145,11 @@
 
 <!-- Div for picking subs, starts just not-visible -->
 <div id="light" class="white_content">
-	<a href = "javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">Close<br></a>
+	<p ng-if="statType == 'SWAP'">Swap the keeper for...</p>
+	<a ng-if="statType == 'SWAP'" href = "javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">None<br></a>
+	<a ng-if="statType != 'SWAP'" href="javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">Close<br></a>
 	<a ng-repeat="allPlayer in allPlayers" ng-click="playerClicked(allPlayer.objectId)" href = "javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">{{allPlayer.first_name+' '+allPlayer.last_name}}<br></a>
-	<a href = "javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">Close<br></a>
+	<a ng-if="statType == 'SWAP'" href = "javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">None<br></a>
+	<a ng-if="statType != 'SWAP'" href="javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">Close<br></a>
 </div>
 <div id="fade" class="black_overlay"/>

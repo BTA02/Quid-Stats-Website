@@ -263,9 +263,9 @@ class CalcStats
 					start_time = event["time"]
 				end
 				ind = on_field_array.index(event['player_id'])
-				ind2 = on_field_array.index(event['player_in_id']);
+				ind2 = on_field_array.index(event['player_in_id'])
 				on_field_array[ind] = event["player_in_id"]
-				on_field_array[ind2] = event["player_in"];
+				on_field_array[ind2] = event["player_id"]
     		when 'PAUSE_CLOCK'
     			if start_time != -1
 					time_to_add = event["time"] - start_time
@@ -314,11 +314,9 @@ class CalcStats
 
 	        	}
 	        end
-        	# this is cheating
-        	# why?
-        	# im betting because i'm removing pairs with <5 seconds together
+        	# this is cheating, sort of
         	prettyTime = Time.at(v[:time]).utc.strftime("%M:%S")
-        	if v[:time] > 0
+        	if v[:time] >= 0
         		# v[:time] = prettyTime
         		combo_stat_map_return[new_key] = v
         	end

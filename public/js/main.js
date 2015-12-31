@@ -201,10 +201,6 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     for (var i = startTime; i < endTime; i++) {
       if ($scope.subMap.get(i) !== null && $scope.subMap.get(i) !== undefined) {
         var arrayOfSubs = $scope.subMap.get(i);
-        console.log("time");
-        console.log(i);
-        console.log("subs");
-        console.log(arrayOfSubs);
         for (var j = 0; j < arrayOfSubs.length; j++) {
           applySub(arrayOfSubs[j]);
         }
@@ -255,20 +251,24 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
   function applySub(sub) {
     var index = -1;
     var swapIndex = -1;
-    // loop through the on field players, getting index of the sub.player_id
-    // once i have that, do stuff
-    // what if i have both, so in this case, a swap?
+    // both are 'not found'
+    
     for (var i = 0; i < $scope.onFieldPlayers.length; i++) {
       if ($scope.onFieldPlayers[i].objectId == sub.player_id) {
         index = i;
       }
       if ($scope.onFieldPlayers[i].objectId == sub.player_in_id) {
-        swapIndex = -1;
+        swapIndex = i;
       }
     }
     //index coming back as -1 each time
-    if (index != -1) {
+    if (index != -1 && swapIndex == -1) {
       $scope.onFieldPlayers[index] = $scope.playersMap.get(sub.player_in_id);
+    }
+    if (index != -1 && swapIndex != -1) {
+      var temp = $scope.onFieldPlayers[index];
+      $scope.onFieldPlayers[index] = $scope.onFieldPlayers[swapIndex];
+      $scope.onFieldPlayers[swapIndex] = temp;
     }
   }
 
@@ -276,10 +276,6 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     $scope.statType = cardType;
     $scope.videoPlayer.pauseVideo();
     document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block';
-    // I need to consider what I want to do with the keeper, if they get a penalty.
-    // Maybe just let the person sub the people as needed, and make sure that type of thing
-    // will work
-
   };
 
   $scope.startSub = function(playerId) {
@@ -302,7 +298,19 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     } else if ($scope.statType == "YELLOW_CARD" || $scope.statType == "RED_CARD") {
       $scope.addStat(playerInId, "null", $scope.statType);
       // close the thing
-      $scope.startSwap(playerInId);
+      document.getElementById('light').style.display='block';document.getElementById('fade').style.display='none';
+      // prompt a swap if it's the keeper
+      var indexOfCarded = -1;
+      for (var i = 0; i < $scope.onFieldPlayers.length; i++) {
+        console.log($scope.onFieldPlayers[i]['objectId']);
+        if ($scope.onFieldPlayers[i]['objectId'] == playerInId) {
+          indexOfCarded = i;
+        }
+      }
+      if (indexOfCarded == 3) {
+        document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block';
+        $scope.startSwap(playerInId);
+      }
     } else if ($scope.statType == "SWAP") {
       $scope.addStat($scope.subbingPlayer, playerInId, "SWAP");
     }
@@ -414,7 +422,6 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     category = $scope.convertCategoryName(category);
     var aVal = 0;
     var bVal = 0;
-    console.log(category);
     $scope.statsDisp.sort(function(a, b) {
       if (category == "ratio") {
         aVal = a[1][category].substr(0, a[1][category].indexOf(':'));
@@ -604,7 +611,7 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
   }
 
   $scope.seekToTime = function(statName, time) {
-    if (statName == 'SUB' || statName == 'PAUSE_CLOCK' || statName == 'START_CLOCK') {
+    if (statName == 'SUB' || statName == "SWAP" || statName == 'PAUSE_CLOCK' || statName == 'START_CLOCK') {
       $scope.videoPlayer.seekTo(time);
     } else {
       $scope.videoPlayer.seekTo(time-5);
