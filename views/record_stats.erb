@@ -77,6 +77,8 @@
 	</div>
 </div>
 
+
+
 <!-- Buttons under the video -->
 <div class="container-fluid" align="center">
 	<button class="btn btn-default" ng-click="instantReplay()">Instant Replay</button>
@@ -87,6 +89,7 @@
 	<button class="btn btn-default" ng-click="addStat(null, null, 'AWAY_GOAL')">Away Goal</button>
 	<button class="btn btn-default" ng-click="addStat(null, null, 'SEEKERS_RELEASED')">Seekers Released</button>
 	<button class="btn btn-default" ng-click="addStat(null, null, 'AWAY_SNITCH_CATCH')">Opponent snitch catch</button>
+	<button class="btn btn-default" ng-click="getURLWithFilters()" ng-if="statsPublic">Get Filters URL</button>
 </div>
 
 <!-- Players on pitch -->
