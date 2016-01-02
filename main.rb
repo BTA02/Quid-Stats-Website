@@ -35,6 +35,7 @@ helpers do
 end
 
 get '/' do
+	@controllerName = 'HomeController'
 	if logged_in?
 		@teams = get_all_teams
 		erb :account
@@ -61,6 +62,7 @@ get '/log_out' do
 end
 
 get '/stats' do
+	@controllerName = 'ViewStatsController'
 	if !logged_in?
 		redirect '/'
 	end
@@ -69,15 +71,8 @@ get '/stats' do
 	erb :view_stats
 end
 
-get '/watch' do
-	if !logged_in?
-		redirect '/'
-	end
-	@teams = get_all_teams
-	erb :watch_film
-end
-
 get '/add_team' do
+	@controllerName = 'AddTeamcontroller'
 	if !logged_in?
 		redirect '/'
 	end
@@ -86,6 +81,7 @@ get '/add_team' do
 end
 
 get '/record' do
+	@controllerName = 'RecordStatsController'
 	if !logged_in?
 		redirect '/'
 	end
@@ -95,6 +91,7 @@ get '/record' do
 end
 
 get '/add_video' do
+	@controllerName = 'AddVideoController'
 	if !logged_in?
 		redirect '/'
 	end
@@ -103,6 +100,7 @@ get '/add_video' do
 end
 
 get '/public/all' do
+	@controllerName = 'PublicController'
 	@teams = get_all_teams
 	@users = get_users
 	@user_public_map = Hash.new
@@ -113,6 +111,7 @@ get '/public/all' do
 end
 
 get '/public/:userId/stats' do
+	@controllerName = 'ViewStatsController'
 	@userId = params[:userId]
 	@teams = get_all_teams
 	@user_public_map = Hash.new
@@ -126,6 +125,7 @@ get '/public/:userId/stats' do
 end
 
 get '/public/:team_id/:vid_id/:player_filter/:event_filter' do
+	@controllerName = 'RecordStatsController'
 	if is_public?
 		@teams = get_all_teams
 		@public = true
