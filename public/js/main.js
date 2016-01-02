@@ -78,7 +78,23 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
       }
 
     }
-  }
+  };
+  
+  $scope.initFilters = function(pub) {
+    if (pub) {
+      $scope.eventFilter = "";
+      $scope.playerFilter = "";
+    } else {
+      $scope.eventFilter = "allEvents";
+      $scope.playerFilter = "allPlayers";
+    }
+  };
+  
+  $scope.getURLWithFilters = function() {
+    console.log($scope.selectedVideo);
+    var url = "quidstats.herokuapp.com/public/" + $scope.team + "/" + $scope.selectedVideo + "/" + $scope.playerFilter + "/" + $scope.eventFilter;
+    prompt("The following URL will bring you to this page, with the filters set as they are now, so long as the video is public. If the 'Public' switch is put back to private, this URL wont work any longer", url);
+  };
 
   $scope.getAllGames = function() {
     $scope.allGames = [];
@@ -107,8 +123,6 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
     setOnFieldToBlank();
     $scope.subMap = new Map();
     $scope.allStats = [];
-    $scope.eventFilter = "allEvents";
-    $scope.playerFilter = "allPlayers";
     $http.get("/allStats/" + $scope.selectedVideo + "/" + $scope.team).then(function(response) {
       $scope.allStats = response.data;
       for (var i = 0; i < $scope.allStats.length; i++) {
@@ -132,6 +146,7 @@ app.controller('StatsController', ['$scope', '$http', '$interval', function($sco
         }
       }
       $scope.originalStats = $scope.allStats;
+      // $scope.filterEvents();
     });
     $http.get("/videoPermissions/" + $scope.team + "/" + $scope.selectedVideo).then(function(response) {
       if (response.data == 'true') {

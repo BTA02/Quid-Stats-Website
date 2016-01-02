@@ -28,6 +28,10 @@ helpers do
 		# implicit return lets you clean this up a lot
 		!session[:username].nil?
 	end
+	
+	def is_public?
+		true
+	end
 end
 
 get '/' do
@@ -121,9 +125,12 @@ get '/public/:userId/stats' do
 	erb :view_stats
 end
 
-get '/public/:userId/record' do
-	@teams = get_all_teams
-	# erb :public_stats
+get '/public/:team_id/:vid_id/:player_filter/:event_filter' do
+	if is_public?
+		@teams = get_all_teams
+		@public = true
+		erb :record_stats
+	end
 end
 
 # FUNCTION CALLS
