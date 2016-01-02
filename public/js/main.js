@@ -411,7 +411,8 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
   
   $scope.getURLWithFilters = function() {
     console.log($scope.selectedVideo);
-    var url = "quidstats.herokuapp.com/public/" + $scope.team + "/" + $scope.selectedVideo + "/" + $scope.playerFilter + "/" + $scope.eventFilter;
+    var url = "quid-stats-website-bta02.c9users.io/public/" + $scope.team + "/" + $scope.selectedVideo + "/" + $scope.playerFilter + "/" + $scope.eventFilter;
+    // var url = "quidstats.herokuapp.com/public/" + $scope.team + "/" + $scope.selectedVideo + "/" + $scope.playerFilter + "/" + $scope.eventFilter;
     prompt("The following URL will bring you to this page, with the filters set as they are now, so long as the video is public. If the 'Public' switch is put back to private, this URL wont work any longer", url);
   };
   

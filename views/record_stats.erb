@@ -1,4 +1,4 @@
-<div ng-init="initFilters(<%= @public %>)" name="header" class="container-fluid text-center">
+<div ng-init="initFilters('<%=@public%>', '<%=@team_id%>', '<%=@vid_id%>', '<%=@player_id%>', '<%=@filter%>')" name="header" class="container-fluid text-center">
 	<!-- Team Selector -->
 	<select name="teamSelect" ng-model="team" ng-change="getAllGames()">
 		<option value="">Select a team</option>
@@ -7,7 +7,7 @@
 		<%end%>
 	</select>
 	<!-- Video Selector and allPlayers populator--> 
-	<select ng-model="vidObj" ng-change="getAllPlayers(>)" ng-options="game.vid_id+','+game.fall_year as game.description for game in allGames">
+	<select ng-model="vidObj" ng-change="getAllPlayers()" ng-options="game.vid_id+','+game.fall_year as game.description for game in allGames">
     </select>
     <div ng-show="vidObj" class="pull-right">
         <label ng-show="statsPublic" for="pubLabel">Public</label>

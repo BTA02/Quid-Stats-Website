@@ -72,7 +72,7 @@ get '/stats' do
 end
 
 get '/add_team' do
-	@controllerName = 'AddTeamcontroller'
+	@controllerName = 'AddTeamController'
 	if !logged_in?
 		redirect '/'
 	end
@@ -126,11 +126,13 @@ end
 
 get '/public/:team_id/:vid_id/:player_filter/:event_filter' do
 	@controllerName = 'RecordStatsController'
-	if is_public?
-		@teams = get_all_teams
-		@public = true
-		erb :record_stats
-	end
+	@teams = get_all_teams
+	@public = true
+	@team_id = params[:team_id]
+	@vid_id = params[:vid_id]
+	@player_id = params[:player_filter]
+	@filter = params[:event_filter]
+	erb :record_stats
 end
 
 # FUNCTION CALLS
