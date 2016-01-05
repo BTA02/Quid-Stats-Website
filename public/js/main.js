@@ -53,17 +53,17 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     }
   }, 500);
   
-  $scope.init = function(pub, team, vid, year, player, eventFilter) {
+  $scope.init = function(pub, author, team, vid, year, player, eventFilter) {
     if (pub) {
+      // So, I think I want to manually grab the events here
+      // Nothing else
       $scope.team = team;
       $scope.getAllGames();
       $scope.vidObj = vid + ',' + year;
       $scope.selectedVideo = vid;
       $scope.eventFilter = eventFilter;
       $scope.playerFilter = player;
-      $scope.getAllPlayers();
-      // $scope.
-      
+      $scope.getAllPlayers(author);
     } else {
       $scope.eventFilter = "allEvents";
       $scope.playerFilter = "allPlayers";
@@ -77,7 +77,7 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     });
   };
   
-  $scope.getAllPlayers = function() {
+  $scope.getAllPlayers = function(author) {
     var idAndYear;
     idAndYear = $scope.vidObj.split(",");
     $scope.selectedVideo = idAndYear[0];
@@ -89,15 +89,21 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
       for (var i = 0; i < $scope.allPlayers.length; i++) {
         $scope.playersMap.set($scope.allPlayers[i].objectId, $scope.allPlayers[i]);
       }
-      initVals();
+      initVals(author);
     });
   };
   
-  function initVals() {
+  function initVals(author) {
     setOnFieldToBlank();
     $scope.subMap = new Map();
     $scope.allStats = [];
-    $http.get("/allStats/" + $scope.selectedVideo + "/" + $scope.team).then(function(response) {
+    var statsUrl;
+    if (author) {
+      statsUrl = "/allStats/" + author + "/" + $scope.selectedVideo + "/" + $scope.team;
+    } else {
+      statsUrl = "/allStats/" + $scope.selectedVideo + "/" + $scope.team;
+    }
+    $http.get(statsUrl).then(function(response) {
       $scope.allStats = response.data;
       for (var i = 0; i < $scope.allStats.length; i++) {
         var id = $scope.allStats[i].player_id;

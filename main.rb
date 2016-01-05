@@ -174,8 +174,12 @@ get '/allPlayers/:team_id/:fall_year' do
 	get_players_for_team(params[:team_id], params[:fall_year]).sort_by{|cat| cat[:description]}.to_json
 end
 
+get '/allStats/:author_id/:vid_id/:team_id' do
+	get_all_stats_from_game(params[:vid_id], params[:team_id], params[:authorId])
+end
+
 get '/allStats/:vid_id/:team_id' do
-	get_all_stats_from_game(params[:vid_id], params[:team_id], session[:authorId]);
+	get_all_stats_from_game(params[:vid_id], params[:team_id], session[:authorId])
 end
 
 get '/addStat/:vid_id/:team_id/:fall_year/:player_id/:stat_name/:time/:player_in_id' do
