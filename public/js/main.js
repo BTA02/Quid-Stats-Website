@@ -53,6 +53,23 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     }
   }, 500);
   
+  $scope.init = function(pub, team, vid, year, player, eventFilter) {
+    if (pub) {
+      $scope.team = team;
+      $scope.getAllGames();
+      $scope.vidObj = vid + ',' + year;
+      $scope.selectedVideo = vid;
+      $scope.eventFilter = eventFilter;
+      $scope.playerFilter = player;
+      $scope.getAllPlayers();
+      // $scope.
+      
+    } else {
+      $scope.eventFilter = "allEvents";
+      $scope.playerFilter = "allPlayers";
+    }
+  };
+  
   $scope.getAllGames = function() {
     $scope.allGames = [];
     $http.get("/allGames/" + $scope.team).then(function(response) {
@@ -103,7 +120,7 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
         }
       }
       $scope.originalStats = $scope.allStats;
-      // $scope.filterEvents();
+      $scope.filterEvents();
     });
     $http.get("/videoPermissions/" + $scope.team + "/" + $scope.selectedVideo).then(function(response) {
       if (response.data == 'true') {
@@ -378,16 +395,6 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     $http.post("/setPermissions", data).then(function(response) {});
   };
   
-  $scope.initFilters = function(pub) {
-    if (pub) {
-      $scope.eventFilter = "";
-      $scope.playerFilter = "";
-    } else {
-      $scope.eventFilter = "allEvents";
-      $scope.playerFilter = "allPlayers";
-    }
-  };
-  
   $scope.filterEvents = function() {
     if (!$scope.playerFilter || !$scope.eventFilter) {
       return;
@@ -409,9 +416,8 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     }
   };
   
-  $scope.getURLWithFilters = function() {
-    console.log($scope.selectedVideo);
-    var url = "quid-stats-website-bta02.c9users.io/public/" + $scope.team + "/" + $scope.selectedVideo + "/" + $scope.playerFilter + "/" + $scope.eventFilter;
+  $scope.getURLWithFilters = function(author) {
+    var url = "quid-stats-website-bta02.c9users.io/public/" + author + "/" + $scope.team + "/" + $scope.selectedVideo + "/" + $scope.year + "/" + $scope.playerFilter + "/" + $scope.eventFilter;
     // var url = "quidstats.herokuapp.com/public/" + $scope.team + "/" + $scope.selectedVideo + "/" + $scope.playerFilter + "/" + $scope.eventFilter;
     prompt("The following URL will bring you to this page, with the filters set as they are now, so long as the video is public. If the 'Public' switch is put back to private, this URL wont work any longer", url);
   };
@@ -772,12 +778,6 @@ app.controller('PublicController', ['$scope', '$http', function($scope, $http) {
 }]);
 
 app.controller('HomeController', ['$scope', '$http', function($scope, $http) {
-  
-  
-
-  
-
-  // Log in functions
 
   $scope.checkUsername = function() {
     if ($scope.signupUsername == null || 

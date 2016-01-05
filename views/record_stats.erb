@@ -1,4 +1,4 @@
-<div ng-init="initFilters('<%=@public%>', '<%=@team_id%>', '<%=@vid_id%>', '<%=@player_id%>', '<%=@filter%>')" name="header" class="container-fluid text-center">
+<div ng-init="init('<%=@public%>', '<%=@team_id%>', '<%=@vid_id%>', '<%=@vid_year%>', '<%=@player_id%>', '<%=@filter%>')" name="header" class="container-fluid text-center">
 	<!-- Team Selector -->
 	<select name="teamSelect" ng-model="team" ng-change="getAllGames()">
 		<option value="">Select a team</option>
@@ -63,7 +63,7 @@
 			</select>
 		</div>
 		<div class="filter">
-			<select ng-init="eventFilter = allEvents" ng-model="eventFilter" ng-change="filterEvents()">
+			<select ng-model="eventFilter" ng-change="filterEvents()">
 				<option value="allEvents">All Events</option>
 				<option value="SHOT">Shots</option>
 				<option value="GOAL">Goals</option>
@@ -89,7 +89,7 @@
 	<button class="btn btn-default" ng-click="addStat(null, null, 'AWAY_GOAL')">Away Goal</button>
 	<button class="btn btn-default" ng-click="addStat(null, null, 'SEEKERS_RELEASED')">Seekers Released</button>
 	<button class="btn btn-default" ng-click="addStat(null, null, 'AWAY_SNITCH_CATCH')">Opponent snitch catch</button>
-	<button class="btn btn-default" ng-click="getURLWithFilters()" ng-if="statsPublic">Get Filters URL</button>
+	<button class="btn btn-default" ng-click="getURLWithFilters('<%=@author_id%>')" ng-if="statsPublic">Get Filters URL</button>
 </div>
 
 <!-- Players on pitch -->
