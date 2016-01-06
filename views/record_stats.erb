@@ -1,19 +1,19 @@
-<div name="header" class="container-fluid text-center">
+<div ng-init="init('<%=@public%>', '<%=@author_id%>', '<%=@team_id%>', '<%=@vid_id%>', '<%=@vid_year%>', '<%=@player_id%>', '<%=@filter%>')" name="header" class="container-fluid text-center">
 	<!-- Team Selector -->
-	<select name="teamSelect" ng-model="team" ng-change="getAllGames()">
+	<select ng-hide="<%= @public %>" name="teamSelect" ng-model="team" ng-change="getAllGames()">
 		<option value="">Select a team</option>
 		<% @teams.each do |team| %>
 		<option value="<%= team['objectId']%>"><%=team['team_name']%></option>
 		<%end%>
 	</select>
 	<!-- Video Selector and allPlayers populator--> 
-	<select ng-model="vidObj" ng-change="getAllPlayers()" ng-options="game.vid_id+','+game.fall_year as game.description for game in allGames">
+	<select ng-hide="<%= @public %>" ng-model="vidObj" ng-change="getAllPlayers()" ng-options="game.vid_id+','+game.fall_year as game.description for game in allGames">
     </select>
-    <div ng-show="vidObj" class="pull-right">
+    <div ng-show="vidObj && !'<%= @public %>' " class="pull-right">
         <label ng-show="statsPublic" for="pubLabel">Public</label>
         <label ng-show="!statsPublic" for="pubLabel">Private</label>
     </div>
-    <div ng-show="vidObj" class="material-switch pull-right">
+    <div ng-show="vidObj && !'<%= @public %>' " class="material-switch pull-right">
         <input ng-model="statsPublic" ng-change="togglePublic()" type="checkbox" id="unchecked" class="cbx hidden"/>
         <label id="pubLabel" for="unchecked" class="lbl"></label>
 	</div>
@@ -52,18 +52,18 @@
 					<p ng-click="seekToTime(statObj.stat_name, statObj.time)">{{statObj.time | time:'ss':'mm:ss'}}</p>
 					<!-- <p ng-click="adjustTime(1, statObj.time, statObj.objectId)">+</p> -->
 				</div>
-				<button class="btn btn-danger btn-xs" ng-click="deleteStat(statObj.objectId)">Delete</button>
+				<button ng-hide="<%= @public %>" class="btn btn-danger btn-xs" ng-click="deleteStat(statObj.objectId)">Delete</button>
 			</div>
 		</div>
 		<!-- <button class="btn btn-xs" ng-click="glued=!glued">Toggle auto-scroll {{glued}}</button> -->
 		<div class="filter">
-			<select ng-model="playerFilter" ng-change="filterEvents()">
+			<select ng-model="playerFilter" ng-change="filterEvents('players')">
 				<option value="allPlayers">All Players</option>
 				<option ng-repeat="player in allPlayers" value="{{player.objectId}}">{{player.first_name + ' ' + player.last_name}}</option>
 			</select>
 		</div>
 		<div class="filter">
-			<select ng-init="eventFilter = allEvents" ng-model="eventFilter" ng-change="filterEvents()">
+			<select ng-model="eventFilter" ng-change="filterEvents('events')">
 				<option value="allEvents">All Events</option>
 				<option value="SHOT">Shots</option>
 				<option value="GOAL">Goals</option>
@@ -77,8 +77,10 @@
 	</div>
 </div>
 
+
+
 <!-- Buttons under the video -->
-<div class="container-fluid" align="center">
+<div ng-hide="<%= @public %>" class="container-fluid" align="center">
 	<button class="btn btn-default" ng-click="instantReplay()">Instant Replay</button>
 	<button class="btn btn-default" ng-click="addStat(null, null, 'START_CLOCK')">Game (Re)Start</button>
 	<button class="btn btn-default" ng-click="addStat(null, null, 'PAUSE_CLOCK')">Game Stoppage</button>
@@ -87,10 +89,11 @@
 	<button class="btn btn-default" ng-click="addStat(null, null, 'AWAY_GOAL')">Away Goal</button>
 	<button class="btn btn-default" ng-click="addStat(null, null, 'SEEKERS_RELEASED')">Seekers Released</button>
 	<button class="btn btn-default" ng-click="addStat(null, null, 'AWAY_SNITCH_CATCH')">Opponent snitch catch</button>
+	<button class="btn btn-default" ng-click="getURLWithFilters('<%=@author_id%>')" ng-if="statsPublic">Get Filters URL</button>
 </div>
 
 <!-- Players on pitch -->
-<div class="container playersOnPitch">
+<div ng-hide="<%= @public %>" class="container playersOnPitch">
 	<div class="playerListHolder" ng-repeat="onPlayer in onFieldPlayers track by $index">
 		<ul class="playerList">
 			<div ng-show="$index < 3 || $index == 3">

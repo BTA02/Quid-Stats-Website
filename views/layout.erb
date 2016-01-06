@@ -29,7 +29,9 @@
     
   </head>
 
-  <body ng-controller="StatsController">
+  <!--what if I do something tricky here, and the controller is a variable?-->
+  <!--This will require some copy pasting, but I'm good with that-->
+  <body ng-controller="<%= @controllerName %>">
     <header>
       <div class="nav">
         <ul>

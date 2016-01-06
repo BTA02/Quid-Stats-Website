@@ -28,9 +28,23 @@ helpers do
 		# implicit return lets you clean this up a lot
 		!session[:username].nil?
 	end
+	
+	def is_public?(author, team, vid)
+		permission = Parse::Query.new('Permissions').tap do |q|
+			q.eq('author_id', author)
+			q.eq('team_id', team)
+			q.eq('vid_id', vid)
+		end.get
+		if permission.length != 0
+			return true
+		else
+			return false
+		end
+	end
 end
 
 get '/' do
+	@controllerName = 'HomeController'
 	if logged_in?
 		@teams = get_all_teams
 		erb :account
@@ -57,6 +71,7 @@ get '/log_out' do
 end
 
 get '/stats' do
+	@controllerName = 'ViewStatsController'
 	if !logged_in?
 		redirect '/'
 	end
@@ -65,15 +80,8 @@ get '/stats' do
 	erb :view_stats
 end
 
-get '/watch' do
-	if !logged_in?
-		redirect '/'
-	end
-	@teams = get_all_teams
-	erb :watch_film
-end
-
 get '/add_team' do
+	@controllerName = 'AddTeamController'
 	if !logged_in?
 		redirect '/'
 	end
@@ -82,6 +90,8 @@ get '/add_team' do
 end
 
 get '/record' do
+	@controllerName = 'RecordStatsController'
+	@author_id = session[:authorId]
 	if !logged_in?
 		redirect '/'
 	end
@@ -91,6 +101,7 @@ get '/record' do
 end
 
 get '/add_video' do
+	@controllerName = 'AddVideoController'
 	if !logged_in?
 		redirect '/'
 	end
@@ -99,6 +110,7 @@ get '/add_video' do
 end
 
 get '/public/all' do
+	@controllerName = 'PublicController'
 	@teams = get_all_teams
 	@users = get_users
 	@user_public_map = Hash.new
@@ -109,6 +121,7 @@ get '/public/all' do
 end
 
 get '/public/:userId/stats' do
+	@controllerName = 'ViewStatsController'
 	@userId = params[:userId]
 	@teams = get_all_teams
 	@user_public_map = Hash.new
@@ -121,9 +134,21 @@ get '/public/:userId/stats' do
 	erb :view_stats
 end
 
-get '/public/:userId/record' do
-	@teams = get_all_teams
-	# erb :public_stats
+get '/public/:author_id/:team_id/:vid_id/:year/:player_filter/:event_filter' do
+	if is_public?(params[:author_id], params[:team_id], params[:vid_id])
+		@controllerName = 'RecordStatsController'
+		@teams = get_all_teams
+		@public = true
+		@author_id = params[:author_id]
+		@team_id = params[:team_id]
+		@vid_id = params[:vid_id]
+		@vid_year = params[:year]
+		@player_id = params[:player_filter]
+		@filter = params[:event_filter]
+		erb :record_stats
+	else
+		redirect '/'
+	end
 end
 
 # FUNCTION CALLS
@@ -145,8 +170,12 @@ get '/allPlayers/:team_id/:fall_year' do
 	get_players_for_team(params[:team_id], params[:fall_year]).sort_by{|cat| cat[:description]}.to_json
 end
 
+get '/allStats/:author_id/:vid_id/:team_id' do
+	get_all_stats_from_game(params[:vid_id], params[:team_id], params[:author_id])
+end
+
 get '/allStats/:vid_id/:team_id' do
-	get_all_stats_from_game(params[:vid_id], params[:team_id], session[:authorId]);
+	get_all_stats_from_game(params[:vid_id], params[:team_id], session[:authorId])
 end
 
 get '/addStat/:vid_id/:team_id/:fall_year/:player_id/:stat_name/:time/:player_in_id' do
