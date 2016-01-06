@@ -126,7 +126,7 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
         }
       }
       $scope.originalStats = $scope.allStats;
-      $scope.filterEvents();
+      $scope.filterEvents('init');
     });
     $http.get("/videoPermissions/" + $scope.team + "/" + $scope.selectedVideo).then(function(response) {
       if (response.data == 'true') {
@@ -159,7 +159,9 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
   }
   
   function removeSubFromMap(subStat) {
-    // Didn't quite work. The index was -18
+    if (subStat.stat_name != "SUB" && subStat.stat_name != "SWAP") {
+      return;
+    }
     var arrayAtTime = $scope.subMap.get(subStat.time);
 
     if (arrayAtTime !== null) {
@@ -343,7 +345,7 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
         $scope.originalStats.sort(function(a, b){
           return a.time - b.time;
         });
-        $scope.filterEvents;
+        $scope.filterEvents('added');
     });
   };
   
@@ -356,7 +358,7 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
         $scope.originalStats.splice(index, 1);
       }
       removeSubFromMap(response.data);
-      $scope.filterEvents
+      $scope.filterEvents('deleted');
     });
   };
   
