@@ -401,24 +401,29 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     $http.post("/setPermissions", data).then(function(response) {});
   };
   
-  $scope.filterEvents = function() {
+  $scope.filterEvents = function(whichFilter) {
     if (!$scope.playerFilter || !$scope.eventFilter) {
       return;
     }
     // no matter what, take scope.originalStats and filter them
     $scope.allStats = [];
     for (var i = 0; i < $scope.originalStats.length; i++) {
+      var statName = $scope.originalStats[i].stat_name;
       if ( ($scope.playerFilter == $scope.originalStats[i].player_id
               || $scope.playerFilter == $scope.originalStats[i].player_in_id
               || $scope.playerFilter == "allPlayers")
-          && ($scope.eventFilter == $scope.originalStats[i].stat_name
+          && ($scope.eventFilter == statName 
               || $scope.eventFilter == "allEvents") ) {
         $scope.allStats.push($scope.originalStats[i]);
       } else if ($scope.eventFilter == "AWAY_GOAL" 
-        && $scope.originalStats[i].stat_name == "AWAY_GOAL") {
+        && statName == "AWAY_GOAL") {
         $scope.allStats.push($scope.originalStats[i]);
+      } else if (statName == "PAUSE_CLOCK" || statName == "START_CLOCK") {
+        // $scope.allStats.push($scope.originalStats[i]);
       }
-
+    }
+    if ($scope.eventFilter == "AWAY_GOAL" && whichFilter == 'events') {
+      $scope.playerFilter = "allPlayers"
     }
   };
   

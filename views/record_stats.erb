@@ -9,11 +9,11 @@
 	<!-- Video Selector and allPlayers populator--> 
 	<select ng-hide="<%= @public %>" ng-model="vidObj" ng-change="getAllPlayers()" ng-options="game.vid_id+','+game.fall_year as game.description for game in allGames">
     </select>
-    <div ng-show="vidObj" class="pull-right">
+    <div ng-show="vidObj && !'<%= @public %>' " class="pull-right">
         <label ng-show="statsPublic" for="pubLabel">Public</label>
         <label ng-show="!statsPublic" for="pubLabel">Private</label>
     </div>
-    <div ng-show="vidObj" class="material-switch pull-right">
+    <div ng-show="vidObj && !'<%= @public %>' " class="material-switch pull-right">
         <input ng-model="statsPublic" ng-change="togglePublic()" type="checkbox" id="unchecked" class="cbx hidden"/>
         <label id="pubLabel" for="unchecked" class="lbl"></label>
 	</div>
@@ -57,13 +57,13 @@
 		</div>
 		<!-- <button class="btn btn-xs" ng-click="glued=!glued">Toggle auto-scroll {{glued}}</button> -->
 		<div class="filter">
-			<select ng-model="playerFilter" ng-change="filterEvents()">
+			<select ng-model="playerFilter" ng-change="filterEvents('players')">
 				<option value="allPlayers">All Players</option>
 				<option ng-repeat="player in allPlayers" value="{{player.objectId}}">{{player.first_name + ' ' + player.last_name}}</option>
 			</select>
 		</div>
 		<div class="filter">
-			<select ng-model="eventFilter" ng-change="filterEvents()">
+			<select ng-model="eventFilter" ng-change="filterEvents('events')">
 				<option value="allEvents">All Events</option>
 				<option value="SHOT">Shots</option>
 				<option value="GOAL">Goals</option>
@@ -80,7 +80,7 @@
 
 
 <!-- Buttons under the video -->
-<div class="container-fluid" align="center">
+<div ng-hide="<%= @public %>" class="container-fluid" align="center">
 	<button class="btn btn-default" ng-click="instantReplay()">Instant Replay</button>
 	<button class="btn btn-default" ng-click="addStat(null, null, 'START_CLOCK')">Game (Re)Start</button>
 	<button class="btn btn-default" ng-click="addStat(null, null, 'PAUSE_CLOCK')">Game Stoppage</button>
@@ -93,7 +93,7 @@
 </div>
 
 <!-- Players on pitch -->
-<div class="container playersOnPitch">
+<div ng-hide="<%= @public %>" class="container playersOnPitch">
 	<div class="playerListHolder" ng-repeat="onPlayer in onFieldPlayers track by $index">
 		<ul class="playerList">
 			<div ng-show="$index < 3 || $index == 3">

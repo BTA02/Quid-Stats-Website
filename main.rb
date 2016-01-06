@@ -30,9 +30,6 @@ helpers do
 	end
 	
 	def is_public?(author, team, vid)
-		pp author
-		pp team
-		pp vid
 		permission = Parse::Query.new('Permissions').tap do |q|
 			q.eq('author_id', author)
 			q.eq('team_id', team)
@@ -138,12 +135,11 @@ get '/public/:userId/stats' do
 end
 
 get '/public/:author_id/:team_id/:vid_id/:year/:player_filter/:event_filter' do
-	# check if the requested video is public, if not... send them
-	
 	if is_public?(params[:author_id], params[:team_id], params[:vid_id])
 		@controllerName = 'RecordStatsController'
 		@teams = get_all_teams
 		@public = true
+		@author_id = params[:author_id]
 		@team_id = params[:team_id]
 		@vid_id = params[:vid_id]
 		@vid_year = params[:year]
@@ -175,7 +171,7 @@ get '/allPlayers/:team_id/:fall_year' do
 end
 
 get '/allStats/:author_id/:vid_id/:team_id' do
-	get_all_stats_from_game(params[:vid_id], params[:team_id], params[:authorId])
+	get_all_stats_from_game(params[:vid_id], params[:team_id], params[:author_id])
 end
 
 get '/allStats/:vid_id/:team_id' do
