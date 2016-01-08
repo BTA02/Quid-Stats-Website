@@ -298,7 +298,7 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
   $scope.addCard = function(cardType) {
     $scope.statType = cardType;
     $scope.videoPlayer.pauseVideo();
-    document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block';
+    document.getElementById('onFieldPlayerPicker').style.display='block';document.getElementById('fade').style.display='block';
   };
   
   $scope.addStat = function(playerId, playerInId, stat) {
@@ -754,6 +754,7 @@ app.controller('AddTeamController', ['$scope', '$http', function($scope, $http) 
 app.controller('AddVideoController', ['$scope', '$http', function($scope, $http) {
   
   $scope.addVideo = function() {
+    $scope.getAllGames();
     if ($scope.team == null) {
       alert("Please select a team");
     }
@@ -764,25 +765,16 @@ app.controller('AddVideoController', ['$scope', '$http', function($scope, $http)
       alert("Please enter a video id");
     } else if ($scope.vidDesc === null) {
       alert("Please add a description");
-    } else if (search($scope.vidPreview, $scope.allGames)) {
-      alert("This video has already been entered for this team");
     } else {
       // if (exists in $scope.allGames)
       // 
       $http.get("/addVideo/" + $scope.vidPreview + "/" + $scope.team + "/" + $scope.fallYear + "/" + $scope.vidDesc).then(function(response) {
+        // do the check if that vid already exists for that team here, if so, just tell them
+        // otherwise, reload
         location.reload();
       });
     }
   };
-  
-  function search(nameKey, myArray){
-    for (var i=0; i < myArray.length; i++) {
-      if (myArray[i].vid_id === nameKey) {
-          return true;
-      }
-    }
-    return false;
-  }
   
 }]);
 
