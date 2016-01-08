@@ -73,7 +73,7 @@ end
 get '/stats' do
 	@controllerName = 'ViewStatsController'
 	if !logged_in?
-		redirect '/'
+		redirect '/noAuth'
 	end
 	@teams = get_relevant_teams
 	@userId = "me"
@@ -83,7 +83,7 @@ end
 get '/add_team' do
 	@controllerName = 'AddTeamController'
 	if !logged_in?
-		redirect '/'
+		redirect '/noAuth'
 	end
 	@teams = get_all_teams
 	erb :add_team
@@ -93,7 +93,7 @@ get '/record' do
 	@controllerName = 'RecordStatsController'
 	@author_id = session[:authorId]
 	if !logged_in?
-		redirect '/'
+		redirect '/noAuth'
 	end
 	@teams = get_all_teams
 	erb :record_stats
@@ -103,7 +103,7 @@ end
 get '/add_video' do
 	@controllerName = 'AddVideoController'
 	if !logged_in?
-		redirect '/'
+		redirect '/noAuth'
 	end
 	@teams = get_all_teams
 	erb :add_video_dumb
@@ -147,8 +147,12 @@ get '/public/:author_id/:team_id/:vid_id/:year/:player_filter/:event_filter' do
 		@filter = params[:event_filter]
 		erb :record_stats
 	else
-		redirect '/'
+		redirect '/noAuth'
 	end
+end
+
+get '/noAuth' do
+	erb :no_auth
 end
 
 # FUNCTION CALLS
