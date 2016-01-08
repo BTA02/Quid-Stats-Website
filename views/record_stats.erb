@@ -99,7 +99,7 @@
 			<div ng-show="$index < 3 || $index == 3">
 				<h5 ng-show="$index < 3">Chaser</h5>
 				<h5 ng-show="$index == 3">Keeper</h5>
-				<a href = "javascript:void(0)" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
+				<a href="javascript:void(0)" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
 				<li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'SHOT')">Shot</li>
 				<li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'GOAL')">Goal</li>
 				<li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'ASSIST')">Assist</li>
@@ -109,13 +109,13 @@
 
 			<div ng-show="$index > 3 && $index < 6">
 				<h5>Beater</h5>
-				<a href = "javascript:void(0)" ng-click="startSub(onPlayer.objectId)" onclick = "document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block'">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
+				<a href="javascript:void(0)" ng-click="startSub(onPlayer.objectId, 'allPlayers')">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
 				<li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'TAKEAWAY')">Takeaway</li>
 			</div>
 
 			<div ng-show="$index == 6">
 				<h5>Seeker</h5>
-				<a href = "javascript:void(0)" ng-click="startSub(onPlayer.objectId)" onclick = "document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block'">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
+				<a href="javascript:void(0)" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
 				<li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'SNITCH_CATCH')">Snitch Catch</li>
 			</div>
 		</ul>
@@ -123,7 +123,7 @@
 </div>
 
 <div id="helpText" class="white_content">
-	<a href = "javascript:void(0)" onclick = "document.getElementById('helpText').style.display='none';document.getElementById('fade').style.display='none'">Close<br></a>
+	<a href="javascript:void(0)" ng-click="closeDialog('helpText')">Close<br></a>
 	<h4>This page is for recording stats for a given game.</h4>
 	<h5>1. Select a team from the dropdown menu. Then, the next dropdown will automatically populate with all the games stored for that particular team.</h5>
 	<p>Don't see the game you want? Try adding it using the 'Add Video' tab</p>
@@ -142,29 +142,25 @@
 	<p>i. A goal will only show up as 'goal' on the sidebar, but when calculating stats, it goes down as a shot and goal. If a player shoots and scores, only record a goal.</p>
 	<h5>Events added automatically populate on the side of the video. If your event isn't in that list, then you should try adding it again, because it didn't save.</h5>
 	<h5>Clicking on the time in one of the cards to the right of the video jumps to 5 seconds before the timestamp of the event. It's a good way to watch things over again. Unless the event is a sub or a clock stoppage. Nobody needs replays of those, so clicking on the time jumps to the actual time of the event.</h5>
-	<a href = "javascript:void(0)" onclick = "document.getElementById('helpText').style.display='none';document.getElementById('fade').style.display='none'">Close<br></a>
+	<a href="javascript:void(0)" ng-click="closeDialog('helpText')">Close<br></a>
 </div>
 <div id="fade" class="black_overlay"/>
 
 <!-- Div for picking subs, starts just not-visible -->
-<div id="light" class="white_content">
+<div id="allPlayersPicker" class="white_content">
 	<p ng-if="statType == 'SWAP'">Swap keeper with someone on pitch. Or select 'none' if there is no penalty time.</p>
-	<a ng-if="statType == 'SWAP'" href = "javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">None<br></a>
-	<a ng-if="statType != 'SWAP'" href="javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">Close<br></a>
-	<a ng-repeat="allPlayer in allPlayers" ng-show="true" ng-click="playerClicked(allPlayer.objectId)" href = "javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">{{allPlayer.first_name+' '+allPlayer.last_name}}<br></a>
-	<!--<a ng-repeat="onFieldPlayer in onFieldPlayers" ng-show="false" ng-click="playerClicked(onFieldPlayer.objectId)" href="javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">{{onFieldPlayer.first_name+' '+onFieldPlayer.last_name}}<br></a>-->
-	<a ng-if="statType == 'SWAP'" href = "javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">None<br></a>
-	<a ng-if="statType != 'SWAP'" href="javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">Close<br></a>
+	<a ng-if="statType != 'SWAP'" href="javascript:void(0)" ng-click="closeDialog('allPlayersPicker')">Close<br></a>
+	<a ng-repeat="allPlayer in allPlayers" ng-show="true" ng-click="playerClicked(allPlayer.objectId)" href="javascript:void(0)">{{allPlayer.first_name+' '+allPlayer.last_name}}<br></a>
+	<a ng-if="statType != 'SWAP'" href="javascript:void(0)" ng-click="closeDialog('allPlayersPicker')">Close<br></a>
 </div>
 
-<div id="onFieldPlayerPicker" class="white_content">
+<div id="onFieldPlayersPicker" class="white_content">
 	<p ng-if="statType == 'SWAP'">Swap keeper with someone on pitch. Or select 'none' if there is no penalty time.</p>
-	<a ng-if="statType == 'SWAP'" href = "javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">None<br></a>
-	<a ng-if="statType != 'SWAP'" href="javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">Close<br></a>
-	<!--<a ng-repeat="allPlayer in allPlayers" ng-show="true" ng-click="playerClicked(allPlayer.objectId)" href = "javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">{{allPlayer.first_name+' '+allPlayer.last_name}}<br></a>-->
-	<a ng-repeat="onFieldPlayer in onFieldPlayers" ng-click="playerClicked(onFieldPlayer.objectId)" href="javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">{{onFieldPlayer.first_name+' '+onFieldPlayer.last_name}}<br></a>
-	<a ng-if="statType == 'SWAP'" href = "javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">None<br></a>
-	<a ng-if="statType != 'SWAP'" href="javascript:void(0)" onclick = "document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">Close<br></a>
+	<a ng-if="statType != 'SWAP'" href="javascript:void(0)" ng-click="closeDialog('allPlayersPicker')">Close<br></a>
+	<a ng-if="statType == 'SWAP'" href="javascript:void(0)" ng-click="closeDialog('onFieldPlayersPicker')">None<br></a>
+	<a ng-repeat="onFieldPlayer in onFieldPlayers" ng-click="playerClicked(onFieldPlayer.objectId)" href="javascript:void(0)">{{onFieldPlayer.first_name+' '+onFieldPlayer.last_name}}<br></a>
+	<a ng-if="statType == 'SWAP'" href="javascript:void(0)" ng-click="closeDialog('onFieldPlayersPicker')">None<br></a>
+	<a ng-if="statType != 'SWAP'" href="javascript:void(0)" ng-click="closeDialog('allPlayersPicker')">Close<br></a>
 </div>
 
 <div id="fade" class="black_overlay"/>

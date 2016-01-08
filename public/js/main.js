@@ -195,29 +195,32 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     }
   };
   
+  $scope.closeDialog = function(which) {
+    document.getElementById(which).style.display='none';document.getElementById('fade').style.display='none';
+  };
+  
   $scope.startSub = function(playerId) {
     $scope.statType = "SUB";
     $scope.videoPlayer.pauseVideo();
     $scope.subbingPlayer = playerId;
-    document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block';
+    document.getElementById('allPlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
   };
   
   $scope.startSwap = function(playerId) {
     $scope.statType = "SWAP";
     $scope.videoPlayer.pauseVideo();
     $scope.subbingPlayer = playerId;
-    document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block';
+    document.getElementById('onFieldPlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
   };
   
   $scope.playerClicked = function(playerInId) {
     if ($scope.statType == "SUB") {
       $scope.addStat($scope.subbingPlayer, playerInId, "SUB");
+      $scope.closeDialog('allPlayersPicker');
     } else if ($scope.statType == "YELLOW_CARD" || $scope.statType == "RED_CARD") {
       $scope.addStat(playerInId, "null", $scope.statType);
-      // close the thing
-      document.getElementById('light').style.display='block';document.getElementById('fade').style.display='none';
-      // prompt a swap if it's the keeper
       var indexOfCarded = -1;
+      
       for (var i = 0; i < $scope.onFieldPlayers.length; i++) {
         console.log($scope.onFieldPlayers[i]['objectId']);
         if ($scope.onFieldPlayers[i]['objectId'] == playerInId) {
@@ -225,11 +228,13 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
         }
       }
       if (indexOfCarded == 3) {
-        document.getElementById('light').style.display='block';document.getElementById('fade').style.display='block';
         $scope.startSwap(playerInId);
+      } else {
+        $scope.closeDialog('onFieldPlayersPicker');
       }
     } else if ($scope.statType == "SWAP") {
       $scope.addStat($scope.subbingPlayer, playerInId, "SWAP");
+      $scope.closeDialog('onFieldPlayersPicker');
     }
   };
   
@@ -298,7 +303,7 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
   $scope.addCard = function(cardType) {
     $scope.statType = cardType;
     $scope.videoPlayer.pauseVideo();
-    document.getElementById('onFieldPlayerPicker').style.display='block';document.getElementById('fade').style.display='block';
+    document.getElementById('onFieldPlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
   };
   
   $scope.addStat = function(playerId, playerInId, stat) {
@@ -432,11 +437,8 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
   $scope.getURLWithFilters = function(author) {
     var url = "quid-stats-website-bta02.c9users.io/public/" + author + "/" + $scope.team + "/" + $scope.selectedVideo + "/" + $scope.year + "/" + $scope.playerFilter + "/" + $scope.eventFilter;
     // var url = "quidstats.herokuapp.com/public/" + $scope.team + "/" + $scope.selectedVideo + "/" + $scope.playerFilter + "/" + $scope.eventFilter;
-    prompt("The following URL will bring you to this page, with the filters set as they are now, so long as the video is public. If the 'Public' switch is put back to private, this URL wont work any longer", url);
+    prompt("The following URL will bring someone to this page, with the filters set as they are now. They will not be able to edit events. If the 'Public' switch is put back to 'Private', this URL will break", url);
   };
-  
-  
-
   
 }]);
 
@@ -754,7 +756,6 @@ app.controller('AddTeamController', ['$scope', '$http', function($scope, $http) 
 app.controller('AddVideoController', ['$scope', '$http', function($scope, $http) {
   
   $scope.addVideo = function() {
-    $scope.getAllGames();
     if ($scope.team == null) {
       alert("Please select a team");
     }
@@ -766,8 +767,6 @@ app.controller('AddVideoController', ['$scope', '$http', function($scope, $http)
     } else if ($scope.vidDesc === null) {
       alert("Please add a description");
     } else {
-      // if (exists in $scope.allGames)
-      // 
       $http.get("/addVideo/" + $scope.vidPreview + "/" + $scope.team + "/" + $scope.fallYear + "/" + $scope.vidDesc).then(function(response) {
         // do the check if that vid already exists for that team here, if so, just tell them
         // otherwise, reload
@@ -794,7 +793,7 @@ app.controller('HomeController', ['$scope', '$http', function($scope, $http) {
     } else {
       return false;
     }
-  }
+  };
 
   $scope.checkPasswords = function() {
     if ($scope.pass1 == null) {
