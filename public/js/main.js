@@ -306,6 +306,15 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     document.getElementById('onFieldPlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
   };
   
+  $scope.addNote = function() {
+    // Pop up a dialog for adding notes
+    // What should the dialog look like?
+    // Well, a note, and then a category?
+    // Positive, Negative
+    // Offense, Defense
+    // Text
+  }
+  
   $scope.addStat = function(playerId, playerInId, stat) {
     $scope.videoPlayer.pauseVideo();
     var curTime = $scope.videoPlayer.getCurrentTime();
