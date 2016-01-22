@@ -89,7 +89,7 @@
 	<button class="btn btn-default" ng-click="addStat(null, null, 'AWAY_GOAL')">Away Goal</button>
 	<button class="btn btn-default" ng-click="addStat(null, null, 'SEEKERS_RELEASED')">Seekers Released</button>
 	<button class="btn btn-default" ng-click="addStat(null, null, 'AWAY_SNITCH_CATCH')">Opponent Snitch Catch</button>
-	<button class="btn btn-default" ng-click="addNote()">Add Note</button>
+	<button class="btn btn-default" ng-click="startNote()">Add Note</button>
 	<button class="btn btn-default" ng-click="getURLWithFilters('<%=@author_id%>')" ng-if="statsPublic">Get Filters URL</button>
 </div>
 
@@ -164,6 +164,27 @@
 	<a ng-repeat="onFieldPlayer in onFieldPlayers" ng-click="playerClicked(onFieldPlayer.objectId)" href="javascript:void(0)">{{onFieldPlayer.first_name+' '+onFieldPlayer.last_name}}<br></a>
 	<a ng-if="statType == 'SWAP'" href="javascript:void(0)" ng-click="closeDialog('onFieldPlayersPicker')">None<br></a>
 	<a ng-if="statType != 'SWAP'" href="javascript:void(0)" ng-click="closeDialog('allPlayersPicker')">Close<br></a>
+</div>
+
+<!-- Div for note overlay -->
+
+<div id="noteOverlay" class="white_content" align="center">
+	<select ng-model="posNegNeut">
+		<option>Neutral</option>
+		<option>Positive</option>
+		<option>Negative</option>
+	</select>
+	<br>
+	<select ng-model="oDBreak">
+		<option>General</option>
+		<option>Offense</option>
+		<option>Defense</option>
+		<option>Transition</option>
+	</select>
+	<br>
+	<textarea ng-model="noteText" type="text" placeholder="Note" style="width:400px;height:150px;"></textarea><br>
+	<button class="btn btn-default" ng-click="addNote()">Add</button><br>
+	<button class="btn btn-default" ng-click="closeDialog('allPlayersPicker')">Close<br></button>
 </div>
 
 <div id="fade" class="black_overlay"/>
