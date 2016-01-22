@@ -309,6 +309,7 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
   $scope.startNote = function() {
     $scope.videoPlayer.pauseVideo();
     document.getElementById('noteOverlay').style.display='block';document.getElementById('fade').style.display='block';
+
   };
   
   $scope.addNote = function() {
@@ -325,6 +326,7 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     $http.post("/addStat/post", data).then(function(response) {});
     $scope.closeDialog('allPlayersPicker');
   };
+
   
   $scope.addStat = function(playerId, playerInId, stat) {
     $scope.videoPlayer.pauseVideo();
