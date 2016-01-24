@@ -33,6 +33,3 @@ DEPENDENCIES
   parse-ruby-client (= 0.3.0)
   sinatra (~> 1.4)
   thin (~> 1.6)
-
-BUNDLED WITH
-   1.10.6
