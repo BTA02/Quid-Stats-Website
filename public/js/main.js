@@ -312,15 +312,24 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
   }
   
   $scope.addNote = function() {
-    $scope.addStat($scope.posNegNeut, $scope.oDBreak);
+    var data = {
+        vid_id : $scope.selectedVideo,
+        team_id : $scope.team,
+        fall_year : $scope.year,
+        stat_name : 'note',
+        time : $scope.videoPlayer.getCurrentTime(),
+        posNegNeut : $scope.posNegNeut,
+        oDBreak : $scope.oDBreak
+    };
+    // $scope.addStat($scope.posNegNeut, $scope.oDBreak);
+    $http.post("/addStat/post", data).then(function(response) {});
     $scope.closeDialog('allPlayersPicker');
   }
   
   $scope.addStat = function(playerId, playerInId, stat) {
     $scope.videoPlayer.pauseVideo();
 
-    // these should really be get params
-    // /addstat?team=michigan&year=2013 etc
+    // This should become a POST request, so I can pass whatever I want
     var url = "/addStat/" + $scope.selectedVideo;
     url += "/" + $scope.team;
     url += "/" + $scope.year;
