@@ -313,11 +313,10 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     // Positive, Negative
     // Offense, Defense
     // Text
-  }
+  };
   
   $scope.addStat = function(playerId, playerInId, stat) {
     $scope.videoPlayer.pauseVideo();
-    var curTime = $scope.videoPlayer.getCurrentTime();
 
     // these should really be get params
     // /addstat?team=michigan&year=2013 etc
@@ -386,7 +385,7 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
   
   $scope.instantReplay = function() {
     $scope.seekToTime("", $scope.videoPlayer.getCurrentTime());
-  }
+  };
 
   $scope.seekToTime = function(statName, time) {
     if (statName == 'SUB' || statName == "SWAP" || statName == 'PAUSE_CLOCK' || statName == 'START_CLOCK') {
@@ -439,7 +438,7 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
       }
     }
     if ($scope.eventFilter == "AWAY_GOAL" && whichFilter == 'events') {
-      $scope.playerFilter = "allPlayers"
+      $scope.playerFilter = "allPlayers";
     }
   };
   
@@ -689,6 +688,10 @@ app.controller('ViewStatsController', ['$scope', '$http', function($scope, $http
 
 app.controller('AddTeamController', ['$scope', '$http', function($scope, $http) {
   
+  // Apparently I need to init my vals
+  $scope.pendingRoster = [];
+  
+  
   $scope.getRoster = function() {
     $scope.roster = [];
     $http.get("/allPlayers/" + $scope.teamToAdd 
@@ -712,11 +715,10 @@ app.controller('AddTeamController', ['$scope', '$http', function($scope, $http) 
         var lname = response["data"]["last_name"].trim();
         var objId = response["data"]["objectId"];
         var newPlayerObj = {first_name:fname, last_name:lname, objectId:objId};
-        $scope.roster.splice(0, 0, newPlayerObj);
-        // $scope.$broadcast('angucomplete-alt:clearInput', 'autocompleteFirst');
-        // $scope.$broadcast('angucomplete-alt:clearInput', 'autocompleteLast');
-        newFirstName = "";
-        newLastName = "";
+        console.log(newPlayerObj);
+        $scope.pendingRoster.splice(0, 0, newPlayerObj);
+        $scope.$broadcast('angucomplete-alt:clearInput', 'autocompleteFirst');
+        $scope.$broadcast('angucomplete-alt:clearInput', 'autocompleteLast');
     });
   };
 
@@ -726,7 +728,7 @@ app.controller('AddTeamController', ['$scope', '$http', function($scope, $http) 
       last_name: selected.originalObject.last_name,
       objectId: selected.originalObject.objectId
     };
-    $scope.roster.splice(0, 0, existingPlayerObj);
+    $scope.pendingRoster.splice(0, 0, existingPlayerObj);
     $scope.$broadcast('angucomplete-alt:clearInput', 'autocompleteFirst');
     $scope.$broadcast('angucomplete-alt:clearInput', 'autocompleteLast');
 
@@ -736,6 +738,9 @@ app.controller('AddTeamController', ['$scope', '$http', function($scope, $http) 
     var ids = [];
     for (var i = 0; i < $scope.roster.length; i++) {
       ids.push($scope.roster[i]["objectId"]);
+    }
+    for (var i = 0; i < $scope.pendingRoster.length; i++) {
+      ids.push($scope.pendingRoster[i]["objectId"]);
     }
 
     if ($scope.teamToAdd == "new") {
@@ -757,6 +762,18 @@ app.controller('AddTeamController', ['$scope', '$http', function($scope, $http) 
         response["data"];
         location.reload();
       });
+    }
+  };
+  
+  $scope.removePlayerFromPending = function(playerToRemove) {
+    // find object in array, then remove it
+    for(var i = 0; i < $scope.pendingRoster.length; i++) {
+      console.log($scope.pendingRoster[i].objectId);
+      if ($scope.pendingRoster[i]["objectId"] == playerToRemove["objectId"]) {
+        $scope.pendingRoster.splice(i, 1);
+        console.log($scope.pendingRoster);
+        break;
+      }
     }
   };
   
