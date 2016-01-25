@@ -22,6 +22,6 @@
     "angucomplete-alt": "git://github.com/BTA02/angucomplete-alt.git#7127cdfaf4511b86763990c487769636ab1d9f84"
   },
   "resolutions": {
-    "angular": "1.4.8"
+    "angular": ">=1.4.0"
   }
 }
