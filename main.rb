@@ -194,11 +194,13 @@ end
 # end
 post '/addNote' do
 	vals = JSON.parse(request.body.string)
-	pp 'Axtell vals1'
-	pp vals
-	# add_stat(vals, session[:authorId])
 	add_note(vals, session[:authorId])
 end
+
+get '/allNotes/:vid_id/:team_id' do
+	get_all_notes_from_game(params, session[:authorId])
+end
+	
 
 get '/deleteStat/:object_id' do
 	delete_stat(params[:object_id])
@@ -464,6 +466,17 @@ def get_all_stats_from_game(vid, team, author)
 		q.eq("vid_id", vid)
 		q.eq("team_id", team)
 		q.eq("author_id", author)
+		q.limit = 1000
+		q.order_by = "time"
+	end.get
+	resp.to_json
+end
+
+def get_all_notes_from_game(params, author_id)
+	resp = Parse::Query.new("Notes").tap do |q|
+		q.eq("vid_id", params[:vid_id])
+		q.eq("team_id", params[:team_id])
+		q.eq("author_id", author_id)
 		q.limit = 1000
 		q.order_by = "time"
 	end.get
