@@ -496,6 +496,7 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
   };
   
   $scope.showNote = function(index) {
+    $scope.videoPlayer.pauseVideo();
     $scope.displayNoteText = $scope.allStats[index].note;
     document.getElementById('displayNoteOverlay').style.display='block';document.getElementById('fade').style.display='block';
   }
