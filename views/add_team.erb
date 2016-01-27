@@ -54,14 +54,14 @@
 
 	<!-- existing roster -->
 	<div id="rosterContainer">
-		<ul class="playerList" ng-model="pendingRoster">
+		<ul class="rosterList" ng-model="pendingRoster">
 			<li ng-repeat="player in pendingRoster">
 				<span><i>{{player.first_name + ' ' + player.last_name}}</i></span>
 				<img class="removePlayerX" src="/images/red_x.png" width="10" height="10" ng-click="removePlayerFromPending(player)"/>
 			</li>
 		</ul>
 		
-		<ul class="playerList" ng-model="roster">
+		<ul class="rosterList" ng-model="roster">
 			<li ng-repeat="player in roster">
 				<p>{{player.first_name + ' ' + player.last_name}}</p>
 			</li>
