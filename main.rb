@@ -192,12 +192,12 @@ end
 # 	toggle_permissions(vals)
 # 	'finished'
 # end
-post '/addStat/post' do
+post '/addNote' do
 	vals = JSON.parse(request.body.string)
-	pp 'Axtell vals'
+	pp 'Axtell vals1'
 	pp vals
 	# add_stat(vals, session[:authorId])
-	add_stat_1(vals, session[:author_id])
+	add_note(vals, session[:authorId])
 end
 
 get '/deleteStat/:object_id' do
@@ -486,21 +486,20 @@ def add_stat(params, author_id)
 	result.to_json
 end
 
-def add_stat_1(params, author_id)
+def add_note(params, author_id)
 	pp params['vid_id']
-	new_stat = Parse::Object.new("Stats")
+	new_stat = Parse::Object.new("Notes")
 	new_stat['vid_id'] = params['vid_id']
 	new_stat['team_id'] = params['team_id']
 	new_stat['author_id'] = author_id
 	new_stat['fall_year'] = params['fall_year']
-	new_stat['stat_name'] = params['stat_name']
 	new_stat['time'] = params['time'].to_i
 	
-	new_stat['player_id'] = params['player_id']
-	new_stat['player_in_id'] = params['player_in_id']
 	
 	new_stat['good_bad_filter'] = params['good_bad_filter']
 	new_stat['o_d_filter'] = params['o_d_filter']
+	
+	new_stat['note'] = params['note']
 
 	result = new_stat.save
 	result.to_json
