@@ -34,6 +34,9 @@ app.filter('time', function() {
 app.filter('statNameFilter', function() {
 
   return function(value) {
+    if (!value) {
+      return;
+    }
     var ret = value.replace(/_/g, ' ');
     ret = ret.toLowerCase();
     ret = ret.replace( /\b\w/g, function (m) {
@@ -96,38 +99,55 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
   function initVals(author) {
     setOnFieldToBlank();
     $scope.subMap = new Map();
-    $scope.allStats = [];
+    $scope.originalStats = [];
     var statsUrl;
+    var notesUrl;
     if (author) {
       statsUrl = "/allStats/" + author + "/" + $scope.selectedVideo + "/" + $scope.team;
     } else {
       statsUrl = "/allStats/" + $scope.selectedVideo + "/" + $scope.team;
+      notesUrl = "/allNotes/" + $scope.selectedVideo + "/" + $scope.team;
     }
     $http.get(statsUrl).then(function(response) {
-      $scope.allStats = response.data;
-      for (var i = 0; i < $scope.allStats.length; i++) {
-        var id = $scope.allStats[i].player_id;
-        var inId = $scope.allStats[i].player_in_id;
+      for (var i = 0; i < response.data.length; i++) {
+        var statObj = response.data[i];
+        $scope.originalStats.push(statObj);
+        var id = statObj.player_id;
+        var inId = statObj.player_in_id;
         var player = $scope.playersMap.get(id);
         var playerIn = $scope.playersMap.get(inId);
         if (player) {
-          $scope.allStats[i].player_name = player.first_name + ' ' + player.last_name;
+          statObj.player_name = player.first_name + ' ' + player.last_name;
         } else {
-          $scope.allStats[i].player_name = id;
+          statObj.player_name = id;
 
         }
         if (playerIn) {
-          $scope.allStats[i].player_in_name = playerIn.first_name + ' ' + playerIn.last_name;
+          statObj.player_in_name = playerIn.first_name + ' ' + playerIn.last_name;
         } else {
-          $scope.allStats[i].player_in_name = inId;
+          statObj.player_in_name = inId;
         }
-        if ($scope.allStats[i].stat_name === "SUB" || $scope.allStats[i].stat_name === "SWAP") {
-          addSubToMap($scope.allStats[i]);
+        if (statObj.stat_name === "SUB" || statObj.stat_name === "SWAP") {
+          addSubToMap(statObj);
         }
       }
-      $scope.originalStats = $scope.allStats;
+      $scope.originalStats.sort(function(a, b){
+          return a.time - b.time;
+        });
       $scope.filterEvents('init');
     });
+    
+    $http.get(notesUrl).then(function(response) {
+      for (var i = 0; i < response.data.length; i++) {
+        response.data[i].stat_name = "NOTE";
+        $scope.originalStats.push(response.data[i]);
+      }
+      $scope.originalStats.sort(function(a, b){
+          return a.time - b.time;
+        });
+      $scope.filterEvents('init');
+    });
+    
     $http.get("/videoPermissions/" + $scope.team + "/" + $scope.selectedVideo).then(function(response) {
       if (response.data == 'true') {
         $scope.statsPublic = true;
@@ -182,6 +202,9 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
   }
   
   $scope.updateOnFieldPlayers = function() {
+    if (!$scope.videoPlayer) {
+      return;
+    }
     var startTime = 0;
     var endTime = $scope.videoPlayer.getCurrentTime() + 1;
     setOnFieldToBlank();
@@ -306,20 +329,42 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     document.getElementById('onFieldPlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
   };
   
+  $scope.startNote = function() {
+    $scope.videoPlayer.pauseVideo();
+    document.getElementById('noteOverlay').style.display='block';document.getElementById('fade').style.display='block';
+  };
+  
   $scope.addNote = function() {
-    // Pop up a dialog for adding notes
-    // What should the dialog look like?
-    // Well, a note, and then a category?
-    // Positive, Negative
-    // Offense, Defense
-    // Text
+    var data = {
+        vid_id : $scope.selectedVideo,
+        team_id : $scope.team,
+        fall_year : $scope.year,
+        time : $scope.videoPlayer.getCurrentTime(),
+        good_bad_filter : $scope.goodBad,
+        o_d_filter : $scope.oD,
+        note : $scope.noteText
+    };
+    // $scope.addStat($scope.posNegNeut, $scope.oDBreak);
+    $http.post("/addNote", data).then(function(response) {
+      $scope.noteText = "";
+      // add it to the all stats? how would I do that?
+      response.data.stat_name = "NOTE";
+      $scope.originalStats.push(response.data);
+      $scope.originalStats.sort(function(a, b){
+          return a.time - b.time;
+        });
+      $scope.filterEvents('added');
+    });
+    $scope.goodBad = "";
+    $scope.oD = "";
+    $scope.noteText = "";
+    $scope.closeDialog('allPlayersPicker');
   };
   
   $scope.addStat = function(playerId, playerInId, stat) {
     $scope.videoPlayer.pauseVideo();
 
-    // these should really be get params
-    // /addstat?team=michigan&year=2013 etc
+    // This should become a POST request, so I can pass whatever I want
     var url = "/addStat/" + $scope.selectedVideo;
     url += "/" + $scope.team;
     url += "/" + $scope.year;
@@ -362,7 +407,7 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     });
   };
   
-  $scope.deleteStat = function(objId) {
+  $scope.deleteStat = function(objId, statName) {
     $http.get("/deleteStat/" + objId).then(function(response) {
       // do nothing for now
       //remove locally
@@ -420,7 +465,6 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     if (!$scope.playerFilter || !$scope.eventFilter) {
       return;
     }
-    // no matter what, take scope.originalStats and filter them
     $scope.allStats = [];
     for (var i = 0; i < $scope.originalStats.length; i++) {
       var statName = $scope.originalStats[i].stat_name;
@@ -435,9 +479,12 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
         $scope.allStats.push($scope.originalStats[i]);
       } else if (statName == "PAUSE_CLOCK" || statName == "START_CLOCK") {
         // $scope.allStats.push($scope.originalStats[i]);
-      }
+      } else if ($scope.eventFilter == "NOTE" 
+        && statName == "NOTE") {
+          $scope.allStats.push($scope.originalStats[i]);
+        }
     }
-    if ($scope.eventFilter == "AWAY_GOAL" && whichFilter == 'events') {
+    if (($scope.eventFilter == "AWAY_GOAL" || $scope.eventFilter == "NOTE") && whichFilter == 'events') {
       $scope.playerFilter = "allPlayers";
     }
   };
@@ -447,6 +494,12 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     var url = "quidstats.herokuapp.com/public/" + author + "/" + $scope.team + "/" + $scope.selectedVideo + "/" + $scope.year + "/" + $scope.playerFilter + "/" + $scope.eventFilter;
     prompt("The following URL will bring someone to this page, with the filters set as they are now. They will not be able to edit events. If the 'Public' switch is put back to 'Private', this URL will break", url);
   };
+  
+  $scope.showNote = function(index) {
+    $scope.videoPlayer.pauseVideo();
+    $scope.displayNoteText = $scope.allStats[index].note;
+    document.getElementById('displayNoteOverlay').style.display='block';document.getElementById('fade').style.display='block';
+  }
   
 }]);
 

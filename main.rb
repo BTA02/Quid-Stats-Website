@@ -187,6 +187,21 @@ get '/addStat/:vid_id/:team_id/:fall_year/:player_id/:stat_name/:time/:player_in
 	add_stat(params, session[:authorId])
 end
 
+# post '/setPermissions' do
+# 	vals = JSON.parse(request.body.string)
+# 	toggle_permissions(vals)
+# 	'finished'
+# end
+post '/addNote' do
+	vals = JSON.parse(request.body.string)
+	add_note(vals, session[:authorId])
+end
+
+get '/allNotes/:vid_id/:team_id' do
+	get_all_notes_from_game(params, session[:authorId])
+end
+	
+
 get '/deleteStat/:object_id' do
 	delete_stat(params[:object_id])
 end
@@ -457,6 +472,17 @@ def get_all_stats_from_game(vid, team, author)
 	resp.to_json
 end
 
+def get_all_notes_from_game(params, author_id)
+	resp = Parse::Query.new("Notes").tap do |q|
+		q.eq("vid_id", params[:vid_id])
+		q.eq("team_id", params[:team_id])
+		q.eq("author_id", author_id)
+		q.limit = 1000
+		q.order_by = "time"
+	end.get
+	resp.to_json
+end
+
 # Updated to new backend
 def add_stat(params, author_id)
 	new_stat = Parse::Object.new("Stats")
@@ -468,6 +494,25 @@ def add_stat(params, author_id)
 	new_stat['stat_name'] = params['stat_name']
 	new_stat['time'] = params['time'].to_i
 	new_stat['player_in_id'] = params['player_in_id']
+
+	result = new_stat.save
+	result.to_json
+end
+
+def add_note(params, author_id)
+	pp params['vid_id']
+	new_stat = Parse::Object.new("Notes")
+	new_stat['vid_id'] = params['vid_id']
+	new_stat['team_id'] = params['team_id']
+	new_stat['author_id'] = author_id
+	new_stat['fall_year'] = params['fall_year']
+	new_stat['time'] = params['time'].to_i
+	
+	
+	new_stat['good_bad_filter'] = params['good_bad_filter']
+	new_stat['o_d_filter'] = params['o_d_filter']
+	
+	new_stat['note'] = params['note']
 
 	result = new_stat.save
 	result.to_json

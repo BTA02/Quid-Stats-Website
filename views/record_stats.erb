@@ -40,19 +40,21 @@
 		<div id="statsList">
 			<div class="statsListItem" ng-repeat="statObj in allStats" scroll-glue="glued">
 				<p ng-show="statObj.player_name != 'null' && (statObj.stat_name != 'SUB' && statObj.stat_name != 'SWAP')">{{statObj.player_name}}</p>
-
 				<p ng-show="statObj.player_name != 'null' && (statObj.stat_name == 'SUB' || statObj.stat_name == 'SWAP')"> <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span> {{statObj.player_name}}</p>
-
 				<p ng-show="statObj.stat_name == 'SUB' || statObj.stat_name == 'SWAP'"><span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>{{statObj.player_in_name}}</p>
 
-				<p>{{statObj.stat_name | statNameFilter}}</p>
+				<p ng-show="statObj.stat_name == 'NOTE'">{{statObj.o_d_filter}}</p>
+				<p ng-show="statObj.stat_name == 'NOTE'">{{statObj.good_bad_filter}}</p>
+				<p class="clickList" ng-click="showNote($index)" ng-show="statObj.stat_name == 'NOTE'">Click to see note text</p>
+
+				<p ng-show="statObj.stat_name != 'NOTE'">{{statObj.stat_name | statNameFilter}}</p>
 
 				<div class="timeOnStatColumn">
 					<!-- <p ng-click="adjustTime(-1, statObj.time, statObj.objectId)">-</p> -->
 					<p ng-click="seekToTime(statObj.stat_name, statObj.time)">{{statObj.time | time:'ss':'mm:ss'}}</p>
 					<!-- <p ng-click="adjustTime(1, statObj.time, statObj.objectId)">+</p> -->
 				</div>
-				<button ng-hide="<%= @public %>" class="btn btn-danger btn-xs" ng-click="deleteStat(statObj.objectId)">Delete</button>
+				<button ng-hide="<%= @public %>" class="btn btn-danger btn-xs" ng-click="deleteStat(statObj.objectId, statObj.stat_name)">Delete</button>
 			</div>
 		</div>
 		<!-- <button class="btn btn-xs" ng-click="glued=!glued">Toggle auto-scroll {{glued}}</button> -->
@@ -72,6 +74,7 @@
 				<option value="TURNOVER">Turnover</option>
 				<option value="SUB">Sub</option>
 				<option value="AWAY_GOAL">Away Goals</option>
+				<option value="NOTE">Notes</option>
 			</select>
 		</div>
 	</div>
@@ -89,7 +92,7 @@
 	<button class="btn btn-default" ng-click="addStat(null, null, 'AWAY_GOAL')">Away Goal</button>
 	<button class="btn btn-default" ng-click="addStat(null, null, 'SEEKERS_RELEASED')">Seekers Released</button>
 	<button class="btn btn-default" ng-click="addStat(null, null, 'AWAY_SNITCH_CATCH')">Opponent Snitch Catch</button>
-	<button class="btn btn-default" ng-click="addNote()">Add Note</button>
+	<button class="btn btn-default" ng-click="startNote()">Add Note</button>
 	<button class="btn btn-default" ng-click="getURLWithFilters('<%=@author_id%>')" ng-if="statsPublic">Get Filters URL</button>
 </div>
 
@@ -164,6 +167,33 @@
 	<a ng-repeat="onFieldPlayer in onFieldPlayers" ng-click="playerClicked(onFieldPlayer.objectId)" href="javascript:void(0)">{{onFieldPlayer.first_name+' '+onFieldPlayer.last_name}}<br></a>
 	<a ng-if="statType == 'SWAP'" href="javascript:void(0)" ng-click="closeDialog('onFieldPlayersPicker')">None<br></a>
 	<a ng-if="statType != 'SWAP'" href="javascript:void(0)" ng-click="closeDialog('allPlayersPicker')">Close<br></a>
+</div>
+
+<!-- Div for note overlay -->
+
+<div id="noteOverlay" class="white_content" align="center">
+	<select ng-model="oD">
+		<option>General</option>
+		<option>Offense</option>
+		<option>Defense</option>
+		<option>Transition</option>
+	</select>
+	<br>
+	<select ng-model="goodBad">
+		<option>Neutral</option>
+		<option>Positive</option>
+		<option>Negative</option>
+	</select>
+	<br>
+	<textarea ng-model="noteText" type="text" placeholder="Note" style="width:400px;height:150px;"></textarea><br>
+	<button class="btn btn-default" ng-click="addNote()">Add</button><br>
+	<button class="btn btn-default" ng-click="closeDialog('allPlayersPicker')">Close<br></button>
+</div>
+
+<div id="displayNoteOverlay" class="white_content" align="center">
+	<p ng-model="displayNoteText">{{displayNoteText}}</p>
+	<a href="javascript:void(0)" ng-click="closeDialog('displayNoteOverlay')">Close<br></a>
+	
 </div>
 
 <div id="fade" class="black_overlay"/>
