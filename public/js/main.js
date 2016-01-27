@@ -34,6 +34,9 @@ app.filter('time', function() {
 app.filter('statNameFilter', function() {
 
   return function(value) {
+    if (!value) {
+      return;
+    }
     var ret = value.replace(/_/g, ' ');
     ret = ret.toLowerCase();
     ret = ret.replace( /\b\w/g, function (m) {
@@ -96,41 +99,52 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
   function initVals(author) {
     setOnFieldToBlank();
     $scope.subMap = new Map();
-    $scope.allStats = [];
+    $scope.originalStats = [];
     var statsUrl;
+    var notesUrl;
     if (author) {
       statsUrl = "/allStats/" + author + "/" + $scope.selectedVideo + "/" + $scope.team;
     } else {
       statsUrl = "/allStats/" + $scope.selectedVideo + "/" + $scope.team;
+      notesUrl = "/allNotes/" + $scope.selectedVideo + "/" + $scope.team;
     }
     $http.get(statsUrl).then(function(response) {
-      $scope.allStats = response.data;
-      for (var i = 0; i < $scope.allStats.length; i++) {
-        var id = $scope.allStats[i].player_id;
-        var inId = $scope.allStats[i].player_in_id;
+      for (var i = 0; i < response.data.length; i++) {
+        var statObj = response.data[i];
+        $scope.originalStats.push(statObj);
+        var id = statObj.player_id;
+        var inId = statObj.player_in_id;
         var player = $scope.playersMap.get(id);
         var playerIn = $scope.playersMap.get(inId);
         if (player) {
-          $scope.allStats[i].player_name = player.first_name + ' ' + player.last_name;
+          statObj.player_name = player.first_name + ' ' + player.last_name;
         } else {
-          $scope.allStats[i].player_name = id;
+          statObj.player_name = id;
 
         }
         if (playerIn) {
-          $scope.allStats[i].player_in_name = playerIn.first_name + ' ' + playerIn.last_name;
+          statObj.player_in_name = playerIn.first_name + ' ' + playerIn.last_name;
         } else {
-          $scope.allStats[i].player_in_name = inId;
+          statObj.player_in_name = inId;
         }
-        if ($scope.allStats[i].stat_name === "SUB" || $scope.allStats[i].stat_name === "SWAP") {
-          addSubToMap($scope.allStats[i]);
+        if (statObj.stat_name === "SUB" || statObj.stat_name === "SWAP") {
+          addSubToMap(statObj);
         }
       }
-      $scope.originalStats = $scope.allStats;
+      $scope.originalStats.sort(function(a, b){
+          return a.time - b.time;
+        });
       $scope.filterEvents('init');
     });
     
-    $http.get().then(function(response) {
-      
+    $http.get(notesUrl).then(function(response) {
+      for (var i = 0; i < response.data.length; i++) {
+        $scope.originalStats.push(response.data[i]);
+      }
+      $scope.originalStats.sort(function(a, b){
+          return a.time - b.time;
+        });
+      $scope.filterEvents('init');
     });
     
     $http.get("/videoPermissions/" + $scope.team + "/" + $scope.selectedVideo).then(function(response) {
@@ -187,6 +201,9 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
   }
   
   $scope.updateOnFieldPlayers = function() {
+    if (!$scope.videoPlayer) {
+      return;
+    }
     var startTime = 0;
     var endTime = $scope.videoPlayer.getCurrentTime() + 1;
     setOnFieldToBlank();
@@ -331,8 +348,14 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
       $scope.noteText = "";
       // add it to the all stats? how would I do that?
       $scope.originalStats.push(response.data);
+      $scope.originalStats.sort(function(a, b){
+          return a.time - b.time;
+        });
       $scope.filterEvents('added');
     });
+    $scope.goodBad = "";
+    $scope.oD = "";
+    $scope.noteText = "";
     $scope.closeDialog('allPlayersPicker');
   };
   
@@ -440,7 +463,6 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     if (!$scope.playerFilter || !$scope.eventFilter) {
       return;
     }
-    // no matter what, take scope.originalStats and filter them
     $scope.allStats = [];
     for (var i = 0; i < $scope.originalStats.length; i++) {
       var statName = $scope.originalStats[i].stat_name;
