@@ -128,6 +128,11 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
       $scope.originalStats = $scope.allStats;
       $scope.filterEvents('init');
     });
+    
+    $http.get().then(function(response) {
+      
+    });
+    
     $http.get("/videoPermissions/" + $scope.team + "/" + $scope.selectedVideo).then(function(response) {
       if (response.data == 'true') {
         $scope.statsPublic = true;
@@ -309,7 +314,6 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
   $scope.startNote = function() {
     $scope.videoPlayer.pauseVideo();
     document.getElementById('noteOverlay').style.display='block';document.getElementById('fade').style.display='block';
-
   };
   
   $scope.addNote = function() {
@@ -317,16 +321,20 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
         vid_id : $scope.selectedVideo,
         team_id : $scope.team,
         fall_year : $scope.year,
-        stat_name : 'note',
         time : $scope.videoPlayer.getCurrentTime(),
-        posNegNeut : $scope.posNegNeut,
-        oDBreak : $scope.oDBreak
+        good_bad_filter : $scope.goodBad,
+        o_d_filter : $scope.oD,
+        note : $scope.noteText
     };
     // $scope.addStat($scope.posNegNeut, $scope.oDBreak);
-    $http.post("/addStat/post", data).then(function(response) {});
+    $http.post("/addNote", data).then(function(response) {
+      $scope.noteText = "";
+      // add it to the all stats? how would I do that?
+      $scope.originalStats.push(response.data);
+      $scope.filterEvents('added');
+    });
     $scope.closeDialog('allPlayersPicker');
   };
-
   
   $scope.addStat = function(playerId, playerInId, stat) {
     $scope.videoPlayer.pauseVideo();
@@ -374,7 +382,7 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     });
   };
   
-  $scope.deleteStat = function(objId) {
+  $scope.deleteStat = function(objId, statName) {
     $http.get("/deleteStat/" + objId).then(function(response) {
       // do nothing for now
       //remove locally
