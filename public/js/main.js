@@ -139,6 +139,7 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     
     $http.get(notesUrl).then(function(response) {
       for (var i = 0; i < response.data.length; i++) {
+        response.data[i].stat_name = "NOTE";
         $scope.originalStats.push(response.data[i]);
       }
       $scope.originalStats.sort(function(a, b){
@@ -347,6 +348,7 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     $http.post("/addNote", data).then(function(response) {
       $scope.noteText = "";
       // add it to the all stats? how would I do that?
+      response.data.stat_name = "NOTE";
       $scope.originalStats.push(response.data);
       $scope.originalStats.sort(function(a, b){
           return a.time - b.time;
@@ -477,9 +479,12 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
         $scope.allStats.push($scope.originalStats[i]);
       } else if (statName == "PAUSE_CLOCK" || statName == "START_CLOCK") {
         // $scope.allStats.push($scope.originalStats[i]);
-      }
+      } else if ($scope.eventFilter == "NOTE" 
+        && statName == "NOTE") {
+          $scope.allStats.push($scope.originalStats[i]);
+        }
     }
-    if ($scope.eventFilter == "AWAY_GOAL" && whichFilter == 'events') {
+    if (($scope.eventFilter == "AWAY_GOAL" || $scope.eventFilter == "NOTE") && whichFilter == 'events') {
       $scope.playerFilter = "allPlayers";
     }
   };
