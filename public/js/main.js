@@ -490,6 +490,11 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     prompt("The following URL will bring someone to this page, with the filters set as they are now. They will not be able to edit events. If the 'Public' switch is put back to 'Private', this URL will break", url);
   };
   
+  $scope.showNote = function(index) {
+    $scope.displayNoteText = $scope.allStats[index].note;
+    document.getElementById('displayNoteOverlay').style.display='block';document.getElementById('fade').style.display='block';
+  }
+  
 }]);
 
 app.controller('ViewStatsController', ['$scope', '$http', function($scope, $http) {

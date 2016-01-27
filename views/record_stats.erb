@@ -45,7 +45,7 @@
 
 				<p ng-show="!statObj.stat_name">{{statObj.o_d_filter}}</p>
 				<p ng-show="!statObj.stat_name">{{statObj.good_bad_filter}}</p>
-				<p ng-click="showNote()" ng-show="!statObj.stat_name">Click to see note text</p>
+				<p class="clickList" ng-click="showNote($index)" ng-show="!statObj.stat_name">Click to see note text</p>
 
 				<p ng-show="statObj.stat_name">{{statObj.stat_name | statNameFilter}}</p>
 
@@ -190,7 +190,8 @@
 </div>
 
 <div id="displayNoteOverlay" class="white_content" align="center">
-	
+	<p ng-model="displayNoteText">{{displayNoteText}}</p>
+	<a href="javascript:void(0)" ng-click="closeDialog('displayNoteOverlay')">Close<br></a>
 	
 </div>
 
