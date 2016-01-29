@@ -202,8 +202,8 @@ get '/allNotes/:vid_id/:team_id' do
 end
 	
 
-get '/deleteStat/:object_id' do
-	delete_stat(params[:object_id])
+get '/deleteStat/:object_id/:stat_name' do
+	delete_stat(params[:object_id], params[:stat_name])
 end
 
 get '/updateStatTime/:object_id/:new_time' do
@@ -518,13 +518,22 @@ def add_note(params, author_id)
 	result.to_json
 end
 
-def delete_stat(id)
-	stat_to_del = Parse::Query.new("Stats").tap do |q|
-		q.eq("objectId", id);
-	end.get.first
-	retObj = stat_to_del.clone
-	stat_to_del.parse_delete
-	retObj.to_json
+def delete_stat(id, stat_name)
+	if stat_name == 'NOTE'
+		stat_to_del = Parse::Query.new('Notes').tap do |q|
+			q.eq("objectId", id);
+		end.get.first
+		retObj = stat_to_del.clone
+		stat_to_del.parse_delete
+		retObj.to_json
+	else
+		stat_to_del = Parse::Query.new('Stats').tap do |q|
+			q.eq("objectId", id);
+		end.get.first
+		retObj = stat_to_del.clone
+		stat_to_del.parse_delete
+		retObj.to_json
+	end
 end	
 
 def update_stat(params)

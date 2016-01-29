@@ -326,6 +326,7 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
   $scope.addCard = function(cardType) {
     $scope.statType = cardType;
     $scope.videoPlayer.pauseVideo();
+    
     document.getElementById('onFieldPlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
   };
   
@@ -358,7 +359,7 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     $scope.goodBad = "";
     $scope.oD = "";
     $scope.noteText = "";
-    $scope.closeDialog('allPlayersPicker');
+    $scope.closeDialog('noteOverlay');
   };
   
   $scope.addStat = function(playerId, playerInId, stat) {
@@ -408,7 +409,7 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
   };
   
   $scope.deleteStat = function(objId, statName) {
-    $http.get("/deleteStat/" + objId).then(function(response) {
+    $http.get("/deleteStat/" + objId + "/" + statName).then(function(response) {
       // do nothing for now
       //remove locally
       var index = findStatIndex(response.data);
