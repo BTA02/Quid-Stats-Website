@@ -102,11 +102,14 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     $scope.originalStats = [];
     var statsUrl;
     var notesUrl;
+    var possessionUrl;
     if (author) {
       statsUrl = "/allStats/" + author + "/" + $scope.selectedVideo + "/" + $scope.team;
+      possessionUrl = "/allPossessions/" + author + $scope.selectedVideo + "/" + $scope.team;
     } else {
       statsUrl = "/allStats/" + $scope.selectedVideo + "/" + $scope.team;
       notesUrl = "/allNotes/" + $scope.selectedVideo + "/" + $scope.team;
+      possessionUrl = "/allPossessions/" + $scope.selectedVideo + "/" + $scope.team;
     }
     $http.get(statsUrl).then(function(response) {
       for (var i = 0; i < response.data.length; i++) {
@@ -140,6 +143,16 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     $http.get(notesUrl).then(function(response) {
       for (var i = 0; i < response.data.length; i++) {
         response.data[i].stat_name = "NOTE";
+        $scope.originalStats.push(response.data[i]);
+      }
+      $scope.originalStats.sort(function(a, b){
+          return a.time - b.time;
+        });
+      $scope.filterEvents('init');
+    });
+    
+    $http.get(possessionUrl).then(function(response) {
+      for (var i = 0; i < response.data.length; i++) {
         $scope.originalStats.push(response.data[i]);
       }
       $scope.originalStats.sort(function(a, b){
@@ -432,11 +445,12 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
         time : $scope.videoPlayer.getCurrentTime()
     };
     $http.post("/addPossession", data).then(function(response) {
-      // add it to the list of events?
-      // do I want a seperate list?
-      // I think I do...?
-      // Sort of what I did with that note thing?
-      // Maybe not, ya know? Maybe just intersperse them?
+      $scope.originalStats.push(response.data);
+      console.log(response.data);
+      $scope.originalStats.sort(function(a, b){
+          return a.time - b.time;
+        });
+      $scope.filterEvents('added');
       
     });
     
@@ -484,11 +498,15 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     $http.post("/setPermissions", data).then(function(response) {});
   };
   
-  $scope.recordPossessionToggle = function() {
+  $scope.possessionToggle = function() {
+    // Change the entire UI to keep things clean and simple
     if ($scope.recordPossession) {
+      // filter based on possessions
     } else {
+      // unfilter based on possessions
+      // so what?
     }
-  }
+  };
   
   $scope.filterEvents = function(whichFilter) {
     if (!$scope.playerFilter || !$scope.eventFilter) {

@@ -201,6 +201,15 @@ get '/allNotes/:vid_id/:team_id' do
 	get_all_notes_from_game(params, session[:authorId])
 end
 	
+get '/allPossessions/:author_id/:vid_id/:team_id' do
+	pp 'Axtell eh1re'
+	get_all_possessions_from_game(params, params[:author_id])
+end
+
+get '/allPossessions/:vid_id/:team_id' do
+	pp 'Axtell ehre'
+	get_all_possessions_from_game(params, session[:authorId])
+end
 
 get '/deleteStat/:object_id/:stat_name' do
 	delete_stat(params[:object_id], params[:stat_name])
@@ -483,6 +492,17 @@ def get_all_notes_from_game(params, author_id)
 	resp.to_json
 end
 
+def get_all_possessions_from_game(params, author_id)
+	resp = Parse::Query.new('Possessions').tap do |q|
+		q.eq("vid_id", params[:vid_id])
+		q.eq("team_id", params[:team_id])
+		q.eq("author_id", author_id)
+		q.limit = 1000
+		q.order_by = "time"
+	end.get
+	resp.to_json
+end
+
 # Updated to new backend
 def add_stat(params, author_id)
 	new_stat = Parse::Object.new("Stats")
@@ -533,6 +553,13 @@ end
 def delete_stat(id, stat_name)
 	if stat_name == 'NOTE'
 		stat_to_del = Parse::Query.new('Notes').tap do |q|
+			q.eq("objectId", id);
+		end.get.first
+		retObj = stat_to_del.clone
+		stat_to_del.parse_delete
+		retObj.to_json
+	elsif stat_name == 'OFFENSE' || stat_name == 'DEFENSE' || stat_name == 'GAIN_CONTROL' || stat_name == 'LOSE_CONTROL' 
+		stat_to_del = Parse::Query.new('Possessions').tap do |q|
 			q.eq("objectId", id);
 		end.get.first
 		retObj = stat_to_del.clone
