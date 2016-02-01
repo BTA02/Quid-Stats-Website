@@ -187,11 +187,11 @@ get '/addStat/:vid_id/:team_id/:fall_year/:player_id/:stat_name/:time/:player_in
 	add_stat(params, session[:authorId])
 end
 
-# post '/setPermissions' do
-# 	vals = JSON.parse(request.body.string)
-# 	toggle_permissions(vals)
-# 	'finished'
-# end
+post '/addPossession' do 
+	vals = JSON.parse(request.body.string)
+	add_possession(vals, session[:authorId])
+end
+
 post '/addNote' do
 	vals = JSON.parse(request.body.string)
 	add_note(vals, session[:authorId])
@@ -499,8 +499,20 @@ def add_stat(params, author_id)
 	result.to_json
 end
 
+def add_possession(params, author_id)
+	new_stat = Parse::Object.new('Possessions')
+	new_stat['vid_id'] = params['vid_id']
+	new_stat['team_id'] = params['team_id']
+	new_stat['author_id'] = author_id
+	new_stat['fall_year'] = params['fall_year']
+	new_stat['stat_name'] = params['stat_name']
+	new_stat['time'] = params['time'].to_i
+	
+	result = new_stat.save
+	result.to_json
+end
+
 def add_note(params, author_id)
-	pp params['vid_id']
 	new_stat = Parse::Object.new("Notes")
 	new_stat['vid_id'] = params['vid_id']
 	new_stat['team_id'] = params['team_id']

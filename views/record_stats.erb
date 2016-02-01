@@ -83,17 +83,40 @@
 
 
 <!-- Buttons under the video -->
-<div ng-hide="<%= @public %>" class="container-fluid" align="center">
-	<button class="btn btn-default" ng-click="instantReplay()">Instant Replay</button>
-	<button class="btn btn-default" ng-click="addStat(null, null, 'START_CLOCK')">Game (Re)Start</button>
-	<button class="btn btn-default" ng-click="addStat(null, null, 'PAUSE_CLOCK')">Game Stoppage</button>
-	<button class="btn btn-default" ng-click="addCard('YELLOW_CARD')" style="background-color:yellow;">Yellow Card</button>
-	<button class="btn btn-default" ng-click="addCard('RED_CARD')" style="color:white; background-color:red;">Red Card</button>
-	<button class="btn btn-default" ng-click="addStat(null, null, 'AWAY_GOAL')">Away Goal</button>
-	<button class="btn btn-default" ng-click="addStat(null, null, 'SEEKERS_RELEASED')">Seekers Released</button>
-	<button class="btn btn-default" ng-click="addStat(null, null, 'AWAY_SNITCH_CATCH')">Opponent Snitch Catch</button>
-	<button class="btn btn-default" ng-click="startNote()">Add Note</button>
-	<button class="btn btn-default" ng-click="getURLWithFilters('<%=@author_id%>')" ng-if="statsPublic">Get Filters URL</button>
+<div class="pull-left">
+    <label ng-show="recordPossession" for="possLabel">Possession</label>
+    <label ng-show="!recordPossession" for="possLabel">Individual</label>
+</div>
+<div class="material-switch pull-left" style="padding-left:7px;">
+    <input ng-model="recordPossession" ng-change="recordPossessionToggle()" type="checkbox" id="unchecked1" class="cbx hidden"/>
+    <label id="possLabel" for="unchecked1" class="lbl"></label>
+</div>
+
+<div ng-hide="<%= @public %> || recordPossession" class="container-fluid" align="center">
+	<button ng-show="!recordPossession" class="btn btn-default" ng-click="instantReplay()">Instant Replay</button>
+	<button ng-show="!recordPossession" class="btn btn-default" ng-click="addStat(null, null, 'START_CLOCK')">Game (Re)Start</button>
+	<button ng-show="!recordPossession" class="btn btn-default" ng-click="addStat(null, null, 'PAUSE_CLOCK')">Game Stoppage</button>
+	<button ng-show="!recordPossession" class="btn btn-default" ng-click="addCard('YELLOW_CARD')" style="background-color:yellow;">Yellow Card</button>
+	<button ng-show="!recordPossession" class="btn btn-default" ng-click="addCard('RED_CARD')" style="color:white; background-color:red;">Red Card</button>
+	<button ng-show="!recordPossession" class="btn btn-default" ng-click="addStat(null, null, 'AWAY_GOAL')">Away Goal</button>
+	<button ng-show="!recordPossession" class="btn btn-default" ng-click="addStat(null, null, 'SEEKERS_RELEASED')">Seekers Released</button>
+	<button ng-show="!recordPossession" class="btn btn-default" ng-click="addStat(null, null, 'AWAY_SNITCH_CATCH')">Opponent Snitch Catch</button>
+	<button ng-show="!recordPossession" class="btn btn-default" ng-click="startNote()">Add Note</button>
+	<button ng-show="!recordPossession" class="btn btn-default" ng-click="getURLWithFilters('<%=@author_id%>')" ng-if="statsPublic">Get Filters URL</button>
+	
+	<!-- Possession buttons -->
+	<button ng-show="recordPossession" class="btn btn-default" ng-click="instantReplay()">Instant Replay</button>
+	<button ng-show="recordPossession" class="btn btn-default" ng-click="addStat(null, null, 'START_CLOCK')">Game (Re)Start</button>
+	<button ng-show="recordPossession" class="btn btn-default" ng-click="addStat(null, null, 'PAUSE_CLOCK')">Game Stoppage</button>
+	<button ng-show="recordPossession" class="btn btn-default" ng-click="addPossession('OFFENSE')">Offensive Possession Start</button>
+	<button ng-show="recordPossession" class="btn btn-default" ng-click="addPossession('DEFENSE')">Defensive Possession Start</button>
+	<button ng-show="recordPossession" class="btn btn-default" ng-click="addPossession('GAIN_CONTROL')">Gain Bludger Control</button>
+	<button ng-show="recordPossession" class="btn btn-default" ng-click="addPossession('LOSE_CONTROL')">Lose Bludger Control</button>
+	<!--<button ng-show="recordPossession" class="btn btn-default" ng-click=""></button>-->
+	<button ng-show="recordPossession" class="btn btn-default" ng-click="getURLWithFilters('<%=@author_id%>')" ng-if="statsPublic">Get Filters URL</button>
+	
+	
+	
 </div>
 
 <!-- Players on pitch -->
@@ -114,7 +137,7 @@
 			<div ng-show="$index > 3 && $index < 6">
 				<h5>Beater</h5>
 				<a href="javascript:void(0)" ng-click="startSub(onPlayer.objectId, 'allPlayers')">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
-				<li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'TAKEAWAY')">Takeaway</li>
+				<!--<li class="clickList" ng-click="addStat(onPlayer.objectId, null, 'TAKEAWAY')">Takeaway</li>-->
 			</div>
 
 			<div ng-show="$index == 6">

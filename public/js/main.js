@@ -421,6 +421,28 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     });
   };
   
+  $scope.addPossession = function(name) {
+    $scope.videoPlayer.pauseVideo();
+    
+    var data = {
+        team_id : $scope.team,
+        vid_id : $scope.selectedVideo,
+        fall_year : $scope.year,
+        stat_name : name,
+        time : $scope.videoPlayer.getCurrentTime()
+    };
+    $http.post("/addPossession", data).then(function(response) {
+      // add it to the list of events?
+      // do I want a seperate list?
+      // I think I do...?
+      // Sort of what I did with that note thing?
+      // Maybe not, ya know? Maybe just intersperse them?
+      
+    });
+    
+    
+  };
+  
   function findStatIndex(stat) {
     for (var i = 0; i < $scope.originalStats.length; i++) {
       if ($scope.originalStats[i].objectId == stat.objectId) {
@@ -461,6 +483,12 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     };
     $http.post("/setPermissions", data).then(function(response) {});
   };
+  
+  $scope.recordPossessionToggle = function() {
+    if ($scope.recordPossession) {
+    } else {
+    }
+  }
   
   $scope.filterEvents = function(whichFilter) {
     if (!$scope.playerFilter || !$scope.eventFilter) {
