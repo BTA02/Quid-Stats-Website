@@ -88,11 +88,11 @@
     <label ng-show="!recordPossession" for="possLabel">Individual</label>
 </div>
 <div class="material-switch pull-left" style="padding-left:7px;">
-    <input ng-model="recordPossession" ng-change="possessionToggle()" type="checkbox" id="unchecked1" class="cbx hidden"/>
+    <input ng-model="recordPossession" ng-change="togglePossession()" type="checkbox" id="unchecked1" class="cbx hidden"/>
     <label id="possLabel" for="unchecked1" class="lbl"></label>
 </div>
 
-<div ng-hide="<%= @public %> || recordPossession" class="container-fluid" align="center">
+<div ng-hide="<%= @public %>" class="container-fluid" align="center">
 	<button ng-show="!recordPossession" class="btn btn-default" ng-click="instantReplay()">Instant Replay</button>
 	<button ng-show="!recordPossession" class="btn btn-default" ng-click="addStat(null, null, 'START_CLOCK')">Game (Re)Start</button>
 	<button ng-show="!recordPossession" class="btn btn-default" ng-click="addStat(null, null, 'PAUSE_CLOCK')">Game Stoppage</button>
@@ -108,14 +108,8 @@
 	<button ng-show="recordPossession" class="btn btn-default" ng-click="instantReplay()">Instant Replay</button>
 	<button ng-show="recordPossession" class="btn btn-default" ng-click="addStat(null, null, 'START_CLOCK')">Game (Re)Start</button>
 	<button ng-show="recordPossession" class="btn btn-default" ng-click="addStat(null, null, 'PAUSE_CLOCK')">Game Stoppage</button>
-	<!--<button ng-show="recordPossession" class="btn btn-default dropdown-toggle" ng-click="addPossession('OFFENSE')">Offensive Possession Start</button>-->
-	<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Offensive Possession Start <span class="caret"></span> </button>
-		<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-    		<li><a href="#">Against O Bludgers</a></li>
-    		<li><a href="#">Against 1 Bludger</a></li>
-    		<li><a href="#">Against 2 Bludgers</a></li>
-		</ul>
-	<button ng-show="recordPossession" class="btn btn-default" ng-click="addPossession('DEFENSE')">Defensive Possession Start</button>
+	<button ng-show="recordPossession" class="btn btn-default" ng-click="startOffensePossession()">Offensive Possession Start</button>
+	<button ng-show="recordPossession" class="btn btn-default" ng-click="startDefensePossession()">Defensive Possession Start</button>
 	<button ng-show="recordPossession" class="btn btn-default" ng-click="addPossession('GAIN_CONTROL')">Gain Bludger Control</button>
 	<button ng-show="recordPossession" class="btn btn-default" ng-click="addPossession('LOSE_CONTROL')">Lose Bludger Control</button>
 	<!--<button ng-show="recordPossession" class="btn btn-default" ng-click=""></button>-->
@@ -223,6 +217,22 @@
 	<p ng-model="displayNoteText">{{displayNoteText}}</p>
 	<a href="javascript:void(0)" ng-click="closeDialog('displayNoteOverlay')">Close<br></a>
 	
+</div>
+
+<div id="offenseBludgerOverlay" class="white_content">
+	<h4>Choose the amount of bludgers the DEFENSE has...</h4>
+	<p class="clickList" ng-click="addPossession('OFFENSE', 0)">0 bludgers</p>
+	<p class="clickList" ng-click="addPossession('OFFENSE', 1)">1 bludger</p>
+	<p class="clickList" ng-click="addPossession('OFFENSE', 2)">2 bludgers</p>
+	<a href="javascript:void(0)" ng-click="closeDialog('offenseBludgerOverlay')">Close<br></a>
+</div>
+
+<div id="defenseBludgerOverlay" class="white_content">
+	<h4>Choose the amount of bludgers the DEFENSE has...</h4>
+	<p class="clickList" ng-click="addPossession('DEFENSE', 0)">0 bludgers</p>
+	<p class="clickList" ng-click="addPossession('DEFENSE', 1)">1 bludger</p>
+	<p class="clickList" ng-click="addPossession('DEFENSE', 2)">2 bludgers</p>
+	<a href="javascript:void(0)" ng-click="closeDialog('defenseBludgerOverlay')">Close<br></a>
 </div>
 
 <div id="fade" class="black_overlay"/>

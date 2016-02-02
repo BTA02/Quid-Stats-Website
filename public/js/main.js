@@ -434,7 +434,15 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     });
   };
   
-  $scope.addPossession = function(name) {
+   $scope.startOffensePossession = function() {
+    document.getElementById('offenseBludgerOverlay').style.display='block';document.getElementById('fade').style.display='block';
+  };
+  
+   $scope.startDefensePossession = function() {
+    document.getElementById('defenseBludgerOverlay').style.display='block';document.getElementById('fade').style.display='block';
+  };
+  
+  $scope.addPossession = function(name, bludgerCount) {
     $scope.videoPlayer.pauseVideo();
     
     var data = {
@@ -442,6 +450,7 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
         vid_id : $scope.selectedVideo,
         fall_year : $scope.year,
         stat_name : name,
+        bludger_count : bludgerCount,
         time : $scope.videoPlayer.getCurrentTime()
     };
     $http.post("/addPossession", data).then(function(response) {
@@ -453,8 +462,8 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
       $scope.filterEvents('added');
       
     });
-    
-    
+    $scope.closeDialog('offenseBludgerOverlay');
+    $scope.closeDialog('defenseBludgerOverlay');
   };
   
   function findStatIndex(stat) {
@@ -498,13 +507,11 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     $http.post("/setPermissions", data).then(function(response) {});
   };
   
-  $scope.possessionToggle = function() {
-    // Change the entire UI to keep things clean and simple
+  $scope.togglePossession = function() {
     if ($scope.recordPossession) {
       // filter based on possessions
     } else {
       // unfilter based on possessions
-      // so what?
     }
   };
   
