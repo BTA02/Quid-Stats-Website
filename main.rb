@@ -526,7 +526,7 @@ def add_possession(params, author_id)
 	new_stat['author_id'] = author_id
 	new_stat['fall_year'] = params['fall_year']
 	new_stat['stat_name'] = params['stat_name']
-	new_stat['bludger_count'] = params['bludger_count']
+	new_stat['bludger_count'] = params['bludger_count'].to_i
 	new_stat['time'] = params['time'].to_i
 	
 	result = new_stat.save
