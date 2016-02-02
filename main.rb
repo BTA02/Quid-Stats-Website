@@ -552,27 +552,54 @@ def add_note(params, author_id)
 end
 
 def delete_stat(id, stat_name)
-	if stat_name == 'NOTE'
-		stat_to_del = Parse::Query.new('Notes').tap do |q|
-			q.eq("objectId", id);
-		end.get.first
+	# if stat_name == 'NOTE'
+	# 	stat_to_del = Parse::Query.new('Notes').tap do |q|
+	# 		q.eq("objectId", id);
+	# 	end.get.first
+	# 	retObj = stat_to_del.clone
+	# 	stat_to_del.parse_delete
+	# 	retObj.to_json
+	# elsif stat_name == 'OFFENSE' || stat_name == 'DEFENSE' || stat_name == 'GAIN_CONTROL' || stat_name == 'LOSE_CONTROL' 
+	# 	stat_to_del = Parse::Query.new('Possessions').tap do |q|
+	# 		q.eq("objectId", id);
+	# 	end.get.first
+	# 	retObj = stat_to_del.clone
+	# 	stat_to_del.parse_delete
+	# 	retObj.to_json
+	# else
+	# 	stat_to_del = Parse::Query.new('Stats').tap do |q|
+	# 		q.eq("objectId", id);
+	# 	end.get.first
+	# 	retObj = stat_to_del.clone
+	# 	stat_to_del.parse_delete
+	# 	retObj.to_json
+	# end
+	
+	stat_to_del = Parse::Query.new('Notes').tap do |q|
+		q.eq('objectId',id)
+	end.get.first
+	if stat_to_del != nil
 		retObj = stat_to_del.clone
 		stat_to_del.parse_delete
-		retObj.to_json
-	elsif stat_name == 'OFFENSE' || stat_name == 'DEFENSE' || stat_name == 'GAIN_CONTROL' || stat_name == 'LOSE_CONTROL' 
-		stat_to_del = Parse::Query.new('Possessions').tap do |q|
-			q.eq("objectId", id);
-		end.get.first
+		return retObj.to_json
+	end
+	
+	stat_to_del = Parse::Query.new('Possessions').tap do |q|
+		q.eq('objectId',id)
+	end.get.first
+	if stat_to_del != nil
 		retObj = stat_to_del.clone
 		stat_to_del.parse_delete
-		retObj.to_json
-	else
-		stat_to_del = Parse::Query.new('Stats').tap do |q|
-			q.eq("objectId", id);
-		end.get.first
+		return retObj.to_json
+	end
+	
+	stat_to_del = Parse::Query.new('Stats').tap do |q|
+		q.eq('objectId',id)
+	end.get.first
+	if stat_to_del != nil
 		retObj = stat_to_del.clone
 		stat_to_del.parse_delete
-		retObj.to_json
+		return retObj.to_json
 	end
 end	
 
