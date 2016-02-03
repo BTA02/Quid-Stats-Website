@@ -519,14 +519,15 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     } else {
       $scope.currentStats = $scope.individualStats;
     }
+    $scope.filterEvents('init');
   };
   
   $scope.filterEvents = function(whichFilter) {
-    if ($scope.recordPossession) {
+    $scope.displayStats = [];
+    if (!$scope.recordPossession) {
       if (!$scope.playerFilter || !$scope.eventFilter) {
         return;
       }
-      $scope.displayStats = [];
       for (var i = 0; i < $scope.currentStats.length; i++) {
         var statName = $scope.currentStats[i].stat_name;
         if ( ($scope.playerFilter == $scope.currentStats[i].player_id
@@ -554,6 +555,9 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
       }
       for (var i = 0; i < $scope.currentStats.length; i++) {
         var statName = $scope.currentStats[i].stat_name;
+        console.log("stateName");
+        console.log(statName);
+        console.log($scope.eventFilter);
         if ($scope.eventFilter == "allEvents") {
           $scope.displayStats.push($scope.currentStats[i]);
         } else if (statName == $scope.eventFilter) {

@@ -273,6 +273,8 @@ get '/calcStats/:user_id/:stat_selected/:per' do
 	when 'full_line_up'
 		pos_arr =[[0,1,2],[0,1,2],[0,1,2],[3],[4,5],[4,5]]
 		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
+	when 'possession_simple'
+		stats_json = calc_stats.calc_possessions_simple.to_json
 	end
 end
 

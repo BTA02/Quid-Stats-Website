@@ -33,6 +33,22 @@ class CalcStats
 		end
 		all_stats.flatten!
 	end
+	
+	def get_possession_rows_from_games()
+		array_of_game_ids_sliced = @game_ids.each_slice(5).to_a
+		all_possessions = []
+		array_of_game_ids_sliced.each do |array_of_ids|
+			stats_to_add = Parse::Query.new('Possessions').tap do |q|
+				q.eq('team_id', @team_id)
+				q.eq('author_id', @author_id)
+				q.value_in('vid_id', array_of_ids)
+				q.order_by = "vid_id,time"
+				q.limit = 1000
+			end.get
+			all_possessions.push(stats_to_add)
+		end
+		all_possessions.flatten!
+	end
 
 	def raw_stats
 		events_from_games = get_stats_rows_from_games()
@@ -422,6 +438,84 @@ class CalcStats
 
 	def getStatsMap
 		@stats_map
+	end
+	
+	def calc_possessions_simple
+		possessions = get_possession_rows_from_games()
+		if possessions.nil?
+			return nil
+		end
+		@possession_map = {}
+		cur_game = 'notAGame'
+		possessions.each do |possession|
+			control_start_time = -1
+			start_time = -1
+			
+			if cur_game != possession['vid_id']
+				# reset the time variables, who has control variables, and O/D variables
+			end
+			cur_game = possession["vid_id"]
+			unless @possession_map.include?(cur_game)
+				@possession_map[cur_game] = {
+					'offensive_possessions_v_0' => 0,
+					'offensive_possessions_v_1'=> 0,
+					'offensive_possessions_v_2'=> 0,
+					'defensive_possessions_w_0'=> 0,
+					'defensive_possessions_w_1'=> 0,
+					'defensive_possessions_w_2'=> 0,
+					'total_offensive_possessions' => 0,
+					'total_defensive_possessions' => 0,
+					'bludger_control_gained' => 0,
+					'bludger_control_lost' => 0,
+					'bludger_control_time_milli' => 0,
+					'game_time_milli' => 0
+				}
+			end
+
+			stat = possession['stat_name']
+			bludger_count = possession['bludger_count']
+			
+			if stat == 'START_CLOCK'
+				start_time = possession["time"]
+			elsif stat == 'PAUSE_CLOCK'
+				if start_time != -1
+					time_to_add = possession["time"] - start_time
+					# add_time_to_each_player(on_field_array, time_to_add)
+					@possession_map[cur_game]['game_time_milli'] += time_to_add
+					if control_start_time != -1
+						@possession_map['cur_game']['bludger_control_time_milli'] += time_to_add
+					start_time = -1
+				end
+			elsif stat == 'GAIN_CONTROL'
+				@possession_map[cur_game]['bludger_control_gained'] += 1
+			elsif stat == 'LOSE_CONTROL'
+				@possession_map[cur_game]['bludger_control_lost'] += 1
+			elsif stat == 'OFFENSE'
+				if bludger_count == 0
+					@possession_map[cur_game]['offensive_possessions_v_0'] += 1
+				elsif bludger_count == 1
+					@possession_map[cur_game]['offensive_possessions_v_1'] += 1
+				elsif bludger_count == 2
+					@possession_map[cur_game]['offensive_possessions_v_2'] += 1
+				end
+				@possession_map[cur_game]['total_offensive_possessions'] += 1
+			elsif stat == 'DEFENSE'
+				if bludger_count == 0
+					@possession_map[cur_game]['defensive_possessions_w_0'] += 1
+				elsif bludger_count == 1
+					@possession_map[cur_game]['defensive_possessions_w_1'] += 1
+				elsif bludger_count == 2
+					@possession_map[cur_game]['defensive_possessions_w_2'] += 1
+				end
+				@possession_map[cur_game]['total_defensive_possessions'] += 1
+			end
+		end
+		
+		pp 'BIG MAP'
+		pp @possession_map
+		
+	
+	
 	end
 
 
