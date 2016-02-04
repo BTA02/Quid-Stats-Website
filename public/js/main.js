@@ -848,6 +848,42 @@ app.controller('ViewStatsController', ['$scope', '$http', function($scope, $http
       case "Offense v 0":
         ret = "offensive_possessions_v_0";
         break;
+      case "Goals v 0":
+        ret = "offensive_possessions_v_0_goals";
+        break;
+      case "Offense v 1":
+        ret = "offensive_possessions_v_1";
+        break;
+      case "Goals v 1":
+        ret = "offensive_possessions_v_1_goals";
+        break;
+      case "Offense v 2":
+        ret = "offensive_possessions_v_2";
+        break;
+      case "Goals v 2":
+        ret = "offensive_possessions_v_2_goals";
+        break;
+      case "Defense w/ 0":
+        ret = "defensive_possessions_w_0";
+        break;
+      case "Goals w/ 0":
+        ret = "defensive_possessions_w_0_goals";
+        break;
+      case "Defense w/ 1":
+        ret = "defensive_possessions_w_1";
+        break;
+      case "Goals w/ 1":
+        ret = "defensive_possessions_w_1_goals";
+        break;
+      case "Defense w/ 2":
+        ret = "defensive_possessions_w_2";
+        break;
+      case "Goals w/ 2":
+        ret = "defensive_possessions_w_2_goals";
+        break;
+      case "Bludger Control %":
+        ret = "bludger_control_percent";
+        break;
       default:
         ret = category;
     }

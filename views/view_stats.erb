@@ -75,7 +75,7 @@
         
         <tbody>
           <tr ng-repeat="row in statsDisp">
-            <td ng-repeat="(key, val) in row">{{val}}</td>
+            <td ng-repeat="(key, val) in row">{{row[convertCategoryName(possessionSimpleCategoriesToDisplay[$index])]}}</td>
           </tr>
         </tbody>
       </table>

@@ -116,13 +116,11 @@ class CalcStats
 				ind = on_field_array.index(event["player_id"])
 				on_field_array[ind] = player_id
 			elsif event_type == "SWAP"
-				pp 'event'
-				pp event
 				if start_time != -1
-						time_to_add = event["time"] - start_time
-						add_time_to_each_player(on_field_array, time_to_add)
-						start_time = event["time"]
-					end
+					time_to_add = event["time"] - start_time
+					add_time_to_each_player(on_field_array, time_to_add)
+					start_time = event["time"]
+				end
 				ind = on_field_array.index(event["player_id"])
 				ind2 = on_field_array.index(event['player_in_id']);
 				on_field_array[ind] = event["player_in_id"]
@@ -486,8 +484,6 @@ class CalcStats
 
 			stat = possession['stat_name']
 			bludger_count = possession['bludger_count']
-			pp 'stat: ' + stat.to_s
-			pp 'time: ' + possession['time'].to_s
 			if stat == 'START_CLOCK'
 				start_time = possession['time']
 				if have_control
@@ -496,7 +492,6 @@ class CalcStats
 			elsif stat == 'PAUSE_CLOCK'
 				if start_time != -1
 					time_to_add = possession['time'] - start_time
-					pp time_to_add
 					# add_time_to_each_player(on_field_array, time_to_add)
 					@possession_map[cur_game]['game_time'] += time_to_add
 					start_time = -1
@@ -557,6 +552,19 @@ class CalcStats
 			end
 		end
 		
+		@possession_map.values.each do |game|
+			# pp 'game'
+			# pp game
+			game['bludger_control_percent'] = ((game['bludger_control_time'].to_f / game['game_time'].to_f) * 100).round(1)
+			pp 'game'
+			pp game
+		end
+		# @stats_map.update(@stats_map) { |key, val|
+		# }
+		# @possession_map.update(@possession_map) { |key, val|
+		# 	# change the key to the actual team name
+		# 	val['bludger_control_percent'] = val['bludger_control_time'] / val['game_time']
+		# }
 		pp 'BIG MAP'
 		pp @possession_map
 		
