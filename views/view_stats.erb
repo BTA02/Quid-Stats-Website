@@ -37,13 +37,13 @@
   </div>
   
   <div class="col-lg-10" ng-show="statsDisp">
-      <table ng-show="isPlusMinus" class="table table-striped tabled-condensed" ng-model="statsDisp">
+      <table ng-show="statDispType == 'plusMinus'" class="table table-striped tabled-condensed" ng-model="statsDisp">
         <thead class="statsHeaders">
           <th class="statsHeader" ng-repeat="cat in pmCategoriesToDisplay" ng-click="sortPMMap(cat)">{{cat}}</th>
         </thead>
         <tbody>
           <tr ng-repeat="row in statsDisp">
-            <td>{{row[0].join(', ')}}</td> <!-- This is group, I think -->
+            <td>{{row[0].join(', ')}}</td>
             <td ng-repeat="(key, val) in row[1]">
               <p ng-if="pmCategoriesToDisplay[$index+1]=='TIME'">{{row[1][convertCategoryName(pmCategoriesToDisplay[$index+1])] | time:'ss':'mm:ss'}}</p>
               <p ng-if="pmCategoriesToDisplay[$index+1]!='TIME'">{{row[1][convertCategoryName(pmCategoriesToDisplay[$index+1])]}}</p>
@@ -53,7 +53,7 @@
         </tbody>
       </table>
       
-      <table ng-hide="isPlusMinus" class="table table-striped table-condensed" ng-model="statsDisp">
+      <table ng-show="statDispType == 'individual'" class="table table-striped table-condensed" ng-model="statsDisp">
          <thead class="statsHeaders">
           <th class="statsHeader" ng-repeat="cat in rawCategoriesToDisplay" ng-click="sortMap(cat)">{{cat}}</th>
         </thead>
@@ -67,6 +67,19 @@
           </tr>
         </tbody>
       </table>
+      
+      <table ng-show="statDispType == 'possession_simple'" class="table table-stripd table-condensed" ng-model="statsDisp">
+        <thead class="statsHeaders">
+          <th class="statsHeader" ng-repeat="cat in possessionSimpleCategoriesToDisplay" ng-click="sortMap(cat)">{{cat}}</th>
+        </thead>
+        
+        <tbody>
+          <tr ng-repeat="row in statsDisp">
+            <td ng-repeat="(key, val) in row">{{val}}</td>
+          </tr>
+        </tbody>
+      </table>
+      
     </div>
   </div>
 </div>

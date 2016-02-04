@@ -447,50 +447,79 @@ class CalcStats
 		end
 		@possession_map = {}
 		cur_game = 'notAGame'
+		control_start_time = -1
+		have_control = false
+		start_time = -1
+		cur_bludgers = -1
+		
 		possessions.each do |possession|
-			control_start_time = -1
-			start_time = -1
+			
 			
 			if cur_game != possession['vid_id']
 				# reset the time variables, who has control variables, and O/D variables
+				start_time = -1
+				control_start_time = -1
 			end
 			cur_game = possession["vid_id"]
 			unless @possession_map.include?(cur_game)
 				@possession_map[cur_game] = {
 					'offensive_possessions_v_0' => 0,
+					'offensive_possessions_v_0_goals' => 0,
 					'offensive_possessions_v_1'=> 0,
+					'offensive_possessions_v_1_goals' => 0,
 					'offensive_possessions_v_2'=> 0,
+					'offensive_possessions_v_2_goals' => 0,
 					'defensive_possessions_w_0'=> 0,
+					'defensive_possessions_w_0_goals' => 0,
 					'defensive_possessions_w_1'=> 0,
+					'defensive_possessions_w_1_goals' => 0,
 					'defensive_possessions_w_2'=> 0,
+					'defensive_possessions_w_2_goals' => 0,
 					'total_offensive_possessions' => 0,
 					'total_defensive_possessions' => 0,
 					'bludger_control_gained' => 0,
 					'bludger_control_lost' => 0,
-					'bludger_control_time_milli' => 0,
-					'game_time_milli' => 0
+					'bludger_control_time' => 0,
+					'game_time' => 0
 				}
 			end
 
 			stat = possession['stat_name']
 			bludger_count = possession['bludger_count']
-			
+			pp 'stat: ' + stat.to_s
+			pp 'time: ' + possession['time'].to_s
 			if stat == 'START_CLOCK'
-				start_time = possession["time"]
+				start_time = possession['time']
+				if have_control
+					control_start_time = possession['time']
+				end
 			elsif stat == 'PAUSE_CLOCK'
 				if start_time != -1
-					time_to_add = possession["time"] - start_time
+					time_to_add = possession['time'] - start_time
+					pp time_to_add
 					# add_time_to_each_player(on_field_array, time_to_add)
-					@possession_map[cur_game]['game_time_milli'] += time_to_add
-					if control_start_time != -1
-						@possession_map['cur_game']['bludger_control_time_milli'] += time_to_add
+					@possession_map[cur_game]['game_time'] += time_to_add
 					start_time = -1
 				end
+				if control_start_time != -1
+					time_to_add = possession['time'] - control_start_time
+					@possession_map[cur_game]['bludger_control_time'] += time_to_add
+					control_start_time = -1
+				end
 			elsif stat == 'GAIN_CONTROL'
+				have_control = true
 				@possession_map[cur_game]['bludger_control_gained'] += 1
+				control_start_time = possession['time']
 			elsif stat == 'LOSE_CONTROL'
+				have_control = false
 				@possession_map[cur_game]['bludger_control_lost'] += 1
+				if control_start_time != -1
+					time_to_add = possession['time'] - control_start_time
+					@possession_map[cur_game]['bludger_control_time'] += time_to_add
+					control_start_time = -1
+				end
 			elsif stat == 'OFFENSE'
+				cur_bludgers = bludger_count
 				if bludger_count == 0
 					@possession_map[cur_game]['offensive_possessions_v_0'] += 1
 				elsif bludger_count == 1
@@ -500,6 +529,7 @@ class CalcStats
 				end
 				@possession_map[cur_game]['total_offensive_possessions'] += 1
 			elsif stat == 'DEFENSE'
+				cur_bludgers = bludger_count
 				if bludger_count == 0
 					@possession_map[cur_game]['defensive_possessions_w_0'] += 1
 				elsif bludger_count == 1
@@ -508,6 +538,22 @@ class CalcStats
 					@possession_map[cur_game]['defensive_possessions_w_2'] += 1
 				end
 				@possession_map[cur_game]['total_defensive_possessions'] += 1
+			elsif stat == 'GOAL'
+				if cur_bludgers == 0
+					@possession_map[cur_game]['offensive_possessions_v_0_goals'] += 1
+				elsif cur_bludgers == 1
+					@possession_map[cur_game]['offensive_possessions_v_1_goals'] += 1
+				elsif cur_bludgers == 2
+					@possession_map[cur_game]['offensive_possessions_v_2_goals'] += 1
+				end
+			elsif stat == 'AWAY_GOAL'
+				if cur_bludgers == 0
+					@possession_map[cur_game]['defensive_possessions_w_0_goals'] += 1
+				elsif cur_bludgers == 1
+					@possession_map[cur_game]['defensive_possessions_w_1_goals'] += 1
+				elsif cur_bludgers == 2
+					@possession_map[cur_game]['defensive_possessions_w_2_goals'] += 1
+				end
 			end
 		end
 		

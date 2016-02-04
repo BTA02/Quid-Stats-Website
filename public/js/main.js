@@ -392,7 +392,7 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     url += "/" + playerInId;
 
     $http.get(url).then(function(response) {
-        // handle errors here, if I get them
+        // handle errors `, if I get them
         var id = response.data.player_id;
         var inId = response.data.player_in_id;
         var player = $scope.playersMap.get(id);
@@ -614,16 +614,19 @@ app.controller('ViewStatsController', ['$scope', '$http', function($scope, $http
 
   	$http.get("/calcStats/" + userId + "/" + $scope.statSelected + "/" + $scope.per + "?team_id=" + $scope.team + "&ids=" + ids).then(function(response) {
   		if ($scope.statSelected == "raw_stats") {
-  			$scope.isPlusMinus = false;
-  			// sort the data?
+  			$scope.statDispType = "individual";
+  		} else if ($scope.statSelected == "possession_simple") {
+  			$scope.statDispType = "possession_simple";
   		} else {
-  			$scope.isPlusMinus = true;
+  		  $scope.statDispType = "plusMinus";
   		}
   		$scope.statsDisp = response.data;
-      if ($scope.isPlusMinus) {
+      if ($scope.statDispType == "plusMinus") {
         $scope.sortPMMap("GROUP");
-      } else {
+      } else if ($scope.statDispType == "individual") {
         $scope.sortMap("first_name");
+      } else if ($scope.statDispType == "possession_simple") {
+        // $scope.sortMap("");
       }
   	});
   };
@@ -668,6 +671,38 @@ app.controller('ViewStatsController', ['$scope', '$http', function($scope, $http
     'RATIO',
     'TIME'
   ];
+  
+  $scope.possessionSimpleCategoriesToDisplay = [
+    'Offense v 0',
+    'Goals v 0',
+    'Offense v 1',
+    'Goals v 1',
+    'Offense v 2',
+    'Goals v 2',
+    'Defense w/ 0',
+    'Goals w/ 0',
+    'Defense w/ 1',
+    'Goals w/ 1',
+    'Defense w/ 2',
+    'Goals w/ 2',
+    'Bludger Control %'
+  ];
+  
+  // don't forget to add these to the convert function
+  // $scope.possessionSimpleCategoriesToDisplay = [
+  //   'OFFENSE_AGAINST_0_BLUDGERS',
+  //   'GOALS',
+  //   'OFFENSE_AGAINST_1_BLUDGER',
+  //   'GOALS',
+  //   'OFFENSE_AGAINST_2_BLUDGERS',
+  //   'GOALS',
+  //   'DEFENSE_WITH_0_BLUDGERS',
+  //   'GOALS',
+  //   'DEFENSE_WITH_1_BLUDGER',
+  //   'GOALS',
+  //   'DEFENSE_WITH_2_BLUDGERS',
+  //   'GOALS'
+  // ];
   
   $scope.beaterCategoriesToDisplay = [
     'FIRST',
@@ -809,6 +844,9 @@ app.controller('ViewStatsController', ['$scope', '$http', function($scope, $http
         break;
       case "TIME":
         ret = "time";
+        break;
+      case "Offense v 0":
+        ret = "offensive_possessions_v_0";
         break;
       default:
         ret = category;
