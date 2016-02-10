@@ -108,9 +108,9 @@
 <div id="buttonsContainer">
 	<div class="buttonGroup">
 		<p><b>Clock Management</b></p>
-			<p class="clickList">Start Clock</p>
-			<p class="clickList">Pause Clock</p>
-			<p class="clickList">Instant Replay</p>
+			<p class="clickList" ng-click="addStat(null, null, 'START_CLOCK')">Start Clock</p>
+			<p class="clickList" ng-click="addStat(null, null, 'PAUSE_CLOCK')">Pause Clock</p>
+			<p class="clickList" ng-click="instantReplay()">Instant Replay</p>
 		<p><b>Extras</b></p>
 			<p class="clickList">Add Note</p>
 	</div>

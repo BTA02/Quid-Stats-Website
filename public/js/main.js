@@ -93,9 +93,10 @@ app.controller('FullRecordStatsController', ['$scope', '$http', '$interval', fun
     $scope.originalStats = [];
     var statsUrl;
     var notesUrl;
-    statsUrl = "/allStats/" + $scope.selectedVideo + "/" + $scope.team;
+    statsUrl = "/allFullStats/" + $scope.selectedVideo + "/" + $scope.team;
     notesUrl = "/allNotes/" + $scope.selectedVideo + "/" + $scope.team;
     $http.get(statsUrl).then(function(response) {
+      console.log(response);
       for (var i = 0; i < response.data.length; i++) {
         var statObj = response.data[i];
         $scope.originalStats.push(statObj);
@@ -331,13 +332,14 @@ app.controller('FullRecordStatsController', ['$scope', '$http', '$interval', fun
     $scope.noteText = "";
     $scope.closeDialog('noteOverlay');
   };
-  
+  //AxtellFullStat
   $scope.addStat = function(playerId, playerInId, stat) {
     $scope.videoPlayer.pauseVideo();
     
     var data = {
         team_id : $scope.team,
         vid_id : $scope.selectedVideo,
+        year : $scope.year,
         player_id : playerId,
         player_in_id : playerInId,
         time : $scope.videoPlayer.getCurrentTime(),
@@ -374,49 +376,6 @@ app.controller('FullRecordStatsController', ['$scope', '$http', '$interval', fun
       });
       $scope.filterEvents('added');
     });
-    
-
-    // This should become a POST request, so I can pass whatever I want
-    // var url = "/addFullStat/" + $scope.selectedVideo;
-    // url += "/" + $scope.team;
-    // url += "/" + $scope.year;
-    // url += "/" + playerId;
-    // url += "/" + stat;
-    // url += "/" + $scope.videoPlayer.getCurrentTime();
-    // url += "/" + playerInId;
-
-    // $http.get(url).then(function(response) {
-    //     // handle errors here, if I get them
-    //     var id = response.data.player_id;
-    //     var inId = response.data.player_in_id;
-    //     var player = $scope.playersMap.get(id);
-    //     var playerIn = $scope.playersMap.get(inId);
-    //     if (player) {
-    //       response.data.player_name = player.first_name + ' ' + player.last_name;
-    //     } else {
-    //       response.data.player_name = id;
-    //     }
-    //     if (playerIn) {
-    //       response.data.player_in_name = playerIn.first_name + ' ' + playerIn.last_name;
-    //     } else {
-    //       response.data.player_in_name = inId;
-    //     }
-    //     $scope.originalStats.push(response.data);
-
-
-    //     if (stat === "SUB" || stat == "SWAP") {
-    //       addSubToMap(response.data);
-    //       applySub(response.data);
-    //     }
-    //     if (stat === "SNITCH_CATCH" || stat === "AWAY_SNITCH_CATCH") {
-    //       $scope.addStat(null, null, "PAUSE_CLOCK");
-    //     }
-
-    //     $scope.originalStats.sort(function(a, b){
-    //       return a.time - b.time;
-    //     });
-    //     $scope.filterEvents('added');
-    // });
   };
   
   $scope.deleteStat = function(objId, statName) {

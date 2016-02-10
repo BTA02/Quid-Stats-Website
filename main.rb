@@ -193,8 +193,17 @@ get '/allStats/:vid_id/:team_id' do
 	get_all_stats_from_game(params[:vid_id], params[:team_id], session[:authorId])
 end
 
+get '/allFullStats/:vid_id/:team_id' do
+	get_all_full_stats_from_game(params[:vid_id], params[:team_id], session[:authorId])
+end
+
 get '/addStat/:vid_id/:team_id/:fall_year/:player_id/:stat_name/:time/:player_in_id' do
 	add_stat(params, session[:authorId])
+end
+
+post '/addFullStat' do
+	vals = JSON.parse(request.body.string)
+	add_full_stat(vals, session[:authorId])
 end
 
 # post '/setPermissions' do
@@ -455,7 +464,6 @@ def get_done_games_for_team(params)
 	end
 end
 
-# Updated to new backend
 def get_players_for_team(team_id, fall_year)
 	resp = Parse::Query.new("Rosters").tap do |q|
 		q.eq("team_id", team_id)
@@ -470,7 +478,6 @@ def get_players_for_team(team_id, fall_year)
 	players
 end
 
-# Updated to new backend
 def get_all_stats_from_game(vid, team, author)
 	resp = Parse::Query.new("Stats").tap do |q|
 		q.eq("vid_id", vid)
@@ -690,6 +697,41 @@ def get_all_players
 		q.limit = 1000
 	end.get
 end
+
+
+
+
+
+
+# New stuff
+
+def get_all_full_stats_from_game(vid, team, author)
+	resp = Parse::Query.new("FullStats").tap do |q|
+		q.eq("vid_id", vid)
+		q.eq("team_id", team)
+		q.eq("author_id", author)
+		q.limit = 1000
+		q.order_by = "time"
+	end.get
+	resp.to_json
+end
+
+def add_full_stat(vals, author_id)
+	new_stat = Parse::Object.new("FullStats")
+	new_stat['vid_id'] = vals['vid_id']
+	new_stat['team_id'] = vals['team_id']
+	new_stat['author_id'] = author_id
+	new_stat['fall_year'] = vals['fall_year']
+	new_stat['player_id'] = vals['player_id']
+	new_stat['stat_name'] = vals['stat']
+	new_stat['time'] = vals['time'].to_i
+	new_stat['player_in_id'] = vals['player_in_id']
+
+	result = new_stat.save
+	result.to_json
+end
+
+
 
 
 
