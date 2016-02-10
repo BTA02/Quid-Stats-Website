@@ -461,7 +461,11 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     };
     $http.post("/addPossession", data).then(function(response) {
       $scope.possessionStats.push(response.data);
-      console.log(response.data);
+      
+      if (name === "SNITCH_CATCH" || name === "AWAY_SNITCH_CATCH") {
+        $scope.addPossession("PAUSE_CLOCK");
+      }
+      
       $scope.possessionStats.sort(function(a, b){
           return a.time - b.time;
         });

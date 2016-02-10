@@ -452,6 +452,7 @@ class CalcStats
 		
 		possessions.each do |possession|
 			
+			pp possession
 			
 			if cur_game != possession['vid_id']
 				# reset the time variables, who has control variables, and O/D variables
@@ -553,11 +554,11 @@ class CalcStats
 		end
 		
 		@possession_map.values.each do |game|
-			# pp 'game'
-			# pp game
-			game['bludger_control_percent'] = ((game['bludger_control_time'].to_f / game['game_time'].to_f) * 100).round(1)
-			pp 'game'
-			pp game
+			if game['game_time'] == 0
+				game['bludger_control_percent'] = 0
+			else
+				game['bludger_control_percent'] = ((game['bludger_control_time'].to_f / game['game_time'].to_f) * 100).round(1)
+			end
 		end
 		# @stats_map.update(@stats_map) { |key, val|
 		# }
@@ -565,11 +566,8 @@ class CalcStats
 		# 	# change the key to the actual team name
 		# 	val['bludger_control_percent'] = val['bludger_control_time'] / val['game_time']
 		# }
-		pp 'BIG MAP'
 		pp @possession_map
-		
-	
-	
+		@possession_map
 	end
 
 
