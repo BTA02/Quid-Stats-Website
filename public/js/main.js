@@ -56,6 +56,10 @@ app.controller('FullRecordStatsController', ['$scope', '$http', '$interval', fun
     }
   }, 500);
   
+  $scope.closeDialog = function(which) {
+    document.getElementById(which).style.display='none';document.getElementById('fade').style.display='none';
+  };
+  
   $scope.getAllGames = function() {
     $scope.allGames = [];
     $http.get("/allGames/" + $scope.team).then(function(response) {
@@ -63,7 +67,7 @@ app.controller('FullRecordStatsController', ['$scope', '$http', '$interval', fun
     });
   };
   
-  $scope.getAllPlayers = function(author) {
+  $scope.getAllPlayers = function() {
     var idAndYear;
     idAndYear = $scope.vidObj.split(",");
     $scope.selectedVideo = idAndYear[0];
@@ -75,22 +79,22 @@ app.controller('FullRecordStatsController', ['$scope', '$http', '$interval', fun
       for (var i = 0; i < $scope.allPlayers.length; i++) {
         $scope.playersMap.set($scope.allPlayers[i].objectId, $scope.allPlayers[i]);
       }
-      initVals(author);
+      initVals();
     });
   };
   
-  function initVals(author) {
+  function initVals() {
+    // init filters
+    $scope.playerFilter="allPlayers";
+    $scope.eventFilter="allEvents";
+    
     setOnFieldToBlank();
     $scope.subMap = new Map();
     $scope.originalStats = [];
     var statsUrl;
     var notesUrl;
-    if (author) {
-      statsUrl = "/allStats/" + author + "/" + $scope.selectedVideo + "/" + $scope.team;
-    } else {
-      statsUrl = "/allStats/" + $scope.selectedVideo + "/" + $scope.team;
-      notesUrl = "/allNotes/" + $scope.selectedVideo + "/" + $scope.team;
-    }
+    statsUrl = "/allStats/" + $scope.selectedVideo + "/" + $scope.team;
+    notesUrl = "/allNotes/" + $scope.selectedVideo + "/" + $scope.team;
     $http.get(statsUrl).then(function(response) {
       for (var i = 0; i < response.data.length; i++) {
         var statObj = response.data[i];
@@ -265,11 +269,7 @@ app.controller('FullRecordStatsController', ['$scope', '$http', '$interval', fun
   }
   
   $scope.updateScoreboard = function() {
-    var startTime = 0;
     var endTime = $scope.videoPlayer.getCurrentTime() + 1;
-    var pausedTime = 0;
-    var pauseStart = 0;
-    var pauseEnd = 0;
     $scope.homeScore = 0;
     $scope.awayScore = 0;
     for (var i = 0; i < $scope.originalStats.length; i++) {
@@ -288,16 +288,7 @@ app.controller('FullRecordStatsController', ['$scope', '$http', '$interval', fun
       if ($scope.originalStats[i].stat_name === "AWAY_SNITCH_CATCH") {
         $scope.awayScore += 3;
       }
-      // if ($scope.allStats[i]["stat_name"] === "PAUSE_CLOCK") {
-      //   pauseStart = $scope.allStats[i]["time"];
-      // }
-      // if ($scope.allStats[i]["stat_name"] === "START_CLOCK") {
-      //   pauseEnd = $scope.allStats[i]["time"];
-      //   pausedTime += (pauseEnd - pauseStart);
-      //   pauseStart = 0;
-      //   pauseEnd = 0;
-      //   $scope.gameTime = endTime - 1 - pausedTime;
-      // }
+
 
     }
   };
@@ -343,48 +334,89 @@ app.controller('FullRecordStatsController', ['$scope', '$http', '$interval', fun
   
   $scope.addStat = function(playerId, playerInId, stat) {
     $scope.videoPlayer.pauseVideo();
+    
+    var data = {
+        team_id : $scope.team,
+        vid_id : $scope.selectedVideo,
+        player_id : playerId,
+        player_in_id : playerInId,
+        time : $scope.videoPlayer.getCurrentTime(),
+        stat : stat
+    };
+    
+    $http.post("/addFullStat", data).then(function(response){
+      var id = response.data.player_id;
+      var inId = response.data.player_in_id;
+      var player = $scope.playersMap.get(id);
+      var playerIn = $scope.playersMap.get(inId);
+      if (player) {
+        response.data.player_name = player.first_name + ' ' + player.last_name;
+      } else {
+        response.data.player_name = id;
+      }
+      if (playerIn) {
+        response.data.player_in_name = playerIn.first_name + ' ' + playerIn.last_name;
+      } else {
+        response.data.player_in_name = inId;
+      }
+      $scope.originalStats.push(response.data);
+
+      if (stat === "SUB" || stat == "SWAP") {
+        addSubToMap(response.data);
+        applySub(response.data);
+      }
+      if (stat === "SNITCH_CATCH" || stat === "AWAY_SNITCH_CATCH") {
+        $scope.addStat(null, null, "PAUSE_CLOCK");
+      }
+
+      $scope.originalStats.sort(function(a, b){
+        return a.time - b.time;
+      });
+      $scope.filterEvents('added');
+    });
+    
 
     // This should become a POST request, so I can pass whatever I want
-    var url = "/addStat/" + $scope.selectedVideo;
-    url += "/" + $scope.team;
-    url += "/" + $scope.year;
-    url += "/" + playerId;
-    url += "/" + stat;
-    url += "/" + $scope.videoPlayer.getCurrentTime();
-    url += "/" + playerInId;
+    // var url = "/addFullStat/" + $scope.selectedVideo;
+    // url += "/" + $scope.team;
+    // url += "/" + $scope.year;
+    // url += "/" + playerId;
+    // url += "/" + stat;
+    // url += "/" + $scope.videoPlayer.getCurrentTime();
+    // url += "/" + playerInId;
 
-    $http.get(url).then(function(response) {
-        // handle errors here, if I get them
-        var id = response.data.player_id;
-        var inId = response.data.player_in_id;
-        var player = $scope.playersMap.get(id);
-        var playerIn = $scope.playersMap.get(inId);
-        if (player) {
-          response.data.player_name = player.first_name + ' ' + player.last_name;
-        } else {
-          response.data.player_name = id;
-        }
-        if (playerIn) {
-          response.data.player_in_name = playerIn.first_name + ' ' + playerIn.last_name;
-        } else {
-          response.data.player_in_name = inId;
-        }
-        $scope.originalStats.push(response.data);
+    // $http.get(url).then(function(response) {
+    //     // handle errors here, if I get them
+    //     var id = response.data.player_id;
+    //     var inId = response.data.player_in_id;
+    //     var player = $scope.playersMap.get(id);
+    //     var playerIn = $scope.playersMap.get(inId);
+    //     if (player) {
+    //       response.data.player_name = player.first_name + ' ' + player.last_name;
+    //     } else {
+    //       response.data.player_name = id;
+    //     }
+    //     if (playerIn) {
+    //       response.data.player_in_name = playerIn.first_name + ' ' + playerIn.last_name;
+    //     } else {
+    //       response.data.player_in_name = inId;
+    //     }
+    //     $scope.originalStats.push(response.data);
 
 
-        if (stat === "SUB" || stat == "SWAP") {
-          addSubToMap(response.data);
-          applySub(response.data);
-        }
-        if (stat === "SNITCH_CATCH" || stat === "AWAY_SNITCH_CATCH") {
-          $scope.addStat(null, null, "PAUSE_CLOCK");
-        }
+    //     if (stat === "SUB" || stat == "SWAP") {
+    //       addSubToMap(response.data);
+    //       applySub(response.data);
+    //     }
+    //     if (stat === "SNITCH_CATCH" || stat === "AWAY_SNITCH_CATCH") {
+    //       $scope.addStat(null, null, "PAUSE_CLOCK");
+    //     }
 
-        $scope.originalStats.sort(function(a, b){
-          return a.time - b.time;
-        });
-        $scope.filterEvents('added');
-    });
+    //     $scope.originalStats.sort(function(a, b){
+    //       return a.time - b.time;
+    //     });
+    //     $scope.filterEvents('added');
+    // });
   };
   
   $scope.deleteStat = function(objId, statName) {
@@ -445,7 +477,7 @@ app.controller('FullRecordStatsController', ['$scope', '$http', '$interval', fun
     if (!$scope.playerFilter || !$scope.eventFilter) {
       return;
     }
-    $scope.allStats = [];
+    $scope.displayStats = [];
     for (var i = 0; i < $scope.originalStats.length; i++) {
       var statName = $scope.originalStats[i].stat_name;
       if ( ($scope.playerFilter == $scope.originalStats[i].player_id
@@ -453,15 +485,15 @@ app.controller('FullRecordStatsController', ['$scope', '$http', '$interval', fun
               || $scope.playerFilter == "allPlayers")
           && ($scope.eventFilter == statName 
               || $scope.eventFilter == "allEvents") ) {
-        $scope.allStats.push($scope.originalStats[i]);
+        $scope.displayStats.push($scope.originalStats[i]);
       } else if ($scope.eventFilter == "AWAY_GOAL" 
         && statName == "AWAY_GOAL") {
-        $scope.allStats.push($scope.originalStats[i]);
+        $scope.displayStats.push($scope.originalStats[i]);
       } else if (statName == "PAUSE_CLOCK" || statName == "START_CLOCK") {
-        // $scope.allStats.push($scope.originalStats[i]);
+        // $scope.displayStats.push($scope.originalStats[i]);
       } else if ($scope.eventFilter == "NOTE" 
         && statName == "NOTE") {
-          $scope.allStats.push($scope.originalStats[i]);
+          $scope.displayStats.push($scope.originalStats[i]);
         }
     }
     if (($scope.eventFilter == "AWAY_GOAL" || $scope.eventFilter == "NOTE") && whichFilter == 'events') {
@@ -477,7 +509,7 @@ app.controller('FullRecordStatsController', ['$scope', '$http', '$interval', fun
   
   $scope.showNote = function(index) {
     $scope.videoPlayer.pauseVideo();
-    $scope.displayNoteText = $scope.allStats[index].note;
+    $scope.displayNoteText = $scope.originalStats[index].note;
     document.getElementById('displayNoteOverlay').style.display='block';document.getElementById('fade').style.display='block';
   }
   
@@ -745,17 +777,6 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
       if ($scope.originalStats[i].stat_name === "AWAY_SNITCH_CATCH") {
         $scope.awayScore += 3;
       }
-      // if ($scope.allStats[i]["stat_name"] === "PAUSE_CLOCK") {
-      //   pauseStart = $scope.allStats[i]["time"];
-      // }
-      // if ($scope.allStats[i]["stat_name"] === "START_CLOCK") {
-      //   pauseEnd = $scope.allStats[i]["time"];
-      //   pausedTime += (pauseEnd - pauseStart);
-      //   pauseStart = 0;
-      //   pauseEnd = 0;
-      //   $scope.gameTime = endTime - 1 - pausedTime;
-      // }
-
     }
   };
   
@@ -902,7 +923,7 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     if (!$scope.playerFilter || !$scope.eventFilter) {
       return;
     }
-    $scope.allStats = [];
+    $scope.displayStats = [];
     for (var i = 0; i < $scope.originalStats.length; i++) {
       var statName = $scope.originalStats[i].stat_name;
       if ( ($scope.playerFilter == $scope.originalStats[i].player_id
@@ -910,15 +931,15 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
               || $scope.playerFilter == "allPlayers")
           && ($scope.eventFilter == statName 
               || $scope.eventFilter == "allEvents") ) {
-        $scope.allStats.push($scope.originalStats[i]);
+        $scope.displayStats.push($scope.originalStats[i]);
       } else if ($scope.eventFilter == "AWAY_GOAL" 
         && statName == "AWAY_GOAL") {
-        $scope.allStats.push($scope.originalStats[i]);
+        $scope.displayStats.push($scope.originalStats[i]);
       } else if (statName == "PAUSE_CLOCK" || statName == "START_CLOCK") {
-        // $scope.allStats.push($scope.originalStats[i]);
+        // $scope.displayStats.push($scope.originalStats[i]);
       } else if ($scope.eventFilter == "NOTE" 
         && statName == "NOTE") {
-          $scope.allStats.push($scope.originalStats[i]);
+          $scope.displayStats.push($scope.originalStats[i]);
         }
     }
     if (($scope.eventFilter == "AWAY_GOAL" || $scope.eventFilter == "NOTE") && whichFilter == 'events') {
@@ -934,7 +955,7 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
   
   $scope.showNote = function(index) {
     $scope.videoPlayer.pauseVideo();
-    $scope.displayNoteText = $scope.allStats[index].note;
+    $scope.displayNoteText = $scope.original[index].note;
     document.getElementById('displayNoteOverlay').style.display='block';document.getElementById('fade').style.display='block';
   }
   

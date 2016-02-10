@@ -38,7 +38,7 @@
 
 	<div class="container-fluid">
 		<div id="statsList">
-			<div class="statsListItem" ng-repeat="statObj in allStats" scroll-glue="glued">
+			<div class="statsListItem" ng-repeat="statObj in displayStats">
 				<p ng-show="statObj.player_name != 'null' && (statObj.stat_name != 'SUB' && statObj.stat_name != 'SWAP')">{{statObj.player_name}}</p>
 				<p ng-show="statObj.player_name != 'null' && (statObj.stat_name == 'SUB' || statObj.stat_name == 'SWAP')"> <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span> {{statObj.player_name}}</p>
 				<p ng-show="statObj.stat_name == 'SUB' || statObj.stat_name == 'SWAP'"><span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>{{statObj.player_in_name}}</p>

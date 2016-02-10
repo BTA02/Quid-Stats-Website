@@ -73,7 +73,6 @@ end
 
 get '/full_stats' do
 	@controllerName = 'FullRecordStatsController'
-	@author_id = session[:authorId]
 	if !logged_in?
 		redirect '/noAuth'
 	end
