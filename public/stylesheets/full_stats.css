@@ -1,0 +1,20 @@
+#vidContainer {
+    display: flex;
+    justify-content: center;
+}
+
+#playersAndScoreboard {
+    order: 1;
+    width: 350px;
+}
+
+#video {
+    min-width: 700px;
+    order: 2;
+    flex: 1 1 auto;
+}
+
+#statsAndFilters {
+    order: 3;
+    width: 350px;
+}

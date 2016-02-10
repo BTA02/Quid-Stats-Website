@@ -20,7 +20,7 @@
     width: 200px;
     overflow-x: scroll;
     white-space: nowrap;
-    padding: 5px
+    padding: 5px;
 }
 
 #statsList > div {

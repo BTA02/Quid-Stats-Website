@@ -8,6 +8,7 @@
 
 
     <link rel="stylesheet" href="/stylesheets/add_team.css">
+    <link rel="stylesheet" href="/stylesheets/full_stats.css">
     <link rel="stylesheet" href="/stylesheets/header.css">
     <link rel="stylesheet" href="/stylesheets/login.css">
     <link rel="stylesheet" href="/stylesheets/public.css">
@@ -37,8 +38,9 @@
         <ul>
           <li class="username"><a href="/"><%= h(session[:username]) || 'Login' %> </a></li>
           <li><a href="/public/all">Public Stats</a></li>
+          <li><a href="/full_stats">Record</a></li>
           <li><a href="/stats">My Stats</a></li>
-          <li><a href="/record">Record Stats</a></li>
+          <li><a href="/record">Old Stats</a></li>
           <li><a href="/add_team">Edit Rosters</a></li>
           <li><a href="/add_video">Add Video</a></li>
           <li class="help" onclick = "document.getElementById('helpText').style.display='block';document.getElementById('fade').style.display='block'"><a href="">Help</a></li>

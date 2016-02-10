@@ -71,6 +71,17 @@ get '/log_out' do
 	redirect '/'
 end
 
+get '/full_stats' do
+	@controllerName = 'FullRecordStatsController'
+	@author_id = session[:authorId]
+	if !logged_in?
+		redirect '/noAuth'
+	end
+	@teams = get_all_teams
+	erb :full_stats_record
+end
+	
+
 get '/stats' do
 	@controllerName = 'ViewStatsController'
 	if !logged_in?
