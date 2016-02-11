@@ -220,6 +220,12 @@ app.controller('FullRecordStatsController', ['$scope', '$http', '$interval', fun
     document.getElementById('onFieldPlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
   };
   
+  $scope.startStat = function(stat) {
+    $scope.statType = stat;
+    $scope.videoPlayer.pauseVideo();
+    document.getElementById('onFieldPlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
+  };
+  
   $scope.playerClicked = function(playerInId) {
     if ($scope.statType == "SUB") {
       $scope.addStat($scope.subbingPlayer, playerInId, "SUB");
@@ -241,6 +247,9 @@ app.controller('FullRecordStatsController', ['$scope', '$http', '$interval', fun
       }
     } else if ($scope.statType == "SWAP") {
       $scope.addStat($scope.subbingPlayer, playerInId, "SWAP");
+      $scope.closeDialog('onFieldPlayersPicker');
+    } else {
+      $scope.addStat(playerInId, null, $scope.statType, null);
       $scope.closeDialog('onFieldPlayersPicker');
     }
   };
@@ -332,8 +341,8 @@ app.controller('FullRecordStatsController', ['$scope', '$http', '$interval', fun
     $scope.noteText = "";
     $scope.closeDialog('noteOverlay');
   };
-  //AxtellFullStat
-  $scope.addStat = function(playerId, playerInId, stat) {
+  
+  $scope.addStat = function(playerId, playerInId, stat, bludgers) {
     $scope.videoPlayer.pauseVideo();
     
     var data = {
@@ -343,7 +352,8 @@ app.controller('FullRecordStatsController', ['$scope', '$http', '$interval', fun
         player_id : playerId,
         player_in_id : playerInId,
         time : $scope.videoPlayer.getCurrentTime(),
-        stat : stat
+        stat : stat,
+        bludger_count : bludgers
     };
     
     $http.post("/addFullStat", data).then(function(response){
@@ -354,7 +364,7 @@ app.controller('FullRecordStatsController', ['$scope', '$http', '$interval', fun
       if (player) {
         response.data.player_name = player.first_name + ' ' + player.last_name;
       } else {
-        response.data.player_name = id;
+        response.data.player_name = null;
       }
       if (playerIn) {
         response.data.player_in_name = playerIn.first_name + ' ' + playerIn.last_name;
@@ -379,7 +389,11 @@ app.controller('FullRecordStatsController', ['$scope', '$http', '$interval', fun
   };
   
   $scope.deleteStat = function(objId, statName) {
-    $http.get("/deleteStat/" + objId + "/" + statName).then(function(response) {
+    var data = {
+      object_id : objId,
+      stat : statName
+    };
+    $http.post("/deleteFullStat", data).then(function(response) {
       // do nothing for now
       //remove locally
       var index = findStatIndex(response.data);
@@ -916,7 +930,7 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     $scope.videoPlayer.pauseVideo();
     $scope.displayNoteText = $scope.original[index].note;
     document.getElementById('displayNoteOverlay').style.display='block';document.getElementById('fade').style.display='block';
-  }
+  };
   
 }]);
 

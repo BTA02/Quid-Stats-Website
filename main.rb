@@ -71,13 +71,22 @@ get '/log_out' do
 	redirect '/'
 end
 
-get '/full_stats' do
+get '/full_stats_record' do
 	@controllerName = 'FullRecordStatsController'
 	if !logged_in?
 		redirect '/noAuth'
 	end
 	@teams = get_all_teams
 	erb :full_stats_record
+end
+
+get '/full_stats_view' do
+	@controllerName = 'FullStatsRecordController'
+	if !logged_in?
+		redirect '/noAuth'
+	end
+	@teams = get_relevant_teams
+	erb :full_stats_view
 end
 	
 
@@ -223,6 +232,11 @@ end
 
 get '/deleteStat/:object_id/:stat_name' do
 	delete_stat(params[:object_id], params[:stat_name])
+end
+
+post '/deleteFullStat' do
+	vals = JSON.parse(request.body.string)
+	delete_full_stat(vals)
 end
 
 get '/updateStatTime/:object_id/:new_time' do
@@ -551,7 +565,7 @@ def delete_stat(id, stat_name)
 		stat_to_del.parse_delete
 		retObj.to_json
 	end
-end	
+end
 
 def update_stat(params)
 	update_stat = Parse::Query.new('Stats').tap do |q|
@@ -721,14 +735,33 @@ def add_full_stat(vals, author_id)
 	new_stat['vid_id'] = vals['vid_id']
 	new_stat['team_id'] = vals['team_id']
 	new_stat['author_id'] = author_id
-	new_stat['fall_year'] = vals['fall_year']
+	new_stat['fall_year'] = vals['year']
 	new_stat['player_id'] = vals['player_id']
 	new_stat['stat_name'] = vals['stat']
+	new_stat['bludger_count'] = vals['bludger_count']
 	new_stat['time'] = vals['time'].to_i
 	new_stat['player_in_id'] = vals['player_in_id']
 
 	result = new_stat.save
 	result.to_json
+end
+
+def delete_full_stat(vals)
+	if vals['stat'] == 'NOTE'
+		stat_to_del = Parse::Query.new('Notes').tap do |q|
+			q.eq("objectId", vals['object_id']);
+		end.get.first
+		retObj = stat_to_del.clone
+		stat_to_del.parse_delete
+		retObj.to_json
+	else
+		stat_to_del = Parse::Query.new('FullStats').tap do |q|
+			q.eq("objectId", vals['object_id']);
+		end.get.first
+		retObj = stat_to_del.clone
+		stat_to_del.parse_delete
+		retObj.to_json
+	end
 end
 
 
