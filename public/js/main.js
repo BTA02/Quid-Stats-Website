@@ -47,7 +47,7 @@ app.filter('statNameFilter', function() {
 
 });
 
-app.controller('FullRecordStatsController', ['$scope', '$http', '$interval', function($scope, $http, $interval) {
+app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', function($scope, $http, $interval) {
   
   $interval( function(){
     if ($scope.videoPlayer !== null && $scope.videoPlayer !== undefined) {
@@ -931,6 +931,63 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
     $scope.displayNoteText = $scope.original[index].note;
     document.getElementById('displayNoteOverlay').style.display='block';document.getElementById('fade').style.display='block';
   };
+  
+}]);
+
+app.controller('ViewFullStatsController', ['$scope', '$http', function($scope, $http) {
+
+  $scope.getAllGames = function() {
+    $scope.doneGames = [];
+    $http.get("/allGames/" + $scope.team).then(function(response) {
+      $scope.doneGames = response.data;
+      for (var i = 0; i < $scope.doneGames.length; i++) {
+        var gameId = $scope.doneGames[i]['vid_id'];
+        $scope.selectedGames[gameId] = false;
+      }
+    });
+  };
+  
+  $scope.calcStats = function(userId) {
+    var ids = "";
+    for (var i = 0; i < $scope.doneGames.length; i++) {
+      var id = $scope.doneGames[i]['vid_id'];
+      if ($scope.selectedGames[id] == true) {
+        ids += id;
+        ids += ',';
+      }
+    }
+    if (ids == "") {
+      alert("Please select some games");
+      return;
+    }
+
+    $scope.per = 0;
+    $scope.per += $scope.perMinute;
+    console.log('here');
+  	$http.get("/calcFullStats/" + userId + "/" + $scope.statSelected + "/" + $scope.per + "?team_id=" + $scope.team + "&ids=" + ids).then(function(response) {
+  		if ($scope.statSelected == "raw_stats") {
+  			$scope.displayStatType = "raw";
+  		} else if ($scope.statSelected == "possession") {
+  			$scope.displayStatType = "possession";
+  		} else if ($scope.statSelected == "possession_agg") {
+  		  $scope.displayStatType = "possession_agg";
+  		} else {
+  		  $scope.displayStatType = "pm";
+  		}
+  		$scope.statsDisp = response.data;
+      if ($scope.isPlusMinus) {
+        $scope.sortPMMap("GROUP");
+      } else {
+        $scope.sortMap("first_name");
+      }
+  	});
+  };
+  
+  $scope.selectedGames = {};
+  $scope.changeAllSelected = function() {
+    $scope.allSelected = false;
+  };
+  
   
 }]);
 

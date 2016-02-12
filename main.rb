@@ -72,7 +72,7 @@ get '/log_out' do
 end
 
 get '/full_stats_record' do
-	@controllerName = 'FullRecordStatsController'
+	@controllerName = 'RecordFullStatsController'
 	if !logged_in?
 		redirect '/noAuth'
 	end
@@ -81,7 +81,7 @@ get '/full_stats_record' do
 end
 
 get '/full_stats_view' do
-	@controllerName = 'FullStatsRecordController'
+	@controllerName = 'ViewFullStatsController'
 	if !logged_in?
 		redirect '/noAuth'
 	end
@@ -179,6 +179,10 @@ end
 
 get '/doneGames/:team_id/:user_id' do
 	get_done_games_for_team(params).sort_by{|cat| cat[:description]}.to_json
+end
+
+get '/doneFullGames/:team_id/:user_id' do
+	get_done_full_games_for_team(params).sort_by{|cat| cat[:description]}.to_json
 end
 
 get '/allGames/:team_id' do
@@ -297,6 +301,45 @@ get '/calcStats/:user_id/:stat_selected/:per' do
 	when 'full_line_up'
 		pos_arr =[[0,1,2],[0,1,2],[0,1,2],[3],[4,5],[4,5]]
 		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
+	end
+end
+
+get '/calcFullStats/:user_id/:stat_selected/:per' do
+	if params[:user_id] == 'me'
+		user_id = session[:authorId]
+	else
+		user_id = params[:user_id]
+	end
+
+	stat_selected = params[:stat_selected]
+	team_id = params[:team_id]
+	game_ids = params[:ids].split(",")
+	
+	calc_stats = CalcStats.new(team_id, game_ids, user_id, params[:per])
+	calc_full_stats = CalcFullStats.new(team_id, game_ids, user_id)
+	case stat_selected
+	when 'raw_stats'
+		raw_stats_map_json = calc_stats.raw_stats.to_json
+	when 'beater_pairs'
+		pos_arr = [[4,5],[4,5]]
+		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
+	when 'chaser_beater_beater'
+		pos_arr = [[0,1,2],[4,5],[4,5]]
+		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
+	when 'chasers_pairs'
+		pos_arr = [[0,1,2],[0,1,2]]
+		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
+	when 'chasers_trios'
+		pos_arr = [[0,1,2],[0,1,2],[0,1,2]]
+		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
+	when 'quaffle_players'
+		pos_arr = [[0,1,2,3],[0,1,2,3],[0,1,2,3],[0,1,2,3]]
+		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
+	when 'full_line_up'
+		pos_arr =[[0,1,2],[0,1,2],[0,1,2],[3],[4,5],[4,5]]
+		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
+	when 'possession'
+		possessions_json = calc_full_stats.calc_possessions.to_json
 	end
 end
 

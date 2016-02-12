@@ -1,5 +1,5 @@
 <div name="header" class="container-fluid text-center">
-  <select name="teamSelect" ng-model="team" ng-change="getDoneGames('<%= @userId %>')">
+  <select name="teamSelect" ng-model="team" ng-change="getAllGames()">
     <option value="">Select a team</option>
     <% @teams.each do |team| %>
       <option value="<%= team['objectId'] %>"><%= team['team_name'] %></option>
@@ -13,7 +13,8 @@
     <option value="chasers_trios">Chaser Lines</option>
     <option value="quaffle_players">Quaffle Players</option>
     <option value="full_line_up">Full Lineup</option>
-    <!-- <option value="seeker_performance">Seeker Performance</option> -->
+    <option value="possessions">Possessions (1 game)</option>
+    <option value="possessions_agg">Aggregate Possesions</option>
   </select>
 
 <button class="btn btn-default" ng-click="calcStats('<%= @userId %>')">Go</button>
