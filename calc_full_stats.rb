@@ -1,8 +1,9 @@
 require 'parse-ruby-client'
 require 'pp'
 require 'set'
+require 'json'
 
-class CalcStats
+class CalcFullStats
 
 	attr_accessor :stats_map
 
@@ -21,6 +22,7 @@ class CalcStats
 	def get_stats_rows_from_games()
 		array_of_game_ids_sliced = @game_ids.each_slice(5).to_a
 		all_stats = []
+		
 		array_of_game_ids_sliced.each do |array_of_ids|
 			stats_to_add = Parse::Query.new('FullStats').tap do |q|
 				q.eq('team_id', @team_id)
@@ -38,9 +40,65 @@ class CalcStats
 	    # really, the goal of this is to return a JSON object with all the
 	    # possession data
 	    rows_from_game = get_stats_rows_from_games()
+	    
+	    all_possessions = Array.new
+	    possession = Hash.new
+	    
+	    # these will be reset every possession
+	    drive = Hash.new
+	    all_drives_on_possession = Array.new
+	    
+	    
+	    on_offense = false
+		bludger_control = false
+		possession_timer = 0
+		start_time = -1
+		
 	    rows_from_game.each do |row|
-	        pp row
+	        stat = row['stat_name']
+	        pp stat
+	        if stat == 'OFFENSE' || stat == 'DEFENSE'
+	        	if !drive.empty?
+	        		pp 'drive'
+	        		pp drive
+	        		all_drives_on_possession.push(drive.clone)
+	        		pp 'all?'
+	        		pp all_drives_on_possession
+	        		drive.clear
+	        	end
+	        	if !all_drives_on_possession.empty?
+	        		pp 'all drives'
+	        		pp all_drives_on_possession
+	        		possession['drives'] = all_drives_on_possession
+	        		all_drives_on_possession.clear
+	        	end
+	        	if !possession.empty?
+	        		pp 'possession'
+	        		pp possession
+	        		all_possessions.push(possession)
+	        		possession.clear
+	        	end
+	        	
+	        	possession.clear
+	        	possession['bludger_count'] = row['bludger_count']
+	        	
+	        elsif stat == 'OFFENSIVE_DRIVE' || stat == 'DEFENSIVE_DRIVE'
+				if !drive.empty?
+					# store the old drive
+					all_drives_on_possession.push(drive)
+					drive.clear
+				end
+				drive['bludger_count'] = row['bludger_count']
+	        elsif stat == 'GOAL'
+	        	if !drive.empty?
+	        		drive['result'] = 'GOAL'
+	        	end
+	        elsif stat == 'AWAY_GOAL'
+	        elsif stat == 'TAKEAWAY'
+	        # elsif stat == ''
+	        end
 	    end
+	    pp all_possessions
 	end
 
 	def raw_stats

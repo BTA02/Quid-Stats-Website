@@ -6,6 +6,7 @@ require 'pp'
 require 'tilt/erb'
 
 require_relative 'calc_stats'
+require_relative 'calc_full_stats'
 require_relative 'raw_stats'
 
 configure do
@@ -86,6 +87,7 @@ get '/full_stats_view' do
 		redirect '/noAuth'
 	end
 	@teams = get_relevant_teams
+	@userId = "me"
 	erb :full_stats_view
 end
 	
@@ -305,6 +307,7 @@ get '/calcStats/:user_id/:stat_selected/:per' do
 end
 
 get '/calcFullStats/:user_id/:stat_selected/:per' do
+	pp 'gu hoioo'
 	if params[:user_id] == 'me'
 		user_id = session[:authorId]
 	else
@@ -315,8 +318,8 @@ get '/calcFullStats/:user_id/:stat_selected/:per' do
 	team_id = params[:team_id]
 	game_ids = params[:ids].split(",")
 	
-	calc_stats = CalcStats.new(team_id, game_ids, user_id, params[:per])
-	calc_full_stats = CalcFullStats.new(team_id, game_ids, user_id)
+	# calc_stats = CalcStats.new(team_id, game_ids, user_id, params[:per])
+	calc_full_stats = CalcFullStats.new(team_id, game_ids, user_id, params[:per])
 	case stat_selected
 	when 'raw_stats'
 		raw_stats_map_json = calc_stats.raw_stats.to_json
@@ -338,7 +341,7 @@ get '/calcFullStats/:user_id/:stat_selected/:per' do
 	when 'full_line_up'
 		pos_arr =[[0,1,2],[0,1,2],[0,1,2],[3],[4,5],[4,5]]
 		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
-	when 'possession'
+	when 'possessions'
 		possessions_json = calc_full_stats.calc_possessions.to_json
 	end
 end

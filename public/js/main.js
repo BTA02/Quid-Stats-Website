@@ -975,11 +975,13 @@ app.controller('ViewFullStatsController', ['$scope', '$http', function($scope, $
   		  $scope.displayStatType = "pm";
   		}
   		$scope.statsDisp = response.data;
-      if ($scope.isPlusMinus) {
-        $scope.sortPMMap("GROUP");
-      } else {
-        $scope.sortMap("first_name");
-      }
+  		console.log("response data");
+  		console.log(response.data);
+      // if ($scope.isPlusMinus) {
+      //   $scope.sortPMMap("GROUP");
+      // } else {
+      //   $scope.sortMap("first_name");
+      // }
   	});
   };
   
