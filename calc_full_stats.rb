@@ -47,45 +47,30 @@ class CalcFullStats
 	    # these will be reset every possession
 	    drive = Hash.new
 	    all_drives_on_possession = Array.new
-	    
-	    
-	    on_offense = false
-		bludger_control = false
-		possession_timer = 0
-		start_time = -1
 		
 	    rows_from_game.each do |row|
 	        stat = row['stat_name']
-	        pp stat
 	        if stat == 'OFFENSE' || stat == 'DEFENSE'
 	        	if !drive.empty?
-	        		pp 'drive'
-	        		pp drive
 	        		all_drives_on_possession.push(drive.clone)
-	        		pp 'all?'
-	        		pp all_drives_on_possession
 	        		drive.clear
 	        	end
 	        	if !all_drives_on_possession.empty?
-	        		pp 'all drives'
-	        		pp all_drives_on_possession
-	        		possession['drives'] = all_drives_on_possession
+	        		possession['drives'] = all_drives_on_possession.clone
 	        		all_drives_on_possession.clear
 	        	end
 	        	if !possession.empty?
-	        		pp 'possession'
-	        		pp possession
-	        		all_possessions.push(possession)
+	        		all_possessions.push(possession.clone)
 	        		possession.clear
 	        	end
-	        	
 	        	possession.clear
+	        	possession['offenseDefense'] = stat
 	        	possession['bludger_count'] = row['bludger_count']
 	        	
 	        elsif stat == 'OFFENSIVE_DRIVE' || stat == 'DEFENSIVE_DRIVE'
 				if !drive.empty?
 					# store the old drive
-					all_drives_on_possession.push(drive)
+					all_drives_on_possession.push(drive.clone)
 					drive.clear
 				end
 				drive['bludger_count'] = row['bludger_count']
@@ -93,12 +78,34 @@ class CalcFullStats
 	        	if !drive.empty?
 	        		drive['result'] = 'GOAL'
 	        	end
+	        	if !possession.empty?
+	        		possession['result'] = 'GOAL'
+	        	end
+        	elsif stat == 'TURNOVER'
+        		if !drive.empty?
+	        		drive['result'] = 'TURNOVER'
+	        	end
+	        	if !possession.empty?
+	        		possession['result'] = 'TURNOVER'
+	        	end
 	        elsif stat == 'AWAY_GOAL'
+	        	if !drive.empty?
+	        		drive['result'] = 'AWAY_GOAL'
+	        	end
+	        	if !possession.empty?
+	        		possession['result'] = 'AWAY_GOAL'
+	        	end
 	        elsif stat == 'TAKEAWAY'
+	        	if !drive.empty?
+	        		drive['result'] = 'TAKEAWAY'
+	        	end
+	        	if !possession.empty?
+	        		possession['result'] = 'TAKEAWAY'
+	        	end
 	        # elsif stat == ''
 	        end
 	    end
-	    pp all_possessions
+	   	all_possessions
 	end
 
 	def raw_stats

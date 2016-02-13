@@ -963,12 +963,11 @@ app.controller('ViewFullStatsController', ['$scope', '$http', function($scope, $
 
     $scope.per = 0;
     $scope.per += $scope.perMinute;
-    console.log('here');
   	$http.get("/calcFullStats/" + userId + "/" + $scope.statSelected + "/" + $scope.per + "?team_id=" + $scope.team + "&ids=" + ids).then(function(response) {
   		if ($scope.statSelected == "raw_stats") {
   			$scope.displayStatType = "raw";
-  		} else if ($scope.statSelected == "possession") {
-  			$scope.displayStatType = "possession";
+  		} else if ($scope.statSelected == "possessions") {
+  			$scope.displayStatType = "possessions";
   		} else if ($scope.statSelected == "possession_agg") {
   		  $scope.displayStatType = "possession_agg";
   		} else {
@@ -976,7 +975,7 @@ app.controller('ViewFullStatsController', ['$scope', '$http', function($scope, $
   		}
   		$scope.statsDisp = response.data;
   		console.log("response data");
-  		console.log(response.data);
+  		console.log($scope.statsDisp);
       // if ($scope.isPlusMinus) {
       //   $scope.sortPMMap("GROUP");
       // } else {
