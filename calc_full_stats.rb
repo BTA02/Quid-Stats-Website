@@ -68,6 +68,7 @@ class CalcFullStats
 	        	possession['bludger_count'] = row['bludger_count']
 	        	possession['result'] = 'NO_GOAL'
 	        	possession['expanded'] = false
+	        	possession['objectId'] = row['objectId']
 	        	
 	        elsif stat == 'OFFENSIVE_DRIVE' || stat == 'DEFENSIVE_DRIVE'
 				if !drive.empty?
