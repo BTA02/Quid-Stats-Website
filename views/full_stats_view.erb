@@ -83,34 +83,39 @@
             <td>{{row.offenseDefense | statNameFilter}}</td>
             <td>{{row.bludger_count}}</td>
             <td>{{row.result | statNameFilter}}</td>
-            <tr id="{{row.objectId}}" class="collapse" ng-repeat-end ng-repeat="drive in row['drives']">
+            <tr id="{{row.objectId}}" class="collapse.in" ng-repeat-end ng-repeat="drive in row['drives']">
               <td></td>
               <td>Drive</td>
               <td>{{drive.bludger_count}}</td>
               <td>{{drive.result | statNameFilter}}</td>
             </tr>
           </tr>
-          
-          <!--<tr ng-repeat-start="row in statsDisp">-->
-          <!--  <td>{{row["offenseDefense"] | statNameFilter}}</td>-->
-          <!--  <td>{{row["bludger_count"]}}</td>-->
-          <!--  <td>{{row["result"] | statNameFilter}}</td>-->
-          <!--</tr>-->
-          <!--<tr class="collapse" ng-repeat="drive in row['drives']" ng-repeat-end="">-->
-          <!--  <td>{{person["drives"][0]}}</td>-->
-          <!--</tr>-->
-          
-          <!--<tr ng-repeat="row in statsDisp track by $index">-->
-          <!--  <td>-->
-          <!--    <p>{{row["offenseDefense"] | statNameFilter}}</p>-->
-          <!--  </td>-->
-          <!--  <td>-->
-          <!--    <p>{{row["bludger_count"]}}</p>-->
-          <!--  </td>-->
-          <!--  <td>-->
-          <!--    <p>{{row["result"] | statNameFilter}}</p>-->
-          <!--  </td>-->
-          <!--</tr>-->
+        </tbody>
+      </table>
+      
+      <table ng-show="displayStatType == 'possessions_agg'" class="table table-striped table-condensed" ng-model="statsDisp">
+        <thead class="statsHeaders">
+          <th class="statsHeader">Toggle Drives</th>
+          <th class="statsHeader">Type</th>
+          <th class="statsHeader">Bludgers</th>
+          <th class="statsHeader">Attemps</th>
+          <th class="statsHeader">Goals Scored</th>
+          <th class="statsHeader">%</th>
+        </thead>
+        
+        <tbody>
+          <tr ng-repeat-start="row in statsDisp track by $index">
+            <td><button class="btn btn-xs" data-toggle="collapse" data-target="#{{row.objectId}}">Expand</button></td>
+            <td>{{row.offenseDefense | statNameFilter}}</td>
+            <td>{{row.bludger_count}}</td>
+            <td>{{row.result | statNameFilter}}</td>
+            <tr id="{{row.objectId}}" class="collapse.in" ng-repeat-end ng-repeat="drive in row['drives']">
+              <td></td>
+              <td>Drive</td>
+              <td>{{drive.bludger_count}}</td>
+              <td>{{drive.result | statNameFilter}}</td>
+            </tr>
+          </tr>
         </tbody>
       </table>
       

@@ -37,8 +37,6 @@ class CalcFullStats
 	end
 	
 	def calc_possessions
-	    # really, the goal of this is to return a JSON object with all the
-	    # possession data
 	    rows_from_game = get_stats_rows_from_games()
 	    
 	    all_possessions = Array.new
@@ -109,6 +107,111 @@ class CalcFullStats
 	        end
 	    end
 	   	all_possessions
+	end
+	
+	def calc_possessions_agg
+		# this might end up okay because i'll have javascript prevent anyone from calling
+		# calc_possessions with more than one game, but that won't be a problem here
+		# make sure i'm ready for the flip on each game in calc_possessions
+		all_possessions = calc_possessions
+		
+		
+		zero_offense_possessions = {
+			'offenseDefense' => 'OFFENSE',
+			'bludger_count' => 0
+		}
+		
+		zero_offense_drives = {
+			'offenseDefense' => 'OFFENSIVE_DRIVE',
+			'bludger_count' => 0
+		}
+		one_offense_possessions = {
+			'offenseDefense' => 'OFFENSE',
+			'bludger_count' => 1
+		}
+		one_offense_drives = {
+			'offenseDefense' => 'OFFENSIVE_DRIVE',
+			'bludger_count' => 1
+		}
+		two_offense_possessions = {
+			'offenseDefense' => 'OFFENSE',
+			'bludger_count' => 2
+		}
+		two_offense_drives = {
+			'offenseDefense' => 'OFFENSIVE_DRIVE',
+			'bludger_count' => 2
+		}
+		
+		zero_defense_possessions = {
+			'offenseDefense' => 'DEFENSE',
+			'bludger_count' => 0
+		}
+		zero_defense_drives = {
+			'offenseDefense' => 'DEFENSIVE_DRIVE',
+			'bludger_count' => 0
+		}
+		one_defense_possessions = {
+			'offenseDefense' => 'DEFENSE',
+			'bludger_count' => 1
+		}
+		one_defense_drives = {
+			'offenseDefense' => 'DEFENSIVE_DRIVE',
+			'bludger_count' => 1
+		}
+		two_defense_possessions = {
+			'offenseDefense' => 'DEFENSE',
+			'bludger_count' => 2
+		}
+		two_defense_drives = {
+			'offenseDefense' => 'DEFENSIVE_DRIVE',
+			'bludger_count' => 2
+		}
+		
+		empty_vals = {
+			'count' => 0,
+			'goals' => 0,
+			'percent' => 0
+		}
+		
+		all_possessions_agg = {
+			zero_offense_possessions => empty_vals.clone,
+			zero_offense_drives => empty_vals.clone,
+			one_offense_possessions => empty_vals.clone,
+			one_offense_drives => empty_vals.clone,
+			two_offense_possessions => empty_vals.clone,
+			two_offense_drives => empty_vals.clone,
+			zero_defense_possessions => empty_vals.clone,
+			zero_defense_drives => empty_vals.clone,
+			one_defense_possessions => empty_vals.clone,
+			one_defense_drives => empty_vals.clone,
+			two_defense_possessions => empty_vals.clone,
+			two_defense_drives => empty_vals.clone
+		}
+
+		
+		all_possessions.each do |possession|
+			# get the possession data, and update the appropriate object
+			# update the 'count' on the possession type
+			outer_key = {
+				'offenseDefense' => possession['offenseDefense'],
+				'bludger_count' => possession['bludger_count']
+			}
+			all_possessions_agg[outer_key]['count'] += 1
+			if possession['result'] == 'GOAL' || possession['result'] == 'AWAY_GOAL'
+				all_possessions_agg[outer_key]['goals'] += 1
+				all_possessions_agg[outer_key]['percent'] = (all_possessions_agg[outer_key]['goals'].to_f / all_possessions_agg[outer_key]['count'].to_f).round(3) * 100
+			end
+			
+			possession['drives'].each do |drive|
+				inner_key = {
+					'offenseDefense' => # TRICKY STUFF HERE!!
+				}
+			end
+			
+		end
+		
+		pp all_possessions_agg	
+		
 	end
 
 	def raw_stats
