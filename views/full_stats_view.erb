@@ -71,15 +71,39 @@
       
       <table ng-show="displayStatType == 'possessions'" class="table table-striped table-condensed" ng-model="statsDisp">
         <thead class="statsHeaders">
-          <th class="statsHeader">HERE</th>
+          <th class="statsHeader">Type</th>
+          <th class="statsHeader">Bludgers</th>
+          <th class="statsHeader">Result</th>
         </thead>
         
         <tbody>
-          <tr ng-repeat="row in statsDisp">
-            <td>
-              <span>{{row["offenseDefense"] | statNameFilter}}</span><span> with {{row["bludger_count"]}} bludgers</span>
-            </td>
+          <tr ng-repeat-start="row in statsDisp">
+            <td>{{row.offenseDefense}}</td>
+            <tr ng-repeat-end ng-repeat="drive in row['drives']">
+              <td>{{drive}}</td>
+            </tr>
           </tr>
+          
+          <!--<tr ng-repeat-start="row in statsDisp">-->
+          <!--  <td>{{row["offenseDefense"] | statNameFilter}}</td>-->
+          <!--  <td>{{row["bludger_count"]}}</td>-->
+          <!--  <td>{{row["result"] | statNameFilter}}</td>-->
+          <!--</tr>-->
+          <!--<tr class="collapse" ng-repeat="drive in row['drives']" ng-repeat-end="">-->
+          <!--  <td>{{person["drives"][0]}}</td>-->
+          <!--</tr>-->
+          
+          <!--<tr ng-repeat="row in statsDisp track by $index">-->
+          <!--  <td>-->
+          <!--    <p>{{row["offenseDefense"] | statNameFilter}}</p>-->
+          <!--  </td>-->
+          <!--  <td>-->
+          <!--    <p>{{row["bludger_count"]}}</p>-->
+          <!--  </td>-->
+          <!--  <td>-->
+          <!--    <p>{{row["result"] | statNameFilter}}</p>-->
+          <!--  </td>-->
+          <!--</tr>-->
         </tbody>
       </table>
       

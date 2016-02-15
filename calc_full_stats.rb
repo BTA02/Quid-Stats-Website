@@ -66,6 +66,8 @@ class CalcFullStats
 	        	possession.clear
 	        	possession['offenseDefense'] = stat
 	        	possession['bludger_count'] = row['bludger_count']
+	        	possession['result'] = 'NO_GOAL'
+	        	possession['expanded'] = false
 	        	
 	        elsif stat == 'OFFENSIVE_DRIVE' || stat == 'DEFENSIVE_DRIVE'
 				if !drive.empty?
