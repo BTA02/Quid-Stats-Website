@@ -202,10 +202,24 @@ class CalcFullStats
 				all_possessions_agg[outer_key]['percent'] = (all_possessions_agg[outer_key]['goals'].to_f / all_possessions_agg[outer_key]['count'].to_f).round(3) * 100
 			end
 			
+			if possession['offenseDefense'] == 'OFFENSE'
+				inner_key_val_1 = 'OFFENSIVE_DRIVE'
+			else
+				inner_key_val_1 = 'DEFENSIVE_DRIVE'
+			end
+			if possession['drives'].nil?
+				next
+			end
 			possession['drives'].each do |drive|
 				inner_key = {
-					'offenseDefense' => # TRICKY STUFF HERE!!
+					'offenseDefense' => inner_key_val_1,
+					'bludger_count' => drive['bludger_count']
 				}
+				all_possessions_agg[inner_key]['count'] += 1
+				if drive['result'] == 'GOAL' || drive['result'] == 'AWAY_GOAL'
+					all_possessions_agg[inner_key]['goals'] += 1
+					all_possessions_agg[inner_key]['percent'] = (all_possessions_agg[inner_key]['goals'].to_f / all_possessions_agg[inner_key]['count'].to_f).round(3) * 100
+				end
 			end
 			
 		end

@@ -968,8 +968,8 @@ app.controller('ViewFullStatsController', ['$scope', '$http', function($scope, $
   			$scope.displayStatType = "raw";
   		} else if ($scope.statSelected == "possessions") {
   			$scope.displayStatType = "possessions";
-  		} else if ($scope.statSelected == "possession_agg") {
-  		  $scope.displayStatType = "possession_agg";
+  		} else if ($scope.statSelected == "possessions_agg") {
+  		  $scope.displayStatType = "possessions_agg";
   		} else {
   		  $scope.displayStatType = "pm";
   		}

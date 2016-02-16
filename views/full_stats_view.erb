@@ -104,17 +104,13 @@
         </thead>
         
         <tbody>
-          <tr ng-repeat-start="row in statsDisp track by $index">
+          <tr ng-repeat="(key,val) in statsDisp track by $index">
             <td><button class="btn btn-xs" data-toggle="collapse" data-target="#{{row.objectId}}">Expand</button></td>
-            <td>{{row.offenseDefense | statNameFilter}}</td>
-            <td>{{row.bludger_count}}</td>
-            <td>{{row.result | statNameFilter}}</td>
-            <tr id="{{row.objectId}}" class="collapse.in" ng-repeat-end ng-repeat="drive in row['drives']">
-              <td></td>
-              <td>Drive</td>
-              <td>{{drive.bludger_count}}</td>
-              <td>{{drive.result | statNameFilter}}</td>
-            </tr>
+            <td>{{key.offenseDefense}}</td>
+            <td>{{key.bludger_count}}</td>
+            <td>{{val.count}}</td>
+            <td>{{val.goals}}</td>
+            <td>{{val.percent}}</td>
           </tr>
         </tbody>
       </table>
