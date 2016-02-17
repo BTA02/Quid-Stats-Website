@@ -93,7 +93,7 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
     $scope.originalStats = [];
     var statsUrl;
     var notesUrl;
-    statsUrl = "/allFullStats/" + $scope.selectedVideo + "/" + $scope.team;
+    statsUrl = "/allStats/" + $scope.selectedVideo + "/" + $scope.team;
     notesUrl = "/allNotes/" + $scope.selectedVideo + "/" + $scope.team;
     $http.get(statsUrl).then(function(response) {
       console.log(response);
@@ -356,7 +356,7 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
         bludger_count : bludgers
     };
     
-    $http.post("/addFullStat", data).then(function(response){
+    $http.post("/addStat", data).then(function(response){
       var id = response.data.player_id;
       var inId = response.data.player_in_id;
       var player = $scope.playersMap.get(id);
@@ -393,7 +393,7 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
       object_id : objId,
       stat : statName
     };
-    $http.post("/deleteFullStat", data).then(function(response) {
+    $http.post("/deleteStat", data).then(function(response) {
       // do nothing for now
       //remove locally
       var index = findStatIndex(response.data);
@@ -463,13 +463,6 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
       var eventMatch = false;
       var playerMatch = false;
       
-      console.log("stat");
-      console.log(statName);
-      console.log("player1");
-      console.log(player1);
-      console.log("player2");
-      console.log(player2);
-      
       if ($scope.eventFilter == statName || $scope.eventFilter == "allEvents") {
         eventMatch = true;
       }
@@ -488,25 +481,6 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
       
       
     }
-      
-    //   if ( ($scope.playerFilter == $scope.originalStats[i].player_id
-    //           || $scope.playerFilter == $scope.originalStats[i].player_in_id
-    //           || $scope.playerFilter == "allPlayers")
-    //       && ($scope.eventFilter == statName 
-    //           || $scope.eventFilter == "allEvents") ) {
-    //     if (statName != false) {
-    //       $scope.displayStats.push($scope.originalStats[i]);
-    //     }
-    //   } else if ($scope.eventFilter == "AWAY_GOAL" 
-    //     && statName == "AWAY_GOAL") {
-    //     $scope.displayStats.push($scope.originalStats[i]);
-    //   } else if (statName == "PAUSE_CLOCK" || statName == "START_CLOCK") {
-    //     // $scope.displayStats.push($scope.originalStats[i]);
-    //   } else if ($scope.eventFilter == "NOTE" 
-    //     && statName == "NOTE") {
-    //       $scope.displayStats.push($scope.originalStats[i]);
-    //     }
-    // }
 
   };
   

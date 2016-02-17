@@ -24,7 +24,7 @@ class CalcFullStats
 		all_stats = []
 		
 		array_of_game_ids_sliced.each do |array_of_ids|
-			stats_to_add = Parse::Query.new('FullStats').tap do |q|
+			stats_to_add = Parse::Query.new('Stats').tap do |q|
 				q.eq('team_id', @team_id)
 				q.eq('author_id', @author_id)
 				q.value_in('vid_id', array_of_ids)

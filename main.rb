@@ -87,7 +87,7 @@ get '/full_stats_view' do
 		redirect '/noAuth'
 	end
 	@teams = get_relevant_teams
-	@userId = "me"
+	@userId = 'me'
 	erb :full_stats_view
 end
 	
@@ -98,7 +98,7 @@ get '/stats' do
 		redirect '/noAuth'
 	end
 	@teams = get_relevant_teams
-	@userId = "me"
+	@userId = 'me'
 	erb :view_stats
 end
 
@@ -137,11 +137,10 @@ get '/public/all' do
 	@users = get_users
 	@user_public_map = Hash.new
 	build_public_teams_map(@users)
-	# @public_teams_available_map
-	# build_teams_available_public_map
 	erb :public
 end
 
+# this will need to get updated to full_stats
 get '/public/:userId/stats' do
 	@controllerName = 'ViewStatsController'
 	@userId = params[:userId]
@@ -156,6 +155,7 @@ get '/public/:userId/stats' do
 	erb :view_stats
 end
 
+# this will need to get updated to watch_film
 get '/public/:author_id/:team_id/:vid_id/:year/:player_filter/:event_filter' do
 	if is_public?(params[:author_id], params[:team_id], params[:vid_id])
 		@controllerName = 'RecordStatsController'
@@ -183,6 +183,7 @@ get '/doneGames/:team_id/:user_id' do
 	get_done_games_for_team(params).sort_by{|cat| cat[:description]}.to_json
 end
 
+# I won't need this, in the end
 get '/doneFullGames/:team_id/:user_id' do
 	get_done_full_games_for_team(params).sort_by{|cat| cat[:description]}.to_json
 end
@@ -208,15 +209,11 @@ get '/allStats/:vid_id/:team_id' do
 	get_all_stats_from_game(params[:vid_id], params[:team_id], session[:authorId])
 end
 
-get '/allFullStats/:vid_id/:team_id' do
-	get_all_full_stats_from_game(params[:vid_id], params[:team_id], session[:authorId])
-end
-
 get '/addStat/:vid_id/:team_id/:fall_year/:player_id/:stat_name/:time/:player_in_id' do
 	add_stat(params, session[:authorId])
 end
 
-post '/addFullStat' do
+post '/addStat' do
 	vals = JSON.parse(request.body.string)
 	add_full_stat(vals, session[:authorId])
 end
@@ -235,19 +232,19 @@ get '/allNotes/:vid_id/:team_id' do
 	get_all_notes_from_game(params, session[:authorId])
 end
 	
-
+# needs to be killed
 get '/deleteStat/:object_id/:stat_name' do
 	delete_stat(params[:object_id], params[:stat_name])
 end
 
-post '/deleteFullStat' do
+post '/deleteStat' do
 	vals = JSON.parse(request.body.string)
 	delete_full_stat(vals)
 end
 
+# Never going to happen
 get '/updateStatTime/:object_id/:new_time' do
 	update_stat(params)
-
 end
 
 get '/addVideo/:video_id/:team_id/:fall_year/:description' do
@@ -376,6 +373,7 @@ end
 
 # what happenes if the password is wrong?
 # hint: bad things
+# answer: it just takes you to a rando page
 def log_in_user(params)
 	username = params["loginUsername"].to_s
 	password = params["loginPassword"].to_s
@@ -540,7 +538,7 @@ def get_players_for_team(team_id, fall_year)
 end
 
 def get_all_stats_from_game(vid, team, author)
-	resp = Parse::Query.new("Stats").tap do |q|
+	resp = Parse::Query.new('Stats').tap do |q|
 		q.eq("vid_id", vid)
 		q.eq("team_id", team)
 		q.eq("author_id", author)
@@ -551,7 +549,7 @@ def get_all_stats_from_game(vid, team, author)
 end
 
 def get_all_notes_from_game(params, author_id)
-	resp = Parse::Query.new("Notes").tap do |q|
+	resp = Parse::Query.new('Notes').tap do |q|
 		q.eq("vid_id", params[:vid_id])
 		q.eq("team_id", params[:team_id])
 		q.eq("author_id", author_id)
@@ -561,9 +559,8 @@ def get_all_notes_from_game(params, author_id)
 	resp.to_json
 end
 
-# Updated to new backend
 def add_stat(params, author_id)
-	new_stat = Parse::Object.new("Stats")
+	new_stat = Parse::Object.new('Stats')
 	new_stat['vid_id'] = params['vid_id']
 	new_stat['team_id'] = params['team_id']
 	new_stat['author_id'] = author_id
@@ -766,19 +763,8 @@ end
 
 # New stuff
 
-def get_all_full_stats_from_game(vid, team, author)
-	resp = Parse::Query.new("FullStats").tap do |q|
-		q.eq("vid_id", vid)
-		q.eq("team_id", team)
-		q.eq("author_id", author)
-		q.limit = 1000
-		q.order_by = "time"
-	end.get
-	resp.to_json
-end
-
 def add_full_stat(vals, author_id)
-	new_stat = Parse::Object.new("FullStats")
+	new_stat = Parse::Object.new('Stats')
 	new_stat['vid_id'] = vals['vid_id']
 	new_stat['team_id'] = vals['team_id']
 	new_stat['author_id'] = author_id
@@ -802,7 +788,7 @@ def delete_full_stat(vals)
 		stat_to_del.parse_delete
 		retObj.to_json
 	else
-		stat_to_del = Parse::Query.new('FullStats').tap do |q|
+		stat_to_del = Parse::Query.new('Stats').tap do |q|
 			q.eq("objectId", vals['object_id']);
 		end.get.first
 		retObj = stat_to_del.clone
