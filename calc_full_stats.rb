@@ -116,56 +116,19 @@ class CalcFullStats
 		all_possessions = calc_possessions
 		
 		
-		zero_offense_possessions = {
-			'offenseDefense' => 'OFFENSE',
-			'bludger_count' => 0
-		}
+		zero_offense_possessions = ['OFFENSE', 0]
+		zero_offense_drives = ['OFFENSIVE_DRIVE', 0]
+		one_offense_possessions = ['OFFENSE', 1]
+		one_offense_drives = ['OFFENSIVE_DRIVE', 1]
+		two_offense_possessions = ['OFFENSE', 2]
+		two_offense_drives = ['OFFENSIVE_DRIVE', 2]
 		
-		zero_offense_drives = {
-			'offenseDefense' => 'OFFENSIVE_DRIVE',
-			'bludger_count' => 0
-		}
-		one_offense_possessions = {
-			'offenseDefense' => 'OFFENSE',
-			'bludger_count' => 1
-		}
-		one_offense_drives = {
-			'offenseDefense' => 'OFFENSIVE_DRIVE',
-			'bludger_count' => 1
-		}
-		two_offense_possessions = {
-			'offenseDefense' => 'OFFENSE',
-			'bludger_count' => 2
-		}
-		two_offense_drives = {
-			'offenseDefense' => 'OFFENSIVE_DRIVE',
-			'bludger_count' => 2
-		}
-		
-		zero_defense_possessions = {
-			'offenseDefense' => 'DEFENSE',
-			'bludger_count' => 0
-		}
-		zero_defense_drives = {
-			'offenseDefense' => 'DEFENSIVE_DRIVE',
-			'bludger_count' => 0
-		}
-		one_defense_possessions = {
-			'offenseDefense' => 'DEFENSE',
-			'bludger_count' => 1
-		}
-		one_defense_drives = {
-			'offenseDefense' => 'DEFENSIVE_DRIVE',
-			'bludger_count' => 1
-		}
-		two_defense_possessions = {
-			'offenseDefense' => 'DEFENSE',
-			'bludger_count' => 2
-		}
-		two_defense_drives = {
-			'offenseDefense' => 'DEFENSIVE_DRIVE',
-			'bludger_count' => 2
-		}
+		zero_defense_possessions = ['DEFENSE', 0]
+		zero_defense_drives = ['DEFENSIVE_DRIVE', 0]
+		one_defense_possessions = ['DEFENSE', 1]
+		one_defense_drives = ['DEFENSIVE_DRIVE', 1]
+		two_defense_possessions = ['DEFENSE', 2]
+		two_defense_drives = ['DEFENSIVE_DRIVE', 2]
 		
 		empty_vals = {
 			'count' => 0,
@@ -175,16 +138,16 @@ class CalcFullStats
 		
 		all_possessions_agg = {
 			zero_offense_possessions => empty_vals.clone,
-			zero_offense_drives => empty_vals.clone,
 			one_offense_possessions => empty_vals.clone,
-			one_offense_drives => empty_vals.clone,
 			two_offense_possessions => empty_vals.clone,
+			zero_offense_drives => empty_vals.clone,
+			one_offense_drives => empty_vals.clone,
 			two_offense_drives => empty_vals.clone,
 			zero_defense_possessions => empty_vals.clone,
-			zero_defense_drives => empty_vals.clone,
 			one_defense_possessions => empty_vals.clone,
-			one_defense_drives => empty_vals.clone,
 			two_defense_possessions => empty_vals.clone,
+			zero_defense_drives => empty_vals.clone,
+			one_defense_drives => empty_vals.clone,
 			two_defense_drives => empty_vals.clone
 		}
 
@@ -192,10 +155,8 @@ class CalcFullStats
 		all_possessions.each do |possession|
 			# get the possession data, and update the appropriate object
 			# update the 'count' on the possession type
-			outer_key = {
-				'offenseDefense' => possession['offenseDefense'],
-				'bludger_count' => possession['bludger_count']
-			}
+			outer_key = [possession['offenseDefense'], possession['bludger_count']]
+			
 			all_possessions_agg[outer_key]['count'] += 1
 			if possession['result'] == 'GOAL' || possession['result'] == 'AWAY_GOAL'
 				all_possessions_agg[outer_key]['goals'] += 1
@@ -210,12 +171,13 @@ class CalcFullStats
 			if possession['drives'].nil?
 				next
 			end
+			
 			possession['drives'].each do |drive|
-				inner_key = {
-					'offenseDefense' => inner_key_val_1,
-					'bludger_count' => drive['bludger_count']
-				}
+				inner_key = [inner_key_val_1, drive['bludger_count']]
 				all_possessions_agg[inner_key]['count'] += 1
+				pp 'inner_key'
+				pp inner_key
+				pp all_possessions_agg[inner_key]
 				if drive['result'] == 'GOAL' || drive['result'] == 'AWAY_GOAL'
 					all_possessions_agg[inner_key]['goals'] += 1
 					all_possessions_agg[inner_key]['percent'] = (all_possessions_agg[inner_key]['goals'].to_f / all_possessions_agg[inner_key]['count'].to_f).round(3) * 100
@@ -223,9 +185,7 @@ class CalcFullStats
 			end
 			
 		end
-		
-		pp all_possessions_agg	
-		
+		all_possessions_agg
 	end
 
 	def raw_stats

@@ -42,6 +42,7 @@ app.filter('statNameFilter', function() {
     ret = ret.replace( /\b\w/g, function (m) {
       return m.toUpperCase();
     });
+    ret = ret.replace(/\"|\[|\]/g, "");
     return ret;
   };
 

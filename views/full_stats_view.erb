@@ -97,16 +97,15 @@
         <thead class="statsHeaders">
           <th class="statsHeader">Type</th>
           <th class="statsHeader">Bludgers</th>
-          <th class="statsHeader">Attemps</th>
+          <th class="statsHeader">Attempts</th>
           <th class="statsHeader">Goals Scored</th>
           <th class="statsHeader">Success Rate</th>
         </thead>
         
         <tbody>
           <tr ng-repeat="(key,val) in statsDisp track by $index">
-            <td ng-repeat="(key1,val1) in key">{{val1}}</td>
-            <td>{{key}}</td>
-            <td>{{key.bludger_count}}</td>
+            <td>{{key.split(',')[0] | statNameFilter}}</td>
+            <td>{{key.split(',')[1] | statNameFilter}}</td>
             <td>{{val.count}}</td>
             <td>{{val.goals}}</td>
             <td>{{val.percent}}%</td>
