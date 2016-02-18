@@ -138,6 +138,9 @@ class CalcStats
 			elsif event_type == "ASSIST"
 				@stats_map[player_id][event["stat_name"].downcase] += 1
 				@stats_map[player_id]["point"] += 1
+			elsif event_type == "OFFENSE" || event_type == "DEFENSE"
+			elsif event_type == "OFFENSIVE_DRIVE" || event_type == "DEFENSIVE_DRIVE"
+			elsif event_type == "GAIN_CONTROL" || event_type == "LOSE_CONTROL"
 			else
 				@stats_map[player_id][event["stat_name"].downcase] += 1
 			end				

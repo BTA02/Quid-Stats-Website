@@ -106,6 +106,18 @@ class CalcFullStats
 	        # elsif stat == ''
 	        end
 	    end
+		if !drive.empty?
+    		all_drives_on_possession.push(drive.clone)
+    		drive.clear
+		end
+		if !all_drives_on_possession.empty?
+    		possession['drives'] = all_drives_on_possession.clone
+    		all_drives_on_possession.clear
+		end
+		if !possession.empty?
+    		all_possessions.push(possession.clone)
+    		possession.clear
+		end
 	   	all_possessions
 	end
 	
@@ -160,7 +172,6 @@ class CalcFullStats
 			all_possessions_agg[outer_key]['count'] += 1
 			if possession['result'] == 'GOAL' || possession['result'] == 'AWAY_GOAL'
 				all_possessions_agg[outer_key]['goals'] += 1
-				all_possessions_agg[outer_key]['percent'] = (all_possessions_agg[outer_key]['goals'].to_f / all_possessions_agg[outer_key]['count'].to_f).round(3) * 100
 			end
 			
 			if possession['offenseDefense'] == 'OFFENSE'
@@ -172,16 +183,15 @@ class CalcFullStats
 				next
 			end
 			
+			all_possessions_agg[outer_key]['percent'] = (all_possessions_agg[outer_key]['goals'].to_f / all_possessions_agg[outer_key]['count'].to_f).round(3) * 100
+			
 			possession['drives'].each do |drive|
 				inner_key = [inner_key_val_1, drive['bludger_count']]
 				all_possessions_agg[inner_key]['count'] += 1
-				pp 'inner_key'
-				pp inner_key
-				pp all_possessions_agg[inner_key]
 				if drive['result'] == 'GOAL' || drive['result'] == 'AWAY_GOAL'
 					all_possessions_agg[inner_key]['goals'] += 1
-					all_possessions_agg[inner_key]['percent'] = (all_possessions_agg[inner_key]['goals'].to_f / all_possessions_agg[inner_key]['count'].to_f).round(3) * 100
 				end
+				all_possessions_agg[inner_key]['percent'] = (all_possessions_agg[inner_key]['goals'].to_f / all_possessions_agg[inner_key]['count'].to_f).round(3) * 100
 			end
 			
 		end
@@ -254,19 +264,16 @@ class CalcFullStats
 				ind = on_field_array.index(event["player_id"])
 				on_field_array[ind] = player_id
 			elsif event_type == "SWAP"
-				pp 'event'
-				pp event
+
 				if start_time != -1
-						time_to_add = event["time"] - start_time
-						add_time_to_each_player(on_field_array, time_to_add)
-						start_time = event["time"]
-					end
+					time_to_add = event["time"] - start_time
+					add_time_to_each_player(on_field_array, time_to_add)
+					start_time = event["time"]
+				end
 				ind = on_field_array.index(event["player_id"])
 				ind2 = on_field_array.index(event['player_in_id']);
 				on_field_array[ind] = event["player_in_id"]
 				on_field_array[ind2] = event["player_id"];
-				pp 'ARRAY'
-				pp on_field_array
 			elsif event_type == "PAUSE_CLOCK"
 				if start_time != -1
 					time_to_add = event["time"] - start_time
@@ -292,6 +299,10 @@ class CalcFullStats
 			elsif event_type == "ASSIST"
 				@stats_map[player_id][event["stat_name"].downcase] += 1
 				@stats_map[player_id]["point"] += 1
+			elsif event_type == "OFFENSE" || event_type == "DEFENSE"
+			elsif event_type == "OFFENSIVE_DRIVE" || event_type == "DEFENSIVE_DRIVE"
+			elsif event_type == "GAIN_CONTROL" || event_type == "LOSE_CONTROL"
+				
 			else
 				@stats_map[player_id][event["stat_name"].downcase] += 1
 			end				
@@ -386,6 +397,7 @@ class CalcFullStats
 		cur_game = "notAGame"
     	on_field_array = ["chaserA", "chaserB", "chaserC", "keeper", "beaterA", "beaterB", "seeker"]
 		start_time = -1
+		start_bludger_time = -1
 
     	all_stats.each do |event|
     		if event["vid_id"] != cur_game
@@ -402,6 +414,14 @@ class CalcFullStats
     			all_combos.each do |combo|
 					add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, 1, 'AWAY_GOAL')
     			end
+			when 'GAIN_CONTROL'
+				all_combos.each do |combo|
+					add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, 1, 'GAIN_CONTROL')
+				end
+			when 'LOSE_CONTROL'
+				all_combos.each do |combo|
+					add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, 1, 'LOSE_CONTROL')
+				end
     		when 'SUB'
 				if start_time != -1
 					time_to_add = event["time"] - start_time
@@ -410,6 +430,17 @@ class CalcFullStats
 					end
 					start_time = event["time"]
 				end
+				
+				
+				if start_bludger_time != -1
+					bluder_time_to_add = event["time"] - start_bludger_time
+					all_combos.each do |combo|
+						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, bludger_time_to_add, 'bludger_time')
+					end
+					start_bludger_time = event["time"]
+				end
+					
+					
 				ind = on_field_array.index(event['player_id'])
 				on_field_array[ind] = event["player_in_id"]
 			when 'SWAP'
@@ -420,22 +451,43 @@ class CalcFullStats
 					end
 					start_time = event["time"]
 				end
+				
+				if start_bludger_time != -1
+					bluder_time_to_add = event["time"] - start_bludger_time
+					all_combos.each do |combo|
+						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, bludger_time_to_add, 'bludger_time')
+					end
+					start_bludger_time = event["time"]
+				end
+				
 				ind = on_field_array.index(event['player_id'])
 				ind2 = on_field_array.index(event['player_in_id'])
 				on_field_array[ind] = event["player_in_id"]
 				on_field_array[ind2] = event["player_id"]
     		when 'PAUSE_CLOCK'
-    			if start_time != -1
+				if start_time != -1
 					time_to_add = event["time"] - start_time
 					all_combos.each do |combo|
 						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, time_to_add, 'time')
 					end
 					start_time = -1
 				end
+				
+				if start_bludger_time != -1
+					bluder_time_to_add = event["time"] - start_bludger_time
+					all_combos.each do |combo|
+						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, bludger_time_to_add, 'bludger_time')
+					end
+					start_bludger_time = -1
+				end
+				
+				
     		when 'START_CLOCK'
     			start_time = event["time"]
+    			start_bludger_time = -1
     		when 'GAME_START'
     			start_time = event["time"]
+    			start_bludger_time = -1
     		end
         end
 

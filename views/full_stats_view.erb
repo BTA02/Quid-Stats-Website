@@ -38,7 +38,7 @@
   
   <div class="col-lg-10" ng-show="statsDisp">
     
-      <table ng-show="displayStatType == 'raw'" class="table table-striped tabled-condensed" ng-model="statsDisp">
+      <table ng-show="displayStatType == 'pm'" class="table table-striped tabled-condensed" ng-model="statsDisp">
         <thead class="statsHeaders">
           <th class="statsHeader" ng-repeat="cat in pmCategoriesToDisplay" ng-click="sortPMMap(cat)">{{cat}}</th>
         </thead>
@@ -54,7 +54,7 @@
         </tbody>
       </table>
       
-      <table ng-show="displayStatType == 'pm'" class="table table-striped table-condensed" ng-model="statsDisp">
+      <table ng-show="displayStatType == 'raw'" class="table table-striped table-condensed" ng-model="statsDisp">
         <thead class="statsHeaders">
           <th class="statsHeader" ng-repeat="cat in rawCategoriesToDisplay" ng-click="sortMap(cat)">{{cat}}</th>
         </thead>

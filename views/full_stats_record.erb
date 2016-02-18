@@ -56,13 +56,28 @@
 			</div>
 		</div>
 		<div id="scoreboard" style="text-align:center;">
-			<div class="score">
-				<p>HOME</p>
+			<div class="score scoreboardItem">
+				<p>Home</p>
 				<p ng-model="homeScore">{{homeScore}}</p>
 			</div>
-			<div class="score">
-				<p>AWAY</p>
+			<div class="score scoreboardItem">
+				<p>Away</p>
 				<p ng-model="awayScore">{{awayScore}}</p>
+			</div>
+			<div class="scoreboardItem">
+				<p>O/D</p>
+				<p ng-model="curOD">{{curOD | statNameFilter}}</p>
+			</div>
+			<div class="scoreboardItem">
+				<p ng-show="curOD == 'OFFENSE'">vs.</p>
+				<p ng-show="curOD != 'OFFENSE'">with</p>
+				<p ng-model="curBludgers">{{curBludgers}}</p>
+			</div>
+			<div clsas="scoreboardItem">
+				<p>Control?</p>
+				<p ng-show="curControl == 1">Yes</p>
+				<p ng-show="curControl == 0">No</p>
+				<p ng-show="curControl == -1">?</p>
 			</div>
 		</div>
 	</div>
