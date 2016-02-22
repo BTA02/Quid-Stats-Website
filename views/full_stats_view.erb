@@ -41,6 +41,7 @@
       <table ng-show="displayStatType == 'pm'" class="table table-striped tabled-condensed" ng-model="statsDisp">
         <thead class="statsHeaders">
           <th class="statsHeader" ng-repeat="cat in pmCategoriesToDisplay" ng-click="sortPMMap(cat)">{{cat}}</th>
+          <th class="statsHeader" ng-click="sortPMMap('CONTROL PERCENT')">CONTROL PERCENT</th>
         </thead>
         <tbody>
           <tr ng-repeat="row in statsDisp">

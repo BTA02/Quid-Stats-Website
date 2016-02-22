@@ -396,8 +396,10 @@ class CalcFullStats
         combo_stat_map = Hash.new
 		cur_game = "notAGame"
     	on_field_array = ["chaserA", "chaserB", "chaserC", "keeper", "beaterA", "beaterB", "seeker"]
+    	
 		start_time = -1
 		start_bludger_time = -1
+		has_control = false
 
     	all_stats.each do |event|
     		if event["vid_id"] != cur_game
@@ -418,6 +420,7 @@ class CalcFullStats
 				all_combos.each do |combo|
 					add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, 1, 'GAIN_CONTROL')
 				end
+				
 			when 'LOSE_CONTROL'
 				all_combos.each do |combo|
 					add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, 1, 'LOSE_CONTROL')
