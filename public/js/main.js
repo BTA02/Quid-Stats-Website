@@ -1026,54 +1026,7 @@ app.controller('ViewFullStatsController', ['$scope', '$http', function($scope, $
     $scope.allSelected = allBool;
   };
   
-  $scope.pmCategoriesToDisplay = [
-    'GROUP',
-    'PLUS',
-    'MINUS',
-    'NET',
-    'RATIO',
-    'BLUDGER TIME',
-    'TIME'
-  ];
-
-  $scope.rawCategoriesToDisplay = [
-    'FIRST', 
-    'LAST', 
-    'SHOTS', 
-    'GOALS', 
-    'ASSISTS',
-    'POINTS',
-    'TURNOVERS', 
-    'TAKEAWAYS',
-    // 'YELLOWS',
-    // 'REDS',
-    // 'SNITCHES',
-    'PLUS',
-    'MINUS',
-    'NET',
-    'RATIO',
-    'TIME'
-  ];
-  
-  $scope.beaterCategoriesToDisplay = [
-    'FIRST',
-    'LAST',
-    'BEATS_THROWN',
-    'BEATS_HIT',
-    'BEAT_PERCENT'
-  ];
-  
-  $scope.otherCategoriesToDisplay = [
-    'FIRST',
-    'LAST',
-    'SNITCH_CATCHES',
-    'TIME_SEEKING',
-    'YELLOWS',
-    'REDS'
-  ];
-  
   $scope.sortPMMap = function(category) {
-    category = $scope.convertCategoryName(category);
     var aVal = 0;
     var bVal = 0;
     $scope.statsDisp.sort(function(a, b) {
@@ -1096,7 +1049,6 @@ app.controller('ViewFullStatsController', ['$scope', '$http', function($scope, $
   };
   
   $scope.sortMap = function(category) {
-    category = $scope.convertCategoryName(category);
     var aVal = 0;
     var bVal = 0;
     $scope.statsDisp.sort(function(a, b) {
@@ -1144,68 +1096,7 @@ app.controller('ViewFullStatsController', ['$scope', '$http', function($scope, $
       return (bVal - aVal);
     });
   };
-  
-  $scope.convertCategoryName = function(category) {
-    var ret;
-    switch(category) {
-      case "FIRST":
-        ret = "first_name";
-        break;
-      case "LAST":
-        ret = "last_name";
-        break;
-      case "SHOTS":
-        ret = "shot";
-        break;
-      case "GOALS":
-        ret = "goal";
-        break;
-      case "ASSISTS":
-        ret = "assist";
-        break;
-      case "POINTS":
-        ret = "point";
-        break;
-      case "TURNOVERS":
-        ret = "turnover";
-        break;
-      case "TAKEAWAYS":
-        ret = "takeaway";
-        break;
-      case "YELLOWS":
-        ret = "yellow_card";
-        break;
-      case "REDS":
-        ret = "red_card";
-        break;
-      case "SNITCHES":
-        ret = "snitch_catch";
-        break;
-      case "PLUS":
-        ret = "plusses";
-        break;
-      case "MINUS":
-        ret = "minuses";
-        break;
-      case "NET":
-        ret = "net";
-        break;
-      case "RATIO":
-        ret = "ratio";
-        break;
-      case "TIME":
-        ret = "time";
-        break;
-      case "BLUDGER TIME":
-        ret = "bludger_time";
-        break;
-      default:
-        ret = category;
-    }
-    return ret;
-  };
-  
-  
+
 }]);
 
 app.controller('ViewStatsController', ['$scope', '$http', function($scope, $http) {
