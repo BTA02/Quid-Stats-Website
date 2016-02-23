@@ -277,7 +277,6 @@ get '/calcStats/:user_id/:stat_selected/:per' do
 	stat_selected = params[:stat_selected]
 	team_id = params[:team_id]
 	game_ids = params[:ids].split(",")
-	# calc_stats = CalcStats.new(team_id, game_ids, session[:authorId], params[:per])
 	calc_stats = CalcStats.new(team_id, game_ids, user_id, params[:per])
 	case stat_selected
 	when 'raw_stats'
@@ -324,19 +323,19 @@ get '/calcFullStats/:user_id/:stat_selected/:per' do
 		stats_json = calc_full_stats.calc_plus_minus_stat(pos_arr).to_json
 	when 'chaser_beater_beater'
 		pos_arr = [[0,1,2],[4,5],[4,5]]
-		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
+		stats_json = calc_full_stats.calc_plus_minus_stat(pos_arr).to_json
 	when 'chasers_pairs'
 		pos_arr = [[0,1,2],[0,1,2]]
-		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
+		stats_json = calc_full_stats.calc_plus_minus_stat(pos_arr).to_json
 	when 'chasers_trios'
 		pos_arr = [[0,1,2],[0,1,2],[0,1,2]]
-		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
+		stats_json = calc_full_stats.calc_plus_minus_stat(pos_arr).to_json
 	when 'quaffle_players'
 		pos_arr = [[0,1,2,3],[0,1,2,3],[0,1,2,3],[0,1,2,3]]
-		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
+		stats_json = calc_full_stats.calc_plus_minus_stat(pos_arr).to_json
 	when 'full_line_up'
 		pos_arr =[[0,1,2],[0,1,2],[0,1,2],[3],[4,5],[4,5]]
-		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
+		stats_json = calc_full_stats.calc_plus_minus_stat(pos_arr).to_json
 	when 'possessions'
 		possessions_json = calc_full_stats.calc_possessions.to_json
 	when 'possessions_agg'
