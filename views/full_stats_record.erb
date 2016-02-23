@@ -20,9 +20,9 @@
 </div>
 
 <!-- Video player object -->
-<div id="vidContainer">
+<div id="vidContainerFull">
 	
-	<div id="playersAndScoreboard">
+	<div id="playersAndScoreboardFull">
 		<div class="position" name="chasers">
 			<p style="text-align:center;"><b>Chasers</b></p>
 			<div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(0,3) track by $index">
@@ -82,11 +82,11 @@
 		</div>
 	</div>
 
-	<div id="video">
+	<div id="videoFull">
 		<youtube-video video-id="selectedVideo" player="videoPlayer" player-width="'100%'"></youtube-video>
 	</div>
 
-	<div id="statsAndFilters">
+	<div id="statsAndFiltersFull">
 		<div id="statsList">
 			<div class="statsListItem" ng-repeat="statObj in displayStats">
 				<p ng-show="statObj.stat_name != 'NOTE'">{{statObj.stat_name | statNameFilter}}</p>
@@ -138,8 +138,8 @@
 
 
 <!--Buttons under the video -->
-<div id="buttonsContainer">
-	<div class="buttonGroup">
+<div id="buttonsContainerFull">
+	<div class="buttonGroupFull">
 		<p><b>Clock Management</b></p>
 			<p class="clickList" ng-click="addStat(null, null, 'START_CLOCK', null)">Start Clock</p>
 			<p class="clickList" ng-click="addStat(null, null, 'PAUSE_CLOCK', null)">Pause Clock</p>
@@ -147,7 +147,7 @@
 		<p><b>Extras</b></p>
 			<p class="clickList">Add Note</p>
 	</div>
-	<div class="buttonGroup">
+	<div class="buttonGroupFull">
 		<p><b>Start Offense Against</b></p>
 			<p class="clickList" ng-click="addStat(null, null, 'OFFENSE', 0)">0 bludgers</p>
 			<p class="clickList" ng-click="addStat(null, null, 'OFFENSE', 1)">1 bludger</p>
@@ -157,7 +157,7 @@
 			<p class="clickList" ng-click="addStat(null, null, 'OFFENSIVE_DRIVE', 1)">1 bludger</p>
 			<p class="clickList" ng-click="addStat(null, null, 'OFFENSIVE_DRIVE', 2)">2 bludgers</p>
 	</div>
-	<div class="buttonGroup">
+	<div class="buttonGroupFull">
 		<p><b>Start Defense With</b></p>
 			<p class="clickList" ng-click="addStat(null, null, 'DEFENSE', 0)">0 bludgers</p>
 			<p class="clickList" ng-click="addStat(null, null, 'DEFENSE', 1)">1 bludger</p>
@@ -167,7 +167,7 @@
 			<p class="clickList" ng-click="addStat(null, null, 'DEFENSIVE_DRIVE', 1)">1 bludger</p>
 			<p class="clickList" ng-click="addStat(null, null, 'DEFENSIVE_DRIVE', 2)">2 bludgers</p>
 	</div>
-	<div class="buttonGroup">
+	<div class="buttonGroupFull">
 		<p><b>Home Stat</b></p>
 			<p class="clickList" ng-click="startStat('SHOT')">Shot</p>
 			<p class="clickList" ng-click="startStat('GOAL')">Goal</p>
@@ -177,18 +177,18 @@
 		<p><b>Away Stat</b></p>
 			<p class="clickList" ng-click="addStat(null, null, 'AWAY_GOAL', null)">Goal</p>
 	</div>
-	<div class="buttonGroup">
+	<div class="buttonGroupFull">
 		<p><b>Bludgers</b></p>
 			<p class="clickList" ng-click="addStat(null, null, 'GAIN_CONTROL', null)">Gain Control</p>
 			<p class="clickList" ng-click="addStat(null, null, 'LOSE_CONTROL', null)">Lose Control</p>
 	</div>
-	<div class="buttonGroup">
+	<div class="buttonGroupFull">
 		<p><b>Seekers</b></p>
 			<p class="clickList" ng-click="addStat(null, null, 'SEEKERS_RELEASED', null)">Seekers Released</p>
 			<p class="clickList" ng-click="addStat(null, null, 'SNITCH_CATCH', null)">Home Catch</p>
 			<p class="clickList" ng-click="addStat(null, null, 'AWAY_SNITCH_CATCH', null)">Away Catch</p>
 	</div>
-	<div class="buttonGroup">
+	<div class="buttonGroupFull">
 		<p><b>Cards</b></p>
 			<p class="clickList">Yellow Card</p>
 			<p class="clickList">Red Card</p>

@@ -1,29 +1,29 @@
-#vidContainer {
+#vidContainerFull {
     display: flex;
     justify-content: center;
 }
 
-#playersAndScoreboard {
+#playersAndScoreboardFull {
     order: 1;
     width: 350px;
     min-width: 350px;
     padding-right: 5px;
 }
 
-#video {
+#videoFull {
     min-width: 700px;
     order: 2;
     flex: 1 1 auto;
 }
 
-#statsAndFilters {
+#statsAndFiltersFull {
     order: 3;
     width: 350px;
     min-width: 350px;
     padding-left: 5px;
 }
 
-#buttonsContainer {
+#buttonsContainerFull {
     display: flex;
     justify-content: space-between;
     padding: 5px;
@@ -32,7 +32,7 @@
 
 
 
-.buttonGroup {
+.buttonGroupFull {
     flex: 1 1 auto;
     min-width: 50px;
     width: 100px;

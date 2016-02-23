@@ -25,7 +25,6 @@
     <script src="/lib/angucomplete-alt/dist/angucomplete-alt.min.js"></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-    <!--<script src="/bootstrap/js/bootstrap.min.js"></script>-->
     <script src="/bootstrap/js/bootstrap.min.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
 
@@ -41,12 +40,12 @@
         <ul>
           <li class="username"><a href="/"><%= h(session[:username]) || 'Login' %> </a></li>
           <li><a href="/public/all">Public</a></li>
-          <li><a href="/full_stats_record">Record</a></li>
-          <li><a href="/full_stats_view">View</a></li>
-          <li><a href="/stats">OG View</a></li>
-          <li><a href="/record">OG Record</a></li>
+          <li><a href="/stats">View</a></li>
+          <li><a href="/record">Record</a></li>
           <li><a href="/add_team">Teams</a></li>
-          <li><a href="/add_video">Add Video</a></li>
+          <li><a href="/add_video">Video</a></li>
+          <li><a href="/full_stats_record">New Record</a></li>
+          <li><a href="/full_stats_view">New View</a></li>
           <li class="help" onclick = "document.getElementById('helpText').style.display='block';document.getElementById('fade').style.display='block'"><a href="">Help</a></li>
         </ul>
       </div>
