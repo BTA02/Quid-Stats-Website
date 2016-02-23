@@ -6,6 +6,7 @@ require 'pp'
 require 'tilt/erb'
 
 require_relative 'calc_stats'
+require_relative 'calc_full_stats'
 require_relative 'raw_stats'
 
 configure do
@@ -71,13 +72,33 @@ get '/log_out' do
 	redirect '/'
 end
 
+get '/full_stats_record' do
+	@controllerName = 'RecordFullStatsController'
+	if !logged_in?
+		redirect '/noAuth'
+	end
+	@teams = get_all_teams
+	erb :full_stats_record
+end
+
+get '/full_stats_view' do
+	@controllerName = 'ViewFullStatsController'
+	if !logged_in?
+		redirect '/noAuth'
+	end
+	@teams = get_relevant_teams
+	@userId = 'me'
+	erb :full_stats_view
+end
+	
+
 get '/stats' do
 	@controllerName = 'ViewStatsController'
 	if !logged_in?
 		redirect '/noAuth'
 	end
 	@teams = get_relevant_teams
-	@userId = "me"
+	@userId = 'me'
 	erb :view_stats
 end
 
@@ -116,11 +137,10 @@ get '/public/all' do
 	@users = get_users
 	@user_public_map = Hash.new
 	build_public_teams_map(@users)
-	# @public_teams_available_map
-	# build_teams_available_public_map
 	erb :public
 end
 
+# this will need to get updated to full_stats
 get '/public/:userId/stats' do
 	@controllerName = 'ViewStatsController'
 	@userId = params[:userId]
@@ -135,6 +155,7 @@ get '/public/:userId/stats' do
 	erb :view_stats
 end
 
+# this will need to get updated to watch_film
 get '/public/:author_id/:team_id/:vid_id/:year/:player_filter/:event_filter' do
 	if is_public?(params[:author_id], params[:team_id], params[:vid_id])
 		@controllerName = 'RecordStatsController'
@@ -162,6 +183,11 @@ get '/doneGames/:team_id/:user_id' do
 	get_done_games_for_team(params).sort_by{|cat| cat[:description]}.to_json
 end
 
+# I won't need this, in the end
+get '/doneFullGames/:team_id/:user_id' do
+	get_done_full_games_for_team(params).sort_by{|cat| cat[:description]}.to_json
+end
+
 get '/allGames/:team_id' do
 	get_all_games_for_team(params).sort_by{|cat| cat[:description]}.to_json
 end
@@ -187,6 +213,11 @@ get '/addStat/:vid_id/:team_id/:fall_year/:player_id/:stat_name/:time/:player_in
 	add_stat(params, session[:authorId])
 end
 
+post '/addStat' do
+	vals = JSON.parse(request.body.string)
+	add_full_stat(vals, session[:authorId])
+end
+
 # post '/setPermissions' do
 # 	vals = JSON.parse(request.body.string)
 # 	toggle_permissions(vals)
@@ -201,14 +232,19 @@ get '/allNotes/:vid_id/:team_id' do
 	get_all_notes_from_game(params, session[:authorId])
 end
 	
-
+# needs to be killed
 get '/deleteStat/:object_id/:stat_name' do
 	delete_stat(params[:object_id], params[:stat_name])
 end
 
+post '/deleteStat' do
+	vals = JSON.parse(request.body.string)
+	delete_full_stat(vals)
+end
+
+# Never going to happen
 get '/updateStatTime/:object_id/:new_time' do
 	update_stat(params)
-
 end
 
 get '/addVideo/:video_id/:team_id/:fall_year/:description' do
@@ -241,7 +277,6 @@ get '/calcStats/:user_id/:stat_selected/:per' do
 	stat_selected = params[:stat_selected]
 	team_id = params[:team_id]
 	game_ids = params[:ids].split(",")
-	# calc_stats = CalcStats.new(team_id, game_ids, session[:authorId], params[:per])
 	calc_stats = CalcStats.new(team_id, game_ids, user_id, params[:per])
 	case stat_selected
 	when 'raw_stats'
@@ -264,6 +299,47 @@ get '/calcStats/:user_id/:stat_selected/:per' do
 	when 'full_line_up'
 		pos_arr =[[0,1,2],[0,1,2],[0,1,2],[3],[4,5],[4,5]]
 		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
+	end
+end
+
+get '/calcFullStats/:user_id/:stat_selected/:per' do
+	if params[:user_id] == 'me'
+		user_id = session[:authorId]
+	else
+		user_id = params[:user_id]
+	end
+
+	stat_selected = params[:stat_selected]
+	team_id = params[:team_id]
+	game_ids = params[:ids].split(",")
+	
+	calc_stats = CalcStats.new(team_id, game_ids, user_id, params[:per])
+	calc_full_stats = CalcFullStats.new(team_id, game_ids, user_id, params[:per])
+	case stat_selected
+	when 'raw_stats'
+		raw_stats_map_json = calc_full_stats.raw_stats.to_json
+	when 'beater_pairs'
+		pos_arr = [[4,5],[4,5]]
+		stats_json = calc_full_stats.calc_plus_minus_stat(pos_arr).to_json
+	when 'chaser_beater_beater'
+		pos_arr = [[0,1,2],[4,5],[4,5]]
+		stats_json = calc_full_stats.calc_plus_minus_stat(pos_arr).to_json
+	when 'chasers_pairs'
+		pos_arr = [[0,1,2],[0,1,2]]
+		stats_json = calc_full_stats.calc_plus_minus_stat(pos_arr).to_json
+	when 'chasers_trios'
+		pos_arr = [[0,1,2],[0,1,2],[0,1,2]]
+		stats_json = calc_full_stats.calc_plus_minus_stat(pos_arr).to_json
+	when 'quaffle_players'
+		pos_arr = [[0,1,2,3],[0,1,2,3],[0,1,2,3],[0,1,2,3]]
+		stats_json = calc_full_stats.calc_plus_minus_stat(pos_arr).to_json
+	when 'full_line_up'
+		pos_arr =[[0,1,2],[0,1,2],[0,1,2],[3],[4,5],[4,5]]
+		stats_json = calc_full_stats.calc_plus_minus_stat(pos_arr).to_json
+	when 'possessions'
+		possessions_json = calc_full_stats.calc_possessions.to_json
+	when 'possessions_agg'
+		possessions_agg_json = calc_full_stats.calc_possessions_agg.to_json
 	end
 end
 
@@ -296,6 +372,7 @@ end
 
 # what happenes if the password is wrong?
 # hint: bad things
+# answer: it just takes you to a rando page
 def log_in_user(params)
 	username = params["loginUsername"].to_s
 	password = params["loginPassword"].to_s
@@ -445,7 +522,6 @@ def get_done_games_for_team(params)
 	end
 end
 
-# Updated to new backend
 def get_players_for_team(team_id, fall_year)
 	resp = Parse::Query.new("Rosters").tap do |q|
 		q.eq("team_id", team_id)
@@ -460,9 +536,8 @@ def get_players_for_team(team_id, fall_year)
 	players
 end
 
-# Updated to new backend
 def get_all_stats_from_game(vid, team, author)
-	resp = Parse::Query.new("Stats").tap do |q|
+	resp = Parse::Query.new('Stats').tap do |q|
 		q.eq("vid_id", vid)
 		q.eq("team_id", team)
 		q.eq("author_id", author)
@@ -473,7 +548,7 @@ def get_all_stats_from_game(vid, team, author)
 end
 
 def get_all_notes_from_game(params, author_id)
-	resp = Parse::Query.new("Notes").tap do |q|
+	resp = Parse::Query.new('Notes').tap do |q|
 		q.eq("vid_id", params[:vid_id])
 		q.eq("team_id", params[:team_id])
 		q.eq("author_id", author_id)
@@ -483,9 +558,8 @@ def get_all_notes_from_game(params, author_id)
 	resp.to_json
 end
 
-# Updated to new backend
 def add_stat(params, author_id)
-	new_stat = Parse::Object.new("Stats")
+	new_stat = Parse::Object.new('Stats')
 	new_stat['vid_id'] = params['vid_id']
 	new_stat['team_id'] = params['team_id']
 	new_stat['author_id'] = author_id
@@ -500,7 +574,6 @@ def add_stat(params, author_id)
 end
 
 def add_note(params, author_id)
-	pp params['vid_id']
 	new_stat = Parse::Object.new("Notes")
 	new_stat['vid_id'] = params['vid_id']
 	new_stat['team_id'] = params['team_id']
@@ -534,7 +607,7 @@ def delete_stat(id, stat_name)
 		stat_to_del.parse_delete
 		retObj.to_json
 	end
-end	
+end
 
 def update_stat(params)
 	update_stat = Parse::Query.new('Stats').tap do |q|
@@ -680,6 +753,49 @@ def get_all_players
 		q.limit = 1000
 	end.get
 end
+
+
+
+
+
+
+# New stuff
+
+def add_full_stat(vals, author_id)
+	new_stat = Parse::Object.new('Stats')
+	new_stat['vid_id'] = vals['vid_id']
+	new_stat['team_id'] = vals['team_id']
+	new_stat['author_id'] = author_id
+	new_stat['fall_year'] = vals['year']
+	new_stat['player_id'] = vals['player_id']
+	new_stat['stat_name'] = vals['stat']
+	new_stat['bludger_count'] = vals['bludger_count']
+	new_stat['time'] = vals['time'].to_i
+	new_stat['player_in_id'] = vals['player_in_id']
+
+	result = new_stat.save
+	result.to_json
+end
+
+def delete_full_stat(vals)
+	if vals['stat'] == 'NOTE'
+		stat_to_del = Parse::Query.new('Notes').tap do |q|
+			q.eq("objectId", vals['object_id']);
+		end.get.first
+		retObj = stat_to_del.clone
+		stat_to_del.parse_delete
+		retObj.to_json
+	else
+		stat_to_del = Parse::Query.new('Stats').tap do |q|
+			q.eq("objectId", vals['object_id']);
+		end.get.first
+		retObj = stat_to_del.clone
+		stat_to_del.parse_delete
+		retObj.to_json
+	end
+end
+
+
 
 
 

@@ -11,7 +11,6 @@
 }
 
 .nav li {
-  width: 120px;
   border-bottom: none;
   height: 40px;
   line-height: 40px;
@@ -21,6 +20,7 @@
 }
  
 .nav a {
+  width: 100px;
   text-decoration: none;
   color: #fff;
   display: block;

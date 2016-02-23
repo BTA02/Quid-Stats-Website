@@ -1,0 +1,168 @@
+<div name="header" class="container-fluid text-center">
+  <select name="teamSelect" ng-model="team" ng-change="getAllGames()">
+    <option value="">Select a team</option>
+    <% @teams.each do |team| %>
+      <option value="<%= team['objectId'] %>"><%= team['team_name'] %></option>
+    <%end%>
+  </select>
+    <select name="statSelect" ng-model="statSelected">
+    <option value="raw_stats">Raw Stats</option>
+    <option value="beater_pairs">Beater Pairs</option>
+    <option value="chaser_beater_beater">Chaser Beater Beater</option>
+    <option value="chasers_pairs">Chaser Pairs</option>
+    <option value="chasers_trios">Chaser Lines</option>
+    <option value="quaffle_players">Quaffle Players</option>
+    <option value="full_line_up">Full Lineup</option>
+    <option value="possessions">Possessions (1 game)</option>
+    <option value="possessions_agg">Aggregate Possesions</option>
+  </select>
+
+<button class="btn btn-default" ng-click="calcStats('<%= @userId %>')">Go</button>
+</div>
+
+<div name="modifiers" class="container-fluid" align="center">
+  <input type="checkbox" ng-model="perMinute" ng-true-value="1" ng-false-value="0">Per Minute</input>
+</div>
+
+<!-- Games selector -->
+<div class="container-fluid">
+    <div class="row">
+  <div class="col-lg-2">
+    <h2>Games</h2>
+    <button class="btn btn-default btn-sm" ng-if="!allSelected" ng-click="selectAll(true)">Select All</button>
+    <button class="btn btn-default btn-sm" ng-if="allSelected" ng-click="selectAll(false)">Deselect All</button>
+    <div ng-repeat="game in doneGames">
+      <input type="checkbox" ng-model="selectedGames[game.vid_id]" ng-click="changeAllSelected()">{{game.description}}</input>
+    </div>
+  </div>
+  
+  <div class="col-lg-10" ng-show="statsDisp">
+    
+      <table ng-show="displayStatType == 'pm'" class="table table-striped tabled-condensed" ng-model="statsDisp">
+        <thead class="statsHeaders">
+          <th class="statsHeader" ng-click="sortPMMap('group')">GROUP</th>
+          <th class="statsHeader" ng-click="sortPMMap('control_percent')">CONTROL PERCENT</th>
+          <th class="statsHeader" ng-click="sortPMMap('gain_control')">GAIN CONTROL</th>
+          <th class="statsHeader" ng-click="sortPMMap('lose_control')">LOSE CONTROL</th>
+          <th class="statsHeader" ng-click="sortPMMap('plusses')">PLUS</th>
+          <th class="statsHeader" ng-click="sortPMMap('minuses')">MINUS</th>
+          <th class="statsHeader" ng-click="sortPMMap('net')">NET</th>
+          <th class="statsHeader" ng-click="sortPMMap('ratio')">RATIO</th>
+          <th class="statsHeader" ng-click="sortPMMap('time')">TIME</th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="row in statsDisp">
+            <td>{{row[0].join(', ')}}</td>
+            <td>{{row[1]["control_percent"]}}%</td>
+            <td>{{row[1]["gain_control"]}}</td>
+            <td>{{row[1]["lose_control"]}}</td>
+            <td>{{row[1]["plusses"]}}</td>
+            <td>{{row[1]["minuses"]}}</td>
+            <td>{{row[1]["net"]}}</td>
+            <td>{{row[1]["ratio"]}}</td>
+            <td>{{row[1]["time"] | time:'ss':'mm:ss'}}</td>
+          </tr>
+
+        </tbody>
+      </table>
+      
+      <table ng-show="displayStatType == 'raw'" class="table table-striped table-condensed" ng-model="statsDisp">
+        <thead class="statsHeaders">
+          <!--<th class="statsHeader" ng-repeat="cat in rawCategoriesToDisplay" ng-click="sortMap(cat)">{{cat}}</th>-->
+          <th class="statsHeader" ng-click="sortMap('first_name')">FIRST</th>
+          <th class="statsHeader" ng-click="sortMap('last_name')">LAST</th>
+          <th class="statsHeader" ng-click="sortMap('shot')">SHOTS</th>
+          <th class="statsHeader" ng-click="sortMap('goal')">GOALS</th>
+          <th class="statsHeader" ng-click="sortMap('assist')">ASSISTS</th>
+          <th class="statsHeader" ng-click="sortMap('point')">POINTS</th>
+          <th class="statsHeader" ng-click="sortMap('takeaway')">TAKEAWAYS</th>
+          <th class="statsHeader" ng-click="sortMap('turnover')">TURNOVERS</th>
+          <th class="statsHeader" ng-click="sortMap('plusses')">PLUS</th>
+          <th class="statsHeader" ng-click="sortMap('minuses')">MINUS</th>
+          <th class="statsHeader" ng-click="sortMap('net')">NET</th>
+          <th class="statsHeader" ng-click="sortMap('ratio')">RATIO</th>
+          <th class="statsHeader" ng-click="sortMap('time')">TIME</th>
+        </thead>
+
+        <tbody>
+          <tr ng-repeat="row in statsDisp">
+            <td>{{row['first_name']}}</td>
+            <td>{{row['last_name']}}</td>
+            <td>{{row['shot']}}</td>
+            <td>{{row['goal']}}</td>
+            <td>{{row['assist']}}</td>
+            <td>{{row['point']}}</td>
+            <td>{{row['takeaway']}}</td>
+            <td>{{row['turnover']}}</td>
+            <td>{{row['plusses']}}</td>
+            <td>{{row['minuses']}}</td>
+            <td>{{row['net']}}</td>
+            <td>{{row['ratio']}}</td>
+            <td>{{row['time'] | time:'ss':'mm:ss'}}</td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <table ng-show="displayStatType == 'possessions'" class="table table-striped table-condensed" ng-model="statsDisp">
+        <thead class="statsHeaders">
+          <th class="statsHeader">Show Drives</th>
+          <th class="statsHeader">Type</th>
+          <th class="statsHeader">Bludgers</th>
+          <th class="statsHeader">Result</th>
+        </thead>
+        
+        <tbody>
+          <tr ng-repeat-start="row in statsDisp track by $index">
+            <td><button class="btn btn-xs" data-toggle="collapse" data-target="#{{row.objectId}}">Expand</button></td>
+            <td>{{row.offenseDefense | statNameFilter}}</td>
+            <td>{{row.bludger_count}}</td>
+            <td>{{row.result | statNameFilter}}</td>
+            <tr id="{{row.objectId}}" class="collapse.in" ng-repeat-end ng-repeat="drive in row['drives']">
+              <td></td>
+              <td>Drive</td>
+              <td>{{drive.bludger_count}}</td>
+              <td>{{drive.result | statNameFilter}}</td>
+            </tr>
+          </tr>
+        </tbody>
+      </table>
+      
+      <table ng-show="displayStatType == 'possessions_agg'" class="table table-striped table-condensed" ng-model="statsDisp">
+        <thead class="statsHeaders">
+          <th class="statsHeader">Type</th>
+          <th class="statsHeader">Bludgers</th>
+          <th class="statsHeader">Attempts</th>
+          <th class="statsHeader">Goals Scored</th>
+          <th class="statsHeader">Success Rate</th>
+        </thead>
+        
+        <tbody>
+          <tr ng-repeat="(key,val) in statsDisp track by $index">
+            <td>{{key.split(',')[0] | statNameFilter}}</td>
+            <td>{{key.split(',')[1] | statNameFilter}}</td>
+            <td>{{val.count}}</td>
+            <td>{{val.goals}}</td>
+            <td>{{val.percent}}%</td>
+          </tr>
+        </tbody>
+      </table>
+      
+      
+    </div>
+  </div>
+</div>
+<div id="helpText" class="white_content">
+  <a href = "javascript:void(0)" onclick = "document.getElementById('helpText').style.display='none';document.getElementById('fade').style.display='none'">Close<br></a>
+  <h3>This page is experimental. Use this if you've recorded stats with the 'New Record' style.</h3>
+  <h4>This page is for viewing stats.</h4>
+  <h5>1. Select a team from the dropdown menu. Then, a list of finished games will appear on the left side of the screen.</h5>
+  <p>Don't see the game you want? It probably isn't finished yet. To 'finish' a game, record the stats for that game, and end it with a snitch catch. Only games with a snitch catch appear on the left side of the screen.</p>
+  <h5>2. Select a category of stat to look at. Raw stats is a good place to start.</h5>
+  <h5>3. Select some games by clicking the checkboxes next to each one.</h5>
+  <h5>4. Hit 'Go'. Your stats should appear</h5>
+  <p>You can sort by category (except names, because I can't get that to work for some reason). Just click on the category title and it will sort from most to least. Clicking again won't sort from least to most quite yet.</p>
+  <p>That ? player you see... That's nobody. I really should prevent it from showing up, but for now, it isn't a big deal. It doesn't affect any stats.</p>
+
+  <a href = "javascript:void(0)" onclick = "document.getElementById('helpText').style.display='none';document.getElementById('fade').style.display='none'">Close<br></a>
+</div>
+<div id="fade" class="black_overlay"></div>

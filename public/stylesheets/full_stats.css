@@ -1,0 +1,40 @@
+#vidContainerFull {
+    display: flex;
+    justify-content: center;
+}
+
+#playersAndScoreboardFull {
+    order: 1;
+    width: 350px;
+    min-width: 350px;
+    padding-right: 5px;
+}
+
+#videoFull {
+    min-width: 700px;
+    order: 2;
+    flex: 1 1 auto;
+}
+
+#statsAndFiltersFull {
+    order: 3;
+    width: 350px;
+    min-width: 350px;
+    padding-left: 5px;
+}
+
+#buttonsContainerFull {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px;
+    text-align: center;
+}
+
+
+
+.buttonGroupFull {
+    flex: 1 1 auto;
+    min-width: 50px;
+    width: 100px;
+    display: block;
+}

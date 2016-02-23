@@ -1,8 +1,9 @@
 require 'parse-ruby-client'
 require 'pp'
 require 'set'
+require 'json'
 
-class CalcStats
+class CalcFullStats
 
 	attr_accessor :stats_map
 
@@ -21,6 +22,7 @@ class CalcStats
 	def get_stats_rows_from_games()
 		array_of_game_ids_sliced = @game_ids.each_slice(5).to_a
 		all_stats = []
+		
 		array_of_game_ids_sliced.each do |array_of_ids|
 			stats_to_add = Parse::Query.new('Stats').tap do |q|
 				q.eq('team_id', @team_id)
@@ -32,6 +34,168 @@ class CalcStats
 			all_stats.push(stats_to_add)
 		end
 		all_stats.flatten!
+	end
+	
+	def calc_possessions
+	    rows_from_game = get_stats_rows_from_games()
+	    
+	    all_possessions = Array.new
+	    possession = Hash.new
+	    
+	    # these will be reset every possession
+	    drive = Hash.new
+	    all_drives_on_possession = Array.new
+		
+	    rows_from_game.each do |row|
+	        stat = row['stat_name']
+	        if stat == 'OFFENSE' || stat == 'DEFENSE'
+	        	if !drive.empty?
+	        		all_drives_on_possession.push(drive.clone)
+	        		drive.clear
+	        	end
+	        	if !all_drives_on_possession.empty?
+	        		possession['drives'] = all_drives_on_possession.clone
+	        		all_drives_on_possession.clear
+	        	end
+	        	if !possession.empty?
+	        		all_possessions.push(possession.clone)
+	        		possession.clear
+	        	end
+	        	possession.clear
+	        	possession['offenseDefense'] = stat
+	        	possession['bludger_count'] = row['bludger_count']
+	        	possession['result'] = 'NO_GOAL'
+	        	possession['expanded'] = false
+	        	possession['objectId'] = row['objectId']
+	        	
+	        elsif stat == 'OFFENSIVE_DRIVE' || stat == 'DEFENSIVE_DRIVE'
+				if !drive.empty?
+					# store the old drive
+					all_drives_on_possession.push(drive.clone)
+					drive.clear
+				end
+				drive['bludger_count'] = row['bludger_count']
+	        elsif stat == 'GOAL'
+	        	if !drive.empty?
+	        		drive['result'] = 'GOAL'
+	        	end
+	        	if !possession.empty?
+	        		possession['result'] = 'GOAL'
+	        	end
+        	elsif stat == 'TURNOVER'
+        		if !drive.empty?
+	        		drive['result'] = 'TURNOVER'
+	        	end
+	        	if !possession.empty?
+	        		possession['result'] = 'TURNOVER'
+	        	end
+	        elsif stat == 'AWAY_GOAL'
+	        	if !drive.empty?
+	        		drive['result'] = 'AWAY_GOAL'
+	        	end
+	        	if !possession.empty?
+	        		possession['result'] = 'AWAY_GOAL'
+	        	end
+	        elsif stat == 'TAKEAWAY'
+	        	if !drive.empty?
+	        		drive['result'] = 'TAKEAWAY'
+	        	end
+	        	if !possession.empty?
+	        		possession['result'] = 'TAKEAWAY'
+	        	end
+	        # elsif stat == ''
+	        end
+	    end
+		if !drive.empty?
+    		all_drives_on_possession.push(drive.clone)
+    		drive.clear
+		end
+		if !all_drives_on_possession.empty?
+    		possession['drives'] = all_drives_on_possession.clone
+    		all_drives_on_possession.clear
+		end
+		if !possession.empty?
+    		all_possessions.push(possession.clone)
+    		possession.clear
+		end
+	   	all_possessions
+	end
+	
+	def calc_possessions_agg
+		# this might end up okay because i'll have javascript prevent anyone from calling
+		# calc_possessions with more than one game, but that won't be a problem here
+		# make sure i'm ready for the flip on each game in calc_possessions
+		all_possessions = calc_possessions
+		
+		
+		zero_offense_possessions = ['OFFENSE', 0]
+		zero_offense_drives = ['OFFENSIVE_DRIVE', 0]
+		one_offense_possessions = ['OFFENSE', 1]
+		one_offense_drives = ['OFFENSIVE_DRIVE', 1]
+		two_offense_possessions = ['OFFENSE', 2]
+		two_offense_drives = ['OFFENSIVE_DRIVE', 2]
+		
+		zero_defense_possessions = ['DEFENSE', 0]
+		zero_defense_drives = ['DEFENSIVE_DRIVE', 0]
+		one_defense_possessions = ['DEFENSE', 1]
+		one_defense_drives = ['DEFENSIVE_DRIVE', 1]
+		two_defense_possessions = ['DEFENSE', 2]
+		two_defense_drives = ['DEFENSIVE_DRIVE', 2]
+		
+		empty_vals = {
+			'count' => 0,
+			'goals' => 0,
+			'percent' => 0
+		}
+		
+		all_possessions_agg = {
+			zero_offense_possessions => empty_vals.clone,
+			one_offense_possessions => empty_vals.clone,
+			two_offense_possessions => empty_vals.clone,
+			zero_offense_drives => empty_vals.clone,
+			one_offense_drives => empty_vals.clone,
+			two_offense_drives => empty_vals.clone,
+			zero_defense_possessions => empty_vals.clone,
+			one_defense_possessions => empty_vals.clone,
+			two_defense_possessions => empty_vals.clone,
+			zero_defense_drives => empty_vals.clone,
+			one_defense_drives => empty_vals.clone,
+			two_defense_drives => empty_vals.clone
+		}
+
+		
+		all_possessions.each do |possession|
+			# get the possession data, and update the appropriate object
+			# update the 'count' on the possession type
+			outer_key = [possession['offenseDefense'], possession['bludger_count']]
+			
+			all_possessions_agg[outer_key]['count'] += 1
+			if possession['result'] == 'GOAL' || possession['result'] == 'AWAY_GOAL'
+				all_possessions_agg[outer_key]['goals'] += 1
+			end
+			
+			if possession['offenseDefense'] == 'OFFENSE'
+				inner_key_val_1 = 'OFFENSIVE_DRIVE'
+			else
+				inner_key_val_1 = 'DEFENSIVE_DRIVE'
+			end
+			if possession['drives'].nil?
+				next
+			end
+			
+			all_possessions_agg[outer_key]['percent'] = (all_possessions_agg[outer_key]['goals'].to_f / all_possessions_agg[outer_key]['count'].to_f).round(3) * 100
+			
+			possession['drives'].each do |drive|
+				inner_key = [inner_key_val_1, drive['bludger_count']]
+				all_possessions_agg[inner_key]['count'] += 1
+				if drive['result'] == 'GOAL' || drive['result'] == 'AWAY_GOAL'
+					all_possessions_agg[inner_key]['goals'] += 1
+				end
+				all_possessions_agg[inner_key]['percent'] = (all_possessions_agg[inner_key]['goals'].to_f / all_possessions_agg[inner_key]['count'].to_f).round(3) * 100
+			end
+			
+		end
+		all_possessions_agg
 	end
 
 	def raw_stats
@@ -100,19 +264,16 @@ class CalcStats
 				ind = on_field_array.index(event["player_id"])
 				on_field_array[ind] = player_id
 			elsif event_type == "SWAP"
-				pp 'event'
-				pp event
+
 				if start_time != -1
-						time_to_add = event["time"] - start_time
-						add_time_to_each_player(on_field_array, time_to_add)
-						start_time = event["time"]
-					end
+					time_to_add = event["time"] - start_time
+					add_time_to_each_player(on_field_array, time_to_add)
+					start_time = event["time"]
+				end
 				ind = on_field_array.index(event["player_id"])
 				ind2 = on_field_array.index(event['player_in_id']);
 				on_field_array[ind] = event["player_in_id"]
 				on_field_array[ind2] = event["player_id"];
-				pp 'ARRAY'
-				pp on_field_array
 			elsif event_type == "PAUSE_CLOCK"
 				if start_time != -1
 					time_to_add = event["time"] - start_time
@@ -141,6 +302,7 @@ class CalcStats
 			elsif event_type == "OFFENSE" || event_type == "DEFENSE"
 			elsif event_type == "OFFENSIVE_DRIVE" || event_type == "DEFENSIVE_DRIVE"
 			elsif event_type == "GAIN_CONTROL" || event_type == "LOSE_CONTROL"
+				
 			else
 				@stats_map[player_id][event["stat_name"].downcase] += 1
 			end				
@@ -203,6 +365,7 @@ class CalcStats
 	end
 
 	def calc_plus_minus_stat(arrs)
+
 		# Gets all the events
 		all_stats = get_stats_rows_from_games
 
@@ -234,7 +397,10 @@ class CalcStats
         combo_stat_map = Hash.new
 		cur_game = "notAGame"
     	on_field_array = ["chaserA", "chaserB", "chaserC", "keeper", "beaterA", "beaterB", "seeker"]
+    	
 		start_time = -1
+		start_bludger_time = -1
+		have_control = false
 
     	all_stats.each do |event|
     		if event["vid_id"] != cur_game
@@ -251,6 +417,27 @@ class CalcStats
     			all_combos.each do |combo|
 					add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, 1, 'AWAY_GOAL')
     			end
+			when 'GAIN_CONTROL'
+				have_control = true
+				start_bludger_time = event['time']
+				all_combos.each do |combo|
+					add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, 1, 'GAIN_CONTROL')
+				end
+				
+			when 'LOSE_CONTROL'
+				if start_bludger_time != -1
+					bludger_time_to_add = event["time"] - start_bludger_time
+					all_combos.each do |combo|
+						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, bludger_time_to_add, 'bludger_time')
+					end
+				end
+				
+				have_control = false
+				start_bludger_time = -1
+				
+				all_combos.each do |combo|
+					add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, 1, 'LOSE_CONTROL')
+				end
     		when 'SUB'
 				if start_time != -1
 					time_to_add = event["time"] - start_time
@@ -259,6 +446,18 @@ class CalcStats
 					end
 					start_time = event["time"]
 				end
+				
+				
+				if start_bludger_time != -1
+					bludger_time_to_add = event["time"] - start_bludger_time
+					all_combos.each do |combo|
+						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, bludger_time_to_add, 'bludger_time')
+					end
+					
+					start_bludger_time = event["time"]
+				end
+					
+					
 				ind = on_field_array.index(event['player_id'])
 				on_field_array[ind] = event["player_in_id"]
 			when 'SWAP'
@@ -269,22 +468,48 @@ class CalcStats
 					end
 					start_time = event["time"]
 				end
+				
+				if start_bludger_time != -1
+					bludger_time_to_add = event["time"] - start_bludger_time
+					all_combos.each do |combo|
+						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, bludger_time_to_add, 'bludger_time')
+					end
+					start_bludger_time = event["time"]
+				end
+				
 				ind = on_field_array.index(event['player_id'])
 				ind2 = on_field_array.index(event['player_in_id'])
 				on_field_array[ind] = event["player_in_id"]
 				on_field_array[ind2] = event["player_id"]
+				
     		when 'PAUSE_CLOCK'
-    			if start_time != -1
+				if start_time != -1
 					time_to_add = event["time"] - start_time
 					all_combos.each do |combo|
 						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, time_to_add, 'time')
 					end
 					start_time = -1
 				end
+				
+				if start_bludger_time != -1
+					bludger_time_to_add = event["time"] - start_bludger_time
+					all_combos.each do |combo|
+						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, bludger_time_to_add, 'bludger_time')
+					end
+					start_bludger_time = -1
+				end
+				
+				
     		when 'START_CLOCK'
     			start_time = event["time"]
+    			if have_control
+    				start_bludger_time = event["time"]
+    			end
     		when 'GAME_START'
     			start_time = event["time"]
+    			if have_control
+    				start_bludger_time = event["time"]
+    			end
     		end
         end
 
@@ -310,9 +535,9 @@ class CalcStats
         		end
         	}
         	# loop through the vals here, modding each one
-        	if @per == 1 
+			if @per == 1 
 	        	v.update(v) { |key1, val1|
-	        		if key1 != :time && v[:time] != 0 && key1 != :ratio
+					if key1 != :time && v[:time] != 0 && key1 != :ratio
 	        			val1 = val1.to_f / (v[:time].to_f / 60.0)
 						val1.round(2)
 					else
@@ -320,7 +545,8 @@ class CalcStats
 					end
 
 	        	}
-	        end
+			end
+			
         	# this is cheating, sort of
         	prettyTime = Time.at(v[:time]).utc.strftime("%M:%S")
         	if v[:time] >= 0
@@ -341,8 +567,12 @@ class CalcStats
 			combo_stat_map[cur_players] = {
 				plusses: 0,
 				minuses: 0,
+				control_percent: 0,
+				gain_control: 0,
+				lose_control: 0,
 				net: 0,
 				ratio: "",
+				bludger_time: 0,
 				time: 0
 			}
 		end
@@ -355,6 +585,20 @@ class CalcStats
 			combo_stat_map[cur_players][:net] -= value
 		when 'time'
 			combo_stat_map[cur_players][:time] += value
+			# update control percent
+			if combo_stat_map[cur_players][:time] != 0
+				combo_stat_map[cur_players][:control_percent] = ((combo_stat_map[cur_players][:bludger_time].to_f / combo_stat_map[cur_players][:time].to_f) * 100).round(1)
+			end
+		when 'bludger_time'
+			combo_stat_map[cur_players][:bludger_time] += value
+			# update control percent
+			if combo_stat_map[cur_players][:time] != 0
+				combo_stat_map[cur_players][:control_percent] = ((combo_stat_map[cur_players][:bludger_time].to_f / combo_stat_map[cur_players][:time].to_f) * 100).round(1)
+			end
+		when 'GAIN_CONTROL'
+			combo_stat_map[cur_players][:gain_control] += value
+		when 'LOSE_CONTROL'
+			combo_stat_map[cur_players][:lose_control] += value
 		end
 		#ratio stuff
 		plus = combo_stat_map[cur_players][:plusses]

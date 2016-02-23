@@ -8,6 +8,7 @@
 
 
     <link rel="stylesheet" href="/stylesheets/add_team.css">
+    <link rel="stylesheet" href="/stylesheets/full_stats.css">
     <link rel="stylesheet" href="/stylesheets/header.css">
     <link rel="stylesheet" href="/stylesheets/login.css">
     <link rel="stylesheet" href="/stylesheets/public.css">
@@ -23,6 +24,8 @@
     <script src="/lib/angular-scroll-glue/src/scrollglue.js"></script>
     <script src="/lib/angucomplete-alt/dist/angucomplete-alt.min.js"></script>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
 
     <script src="/js/main.js"></script>
@@ -36,11 +39,13 @@
       <div class="nav">
         <ul>
           <li class="username"><a href="/"><%= h(session[:username]) || 'Login' %> </a></li>
-          <li><a href="/public/all">Public Stats</a></li>
-          <li><a href="/stats">My Stats</a></li>
-          <li><a href="/record">Record Stats</a></li>
-          <li><a href="/add_team">Edit Rosters</a></li>
-          <li><a href="/add_video">Add Video</a></li>
+          <li><a href="/public/all">Public</a></li>
+          <li><a href="/stats">View</a></li>
+          <li><a href="/record">Record</a></li>
+          <li><a href="/add_team">Teams</a></li>
+          <li><a href="/add_video">Video</a></li>
+          <li><a href="/full_stats_record">New Record</a></li>
+          <li><a href="/full_stats_view">New View</a></li>
           <li class="help" onclick = "document.getElementById('helpText').style.display='block';document.getElementById('fade').style.display='block'"><a href="">Help</a></li>
         </ul>
       </div>
