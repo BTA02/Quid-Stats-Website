@@ -18,7 +18,7 @@
 			<p style="text-align:center;"><b>Chasers</b></p>
 			<div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(0,3) track by $index">
 				<ul>
-					<a href="javascript:void(0)">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
+					<p>{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
 				</ul>
 			</div>
 		</div>
@@ -26,7 +26,7 @@
 			<p style="text-align:center;"><b>Keeper</b></p>
 			<div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(3,4) track by $index">
 				<ul>
-					<a href="javascript:void(0)">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
+					<p>{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
 				</ul>
 			</div>
 		</div>
@@ -34,7 +34,7 @@
 			<p style="text-align:center;"><b>Beater</b></p>
 			<div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(4,6) track by $index">
 				<ul>
-					<a href="javascript:void(0)">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
+					<p>{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
 				</ul>
 			</div>
 		</div>
@@ -42,7 +42,7 @@
 			<p style="text-align:center;"><b>Seeker</b></p>
 			<div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(6,7) track by $index">
 				<ul>
-					<a href="javascript:void(0)" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
+					<p>{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
 				</ul>
 			</div>
 		</div>
