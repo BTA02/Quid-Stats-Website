@@ -1051,6 +1051,7 @@ app.controller('ViewFullStatsController', ['$scope', '$http', function($scope, $
   $scope.sortMap = function(category) {
     var aVal = 0;
     var bVal = 0;
+    
     $scope.statsDisp.sort(function(a, b) {
       // names stuff
       if (category == "first_name") {
