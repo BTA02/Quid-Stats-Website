@@ -90,7 +90,6 @@ get '/full_stats_view' do
 	@userId = 'me'
 	erb :full_stats_view
 end
-	
 
 get '/stats' do
 	@controllerName = 'ViewStatsController'
@@ -171,6 +170,16 @@ get '/public/:author_id/:team_id/:vid_id/:year/:player_filter/:event_filter' do
 	else
 		redirect '/noAuth'
 	end
+end
+
+get '/watch' do
+	@controllerName = 'RecordFullStatsController'
+	@author_id = session[:authorId]
+	if !logged_in?
+		redirect '/noAuth'
+	end
+	@teams = get_all_teams
+	erb :watch
 end
 
 get '/noAuth' do

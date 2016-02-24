@@ -5,8 +5,8 @@
 
 #playersAndScoreboardFull {
     order: 1;
-    width: 350px;
-    min-width: 350px;
+    width: 250px;
+    min-width: 250px;
     padding-right: 5px;
 }
 
@@ -18,8 +18,8 @@
 
 #statsAndFiltersFull {
     order: 3;
-    width: 350px;
-    min-width: 350px;
+    width: 250px;
+    min-width: 250px;
     padding-left: 5px;
 }
 
