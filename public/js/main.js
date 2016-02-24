@@ -126,16 +126,18 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
       $scope.filterEvents('init');
     });
     
-    $http.get(notesUrl).then(function(response) {
-      for (var i = 0; i < response.data.length; i++) {
-        response.data[i].stat_name = "NOTE";
-        $scope.originalStats.push(response.data[i]);
-      }
-      $scope.originalStats.sort(function(a, b){
-          return a.time - b.time;
-        });
-      $scope.filterEvents('init');
-    });
+    if (notesUrl != undefined) {
+      $http.get(notesUrl).then(function(response) {
+        for (var i = 0; i < response.data.length; i++) {
+          response.data[i].stat_name = "NOTE";
+          $scope.originalStats.push(response.data[i]);
+        }
+        $scope.originalStats.sort(function(a, b){
+            return a.time - b.time;
+          });
+        $scope.filterEvents('init');
+      });
+    }
     
     $http.get("/videoPermissions/" + $scope.team + "/" + $scope.selectedVideo).then(function(response) {
       if (response.data == 'true') {
@@ -606,17 +608,18 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
         });
       $scope.filterEvents('init');
     });
-    
-    $http.get(notesUrl).then(function(response) {
-      for (var i = 0; i < response.data.length; i++) {
-        response.data[i].stat_name = "NOTE";
-        $scope.originalStats.push(response.data[i]);
-      }
-      $scope.originalStats.sort(function(a, b){
-          return a.time - b.time;
-        });
-      $scope.filterEvents('init');
-    });
+    if (notesUrl != undefined) {
+      $http.get(notesUrl).then(function(response) {
+        for (var i = 0; i < response.data.length; i++) {
+          response.data[i].stat_name = "NOTE";
+          $scope.originalStats.push(response.data[i]);
+        }
+        $scope.originalStats.sort(function(a, b){
+            return a.time - b.time;
+          });
+        $scope.filterEvents('init');
+      });
+    }
     
     $http.get("/videoPermissions/" + $scope.team + "/" + $scope.selectedVideo).then(function(response) {
       if (response.data == 'true') {
