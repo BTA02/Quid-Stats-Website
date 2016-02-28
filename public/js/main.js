@@ -513,7 +513,7 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
   
   $scope.showNote = function(index) {
     $scope.videoPlayer.pauseVideo();
-    $scope.displayNoteText = $scope.originalStats[index].note;
+    $scope.displayNoteText = $scope.displayStats[index].note;
     document.getElementById('displayNoteOverlay').style.display='block';document.getElementById('fade').style.display='block';
   }
   
@@ -960,7 +960,7 @@ app.controller('RecordStatsController', ['$scope', '$http', '$interval', functio
   
   $scope.showNote = function(index) {
     $scope.videoPlayer.pauseVideo();
-    $scope.displayNoteText = $scope.original[index].note;
+    $scope.displayNoteText = $scope.displayStats[index].note;
     document.getElementById('displayNoteOverlay').style.display='block';document.getElementById('fade').style.display='block';
   };
   
