@@ -1000,7 +1000,7 @@ app.controller('ViewFullStatsController', ['$scope', '$http', function($scope, $
     $scope.per = 0;
     $scope.per += $scope.perMinute;
   	$http.get("/calcFullStats/" + userId + "/" + $scope.statSelected + "/" + $scope.per + "?team_id=" + $scope.team + "&ids=" + ids).then(function(response) {
-  		if ($scope.statSelected == "raw_stats") {
+  		if ($scope.statSelected == "chaser_raw_stats") {
   			$scope.displayStatType = "raw";
   		} else if ($scope.statSelected == "possessions") {
   			$scope.displayStatType = "possessions";

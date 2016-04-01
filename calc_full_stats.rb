@@ -237,13 +237,6 @@ class CalcFullStats
 
 			
 			index1 = on_field_array.index(event["player_id"])
-			
-			pp '========================'
-			pp event
-			pp index1
-			pp is_non_player_event?(event_type)
-			pp '========================'
-			
 			if (index1 == nil && !is_non_player_event?(event_type))
 				next
 			end
@@ -362,7 +355,7 @@ class CalcFullStats
 
 	def add_plus_minus_val(on_field_array, val)
 		i = 0
-		while i < on_field_array.length - 1 do
+		while i < on_field_array.length do
 			player = on_field_array[i]
 			if @stats_map.include?(player)
 				if val == -1
