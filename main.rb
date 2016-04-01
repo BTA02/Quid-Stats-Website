@@ -326,7 +326,7 @@ get '/calcFullStats/:user_id/:stat_selected/:per' do
 	calc_full_stats = CalcFullStats.new(team_id, game_ids, user_id, params[:per])
 	case stat_selected
 	when 'raw_stats'
-		raw_stats_map_json = calc_full_stats.raw_stats.to_json
+		raw_stats_map_json = calc_full_stats.chaser_raw_stats.to_json
 	when 'beater_pairs'
 		pos_arr = [[4,5],[4,5]]
 		stats_json = calc_full_stats.calc_plus_minus_stat(pos_arr).to_json
