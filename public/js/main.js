@@ -224,9 +224,18 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
   };
   
   $scope.startStat = function(stat) {
-    $scope.statType = stat;
-    $scope.videoPlayer.pauseVideo();
-    document.getElementById('onFieldPlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
+    // double check to see if any player has subbed in at all
+
+    console.log($scope.subMap.size);
+    // might want to see if it's a sub or not
+    if ($scope.subMap.size == 0) {
+      // assign a 'general' stat to nobody in particular
+      $scope.addStat(null, null, stat);
+    } else {
+      $scope.statType = stat;
+      $scope.videoPlayer.pauseVideo();
+      document.getElementById('onFieldPlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
+    }
   };
   
   $scope.playerClicked = function(playerInId) {
@@ -407,6 +416,10 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
       });
       $scope.filterEvents('added');
     });
+    
+    // data.team_id
+    
+    // $http.post("/addStat",)
   };
   
   $scope.deleteStat = function(objId, statName) {
@@ -1485,7 +1498,4 @@ app.controller('HomeController', ['$scope', '$http', function($scope, $http) {
   };
 
   // Add team functions
-  
-  
-
 }]);
