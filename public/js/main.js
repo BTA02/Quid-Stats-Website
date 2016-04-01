@@ -226,7 +226,6 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
   };
   
   $scope.startStat = function(stat) {
-    // double check to see if any player has subbed in at all
     console.log($scope.subMap.size);
     // might want to see if it's a sub or not
     if ($scope.subMap.size == 0) {
