@@ -224,9 +224,9 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
   };
   
   $scope.startStat = function(stat) {
-    $scope.statType = stat;
-    $scope.videoPlayer.pauseVideo();
-    document.getElementById('onFieldPlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
+      $scope.statType = stat;
+      $scope.videoPlayer.pauseVideo();
+      document.getElementById('onFieldPlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
   };
   
   $scope.playerClicked = function(playerInId) {
@@ -407,6 +407,10 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
       });
       $scope.filterEvents('added');
     });
+    
+    // data.team_id
+    
+    // $http.post("/addStat",)
   };
   
   $scope.deleteStat = function(objId, statName) {
@@ -1485,7 +1489,4 @@ app.controller('HomeController', ['$scope', '$http', function($scope, $http) {
   };
 
   // Add team functions
-  
-  
-
 }]);
