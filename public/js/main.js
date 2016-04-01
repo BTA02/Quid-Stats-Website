@@ -224,9 +224,16 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
   };
   
   $scope.startStat = function(stat) {
+    console.log($scope.subMap.size);
+    // might want to see if it's a sub or not
+    if ($scope.subMap.size == 0) {
+      // assign a 'general' stat to nobody in particular
+      $scope.addStat(null, null, stat);
+    } else {
       $scope.statType = stat;
       $scope.videoPlayer.pauseVideo();
       document.getElementById('onFieldPlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
+    }
   };
   
   $scope.playerClicked = function(playerInId) {
