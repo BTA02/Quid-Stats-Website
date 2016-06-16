@@ -1,7 +1,14 @@
 <div class="container-fluid" align="center">
+	
 	<h2>To add a video, first, select a team. If your team isn't there, go to the "Add Team" tab.</h2>
-
 	<select name="teamSelect" ng-model="team" ng-change="getAllGames()">
+		<% @teams.each do |team| %>
+		<option value="<%= team['objectId']%>"><%=team['team_name']%></option>
+		<%end%>
+	</select>
+	
+	<h2>Add an opponent. If your opponent isn't there, go to the "Add Team" tab.</h2>
+	<select name="opponentSelect" ng-model="addTeamOpponent">
 		<% @teams.each do |team| %>
 		<option value="<%= team['objectId']%>"><%=team['team_name']%></option>
 		<%end%>

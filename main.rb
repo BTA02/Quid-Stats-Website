@@ -256,7 +256,7 @@ get '/updateStatTime/:object_id/:new_time' do
 	update_stat(params)
 end
 
-get '/addVideo/:video_id/:team_id/:fall_year/:description' do
+get '/addVideo/:video_id/:team_id/:opponent_id/:fall_year/:description' do
 	add_video(params)
 end
 
@@ -630,11 +630,13 @@ end
 def add_video(params)
 	video = params['video_id']
 	team = params['team_id']
+	opponent_id = params['opponent_id']
 	year = params['fall_year']
 	description = params['description']
 
 	new_video = Parse::Object.new("Videos")
 	new_video['team_id'] = team
+	new_video['opponent_id'] = opponent_id
 	new_video['vid_id'] = video 
 	new_video['fall_year'] = year
 	new_video['description'] = description
