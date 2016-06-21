@@ -1000,7 +1000,7 @@ app.controller('ViewFullStatsController', ['$scope', '$http', function($scope, $
     $scope.per = 0;
     $scope.per += $scope.perMinute;
   	$http.get("/calcFullStats/" + userId + "/" + $scope.statSelected + "/" + $scope.per + "?team_id=" + $scope.team + "&ids=" + ids).then(function(response) {
-  		if ($scope.statSelected == "raw_stats") {
+  		if ($scope.statSelected == "chaser_raw_stats") {
   			$scope.displayStatType = "raw";
   		} else if ($scope.statSelected == "possessions") {
   			$scope.displayStatType = "possessions";
@@ -1439,8 +1439,13 @@ app.controller('AddTeamController', ['$scope', '$http', function($scope, $http) 
 app.controller('AddVideoController', ['$scope', '$http', function($scope, $http) {
   
   $scope.addVideo = function() {
+    console.log("this");
+    console.log($scope.addTeamOpponent);
     if ($scope.team == null) {
       alert("Please select a team");
+    }
+    if ($scope.addTeamOpponent == null) {
+      alert("Please select an opponent");
     }
     else if ($scope.fallYear == null) {
       alert("Please select a fall year");
@@ -1450,9 +1455,8 @@ app.controller('AddVideoController', ['$scope', '$http', function($scope, $http)
     } else if ($scope.vidDesc === null) {
       alert("Please add a description");
     } else {
-      $http.get("/addVideo/" + $scope.vidPreview + "/" + $scope.team + "/" + $scope.fallYear + "/" + $scope.vidDesc).then(function(response) {
-        // do the check if that vid already exists for that team here, if so, just tell them
-        // otherwise, reload
+      // this is where the check needs to happen
+      $http.get("/addVideo/" + $scope.vidPreview + "/" + $scope.team + "/" + $scope.addTeamOpponent + "/" + $scope.fallYear + "/" + $scope.vidDesc).then(function(response) {
         location.reload();
       });
     }

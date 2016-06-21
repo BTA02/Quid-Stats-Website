@@ -256,7 +256,7 @@ get '/updateStatTime/:object_id/:new_time' do
 	update_stat(params)
 end
 
-get '/addVideo/:video_id/:team_id/:fall_year/:description' do
+get '/addVideo/:video_id/:team_id/:opponent_id/:fall_year/:description' do
 	add_video(params)
 end
 
@@ -322,11 +322,10 @@ get '/calcFullStats/:user_id/:stat_selected/:per' do
 	team_id = params[:team_id]
 	game_ids = params[:ids].split(",")
 	
-	calc_stats = CalcStats.new(team_id, game_ids, user_id, params[:per])
 	calc_full_stats = CalcFullStats.new(team_id, game_ids, user_id, params[:per])
 	case stat_selected
-	when 'raw_stats'
-		raw_stats_map_json = calc_full_stats.raw_stats.to_json
+	when 'chaser_raw_stats'
+		raw_stats_map_json = calc_full_stats.chaser_raw_stats.to_json
 	when 'beater_pairs'
 		pos_arr = [[4,5],[4,5]]
 		stats_json = calc_full_stats.calc_plus_minus_stat(pos_arr).to_json
@@ -631,11 +630,13 @@ end
 def add_video(params)
 	video = params['video_id']
 	team = params['team_id']
+	opponent_id = params['opponent_id']
 	year = params['fall_year']
 	description = params['description']
 
 	new_video = Parse::Object.new("Videos")
 	new_video['team_id'] = team
+	new_video['opponent_id'] = opponent_id
 	new_video['vid_id'] = video 
 	new_video['fall_year'] = year
 	new_video['description'] = description

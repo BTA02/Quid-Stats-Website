@@ -36,6 +36,19 @@ class CalcFullStats
 		all_stats.flatten!
 	end
 	
+	def is_non_player_event?(event)
+		non_player_events = ['PAUSE_CLOCK','START_CLOCK','GAME_START',
+		'AWAY_GOAL','AWAY_SNITCH_CATCH','SEEKERS_RELEASED','OFFENSE',
+		'OFFENSIVE_DRIVE','DEFENSE','DEFENSIVE_DRIVE','GAIN_CONTROL', 'LOSE_CONTROL']
+
+		
+		if non_player_events.index(event).nil?
+			return false
+		else
+			return true
+		end
+	end
+	
 	def calc_possessions
 	    rows_from_game = get_stats_rows_from_games()
 	    
@@ -198,7 +211,7 @@ class CalcFullStats
 		all_possessions_agg
 	end
 
-	def raw_stats
+	def chaser_raw_stats
 		events_from_games = get_stats_rows_from_games()
 		if events_from_games.nil?
 			return nil
@@ -206,10 +219,10 @@ class CalcFullStats
 		@stats_map = {}
 		start_time = -1
 		cur_game = "notAGame"
-		on_field_array = ["chaserA", "chaserB", "chaserC", "keeper", "beaterA", "beaterB", "seeker"]
+		on_field_array = ["chaserA", "chaserB", "chaserC", "keeper"]
 		events_from_games.each do |event|
 			if cur_game != event["vid_id"]
-				on_field_array = ["chaserA", "chaserB", "chaserC", "keeper", "beaterA", "beaterB", "seeker"]
+				on_field_array = ["chaserA", "chaserB", "chaserC", "keeper"]
 			end
 			cur_game = event["vid_id"]
 			player_id = nil
@@ -218,6 +231,16 @@ class CalcFullStats
 			else
 				player_id = event["player_id"]
 			end
+
+			
+			event_type = event["stat_name"]
+
+			
+			index1 = on_field_array.index(event["player_id"])
+			if (index1 == nil && !is_non_player_event?(event_type))
+				next
+			end
+			
 
 			unless @stats_map.include?(player_id)
 				if (!player_id.nil?)
@@ -230,6 +253,8 @@ class CalcFullStats
 						first_name = @players[player_index]['first_name']
 						last_name = @players[player_index]['last_name']
 					end
+					
+					
 					@stats_map[player_id] = {
 						"first_name" => first_name,
 						"last_name" => last_name,
@@ -252,9 +277,7 @@ class CalcFullStats
 					}
 				end
 			end
-
-			event_type = event["stat_name"]
-
+			
 			if event_type == "SUB"
 				if start_time != -1
 					time_to_add = event["time"] - start_time
@@ -332,7 +355,7 @@ class CalcFullStats
 
 	def add_plus_minus_val(on_field_array, val)
 		i = 0
-		while i < on_field_array.length - 1 do
+		while i < on_field_array.length do
 			player = on_field_array[i]
 			if @stats_map.include?(player)
 				if val == -1
