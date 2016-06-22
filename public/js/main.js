@@ -463,7 +463,6 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
     }
     // Don't actually need to do anything, just post the opposite, niiiice
     $http.post("/addStat", data).then(function(response){});
-    
   };
   
   $scope.deleteStat = function(objId, statName) {
