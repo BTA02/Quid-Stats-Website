@@ -429,9 +429,10 @@ def get_all_games_for_team(params)
 	resp.each do |e|
 		ret << {
 			description: e['description'], 
-			vid_id: e['vid_id'], 
-			team_id: e['team_id'],	
-			fall_year: e['fall_year']
+			vid_id: e['vid_id'],
+			team_id: e['team_id'],
+			fall_year: e['fall_year'],
+			opponent_id: e['opponent_id']
 		}
 	end
 	ret
