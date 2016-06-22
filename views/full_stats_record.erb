@@ -7,7 +7,7 @@
 		<%end%>
 	</select>
 	<!-- Video Selector and allPlayers populator--> 
-	<select ng-model="vidObj" ng-change="getAllPlayers()" ng-options="game.vid_id+','+game.fall_year as game.description for game in allGames">
+	<select ng-model="vidObj" ng-change="getAllPlayers()" ng-options="game.vid_id+','+game.fall_year+','+game.opponent_id as game.description for game in allGames">
     </select>
     <div ng-show="vidObj" class="pull-right">
         <label ng-show="statsPublic" for="pubLabel">Public</label>
@@ -143,7 +143,7 @@
 
 
 
-<!--Buttons under the video -->
+<!--Options under the video -->
 <div id="buttonsContainerFull">
 	<div class="buttonGroupFull">
 		<p><b>Clock Management</b></p>
