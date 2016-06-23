@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="app">
   <head>
-    <title> <%= @title || 'Quidstats' %> </title>
+    <title>QuidStats</title>
     <!-- I don't know why, but this works, and just this -->
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css"  media="screen">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"  />
@@ -37,23 +37,30 @@
 
   <!--what if I do something tricky here, and the controller is a variable?-->
   <!--This will require some copy pasting, but I'm good with that-->
+  
   <body ng-controller="<%= @controllerName %>">
-   <snap-drawer>
-    <h4 class="username"><%= h(session[:username]) || 'Please Login' %></h4>
-    <ul class="nav">
-      <li><a href="/public/all">View Public Stats</a></li>
-      <li><a href="/record">Take Stats on a Game</a></li>
-      <li><a href="/stats">View Stats for a Team</a></li>
-      <li><a href="/watch">Watch a Game</a></li>
-      <li><a href="/add_team">Add / Edit a Roster</a></li>
-      <li><a href="/add_video">Add a Video</a></li>
-      <li><a href="/full_stats_record">Take Stats on a Game (experimental)</a></li>
-      <li><a href="/full_stats_view">View Stats for a Team (experimental)</a></li>
-      <li><a href="/">Sign In / My Account</a></li>
-      <li snap-close onclick = "document.getElementById('helpText').style.display='block';document.getElementById('fade').style.display='block'"><a href="">Help</a></li>
-    </ul>
+    <snap-drawer>
+      <h4 class="username"><%= h(session[:username]) || 'Please Login' %></h4>
+      <ul class="nav">
+        <li><a href="/public/all">View Public Stats</a></li>
+        <li><a href="/record">Take Stats on a Game</a></li>
+        <li><a href="/stats">View Stats for a Team</a></li>
+        <li><a href="/watch">Watch a Game</a></li>
+        <li><a href="/add_team">Add / Edit a Roster</a></li>
+        <li><a href="/add_video">Add a Video</a></li>
+        <li><a href="/full_stats_record">Take Stats on a Game (experimental)</a></li>
+        <li><a href="/full_stats_view">View Stats for a Team (experimental)</a></li>
+        <li><a href="/">Sign In / My Account</a></li>
+        <li snap-close onclick = "document.getElementById('helpText').style.display='block';document.getElementById('fade').style.display='block'"><a href="">Help</a></li>
+      </ul>
     </snap-drawer>
     <snap-content>
+      <header>
+        <div class="pageHeader">
+          <span class="siteName">QuidStats</span>
+          <span class="pageTitle"><%= @title %></span>
+        </div>
+      </header>
       <%= yield %>
       <button snap-toggle="">Toggle</button>
     </snap-content>

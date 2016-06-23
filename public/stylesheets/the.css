@@ -46,3 +46,17 @@
 .statsHeader {
 	cursor: pointer;
 }
+
+.pageHeader {
+	background-color: #000;
+}
+
+.siteName {
+	color: #fff;
+	padding-left: 5px; 
+}
+
+.pageTitle {
+	color: #fff;
+	text-align: center;
+}
