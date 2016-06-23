@@ -476,7 +476,14 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
       return;
     }
     $scope.displayStats = [];
-    if (($scope.eventFilter == "AWAY_GOAL" || $scope.eventFilter == "NOTE") && whichFilter == 'events') {
+    if (
+        ($scope.eventFilter == "AWAY_GOAL" 
+        || $scope.eventFilter == "NOTE"
+        || $scope.eventFilter == "OFFENSE"
+        || $scope.eventFilter == "OFFENSIVE_DRIVE"
+        || $scope.eventFilter == "DEFENSE"
+        || $scope.eventFilter == "DEFENSIVE_DRIVE") 
+        && whichFilter == 'events') {
       $scope.playerFilter = "allPlayers";
     }
     
