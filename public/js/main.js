@@ -1,4 +1,4 @@
-var app = angular.module('app', ['youtube-embed', 'luegg.directives', 'angucomplete-alt']);
+var app = angular.module('app', ['youtube-embed', 'luegg.directives', 'angucomplete-alt', 'snap']);
 
 app.filter('time', function() {
   var conversions = {
