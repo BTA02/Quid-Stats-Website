@@ -229,7 +229,6 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
     // This is the idea that, when adding stats, if there are no subs, just add generic stats
     if ($scope.subMap.size == 0) {
       $scope.addStat(null, null, stat, null);
-      $scope.addOppositeStat(stat, null);
     } else {
       $scope.statType = stat;
       $scope.videoPlayer.pauseVideo();
@@ -373,6 +372,7 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
   
   $scope.addStat = function(playerId, playerInId, stat, bludgers) {
     $scope.videoPlayer.pauseVideo();
+    $scope.addOppositeStat(stat, bludgers);
     
     var data = {
         team_id : $scope.team,
@@ -422,7 +422,7 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
   };
   
   $scope.addOppositeStat = function(stat, bludgers) {
-    $scope.videoPlayer.pauseVideo();
+    console.log("adding opposite of", stat, bludgers);
     // gotta get the opponent somehow
     // also have to inverse the stat as well
     if (stat == 'OFFENSE') {
@@ -437,11 +437,20 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
       stat = 'AWAY_GOAL';
     } else if (stat == 'AWAY_GOAL') {
       stat = 'GOAL';
+    } else if (stat == 'GAIN_CONTROL') {
+      stat = 'LOSE_CONTROL';
+    } else if (stat == 'LOSE_CONTROL') {
+      stat = 'GAIN_CONTROL';
+    } else if (stat == 'SNITCH_CATCH') {
+      stat = 'AWAY_SNITCH_CATCH';
+    } else if (stat == 'AWAY_SNITCH_CATCH') {
+      stat = 'SNITCH_CATCH';
     } else if (stat == 'START_CLOCK') {
       // do nothing, but don't return
     } else if (stat == 'PAUSE_CLOCK') {
       // do nothing, but don't return
     } else {
+      console.log("in here for some reason");
       // do nothing, but DO return
       return;
     }
@@ -459,10 +468,14 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
     console.log(data);
     
     if ($scope.opponent == null) {
+      console.log("opponent is null");
       return;
     }
     // Don't actually need to do anything, just post the opposite, niiiice
-    $http.post("/addStat", data).then(function(response){});
+    $http.post("/addStat", data).then(function(response){
+      // I'm going to need to handle this
+      console.log("adding opposite response", response)
+    });
   };
   
   $scope.deleteStat = function(objId, statName) {
