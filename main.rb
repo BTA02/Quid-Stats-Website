@@ -46,6 +46,7 @@ helpers do
 end
 
 get '/' do
+	@title = 'Home'
 	@controllerName = 'HomeController'
 	if logged_in?
 		@teams = get_all_teams
@@ -73,6 +74,7 @@ get '/log_out' do
 end
 
 get '/full_stats_record' do
+	@title = 'Take Stats'
 	@controllerName = 'RecordFullStatsController'
 	if !logged_in?
 		redirect '/noAuth'
@@ -82,6 +84,7 @@ get '/full_stats_record' do
 end
 
 get '/full_stats_view' do
+	@title = 'View Stats'
 	@controllerName = 'ViewFullStatsController'
 	if !logged_in?
 		redirect '/noAuth'
@@ -92,6 +95,7 @@ get '/full_stats_view' do
 end
 
 get '/stats' do
+	@title= 'View Stats'
 	@controllerName = 'ViewStatsController'
 	if !logged_in?
 		redirect '/noAuth'
@@ -102,6 +106,7 @@ get '/stats' do
 end
 
 get '/add_team' do
+	@title = "Add / Edit a Roster"
 	@controllerName = 'AddTeamController'
 	if !logged_in?
 		redirect '/noAuth'
@@ -111,6 +116,7 @@ get '/add_team' do
 end
 
 get '/record' do
+	@title = 'Take Stats'
 	@controllerName = 'RecordStatsController'
 	@author_id = session[:authorId]
 	if !logged_in?
@@ -122,6 +128,7 @@ get '/record' do
 end
 
 get '/add_video' do
+	@title = 'Add Video'
 	@controllerName = 'AddVideoController'
 	if !logged_in?
 		redirect '/noAuth'
@@ -131,6 +138,7 @@ get '/add_video' do
 end
 
 get '/public/all' do
+	@title = 'Public Stats'
 	@controllerName = 'PublicController'
 	@teams = get_all_teams
 	@users = get_users
@@ -173,6 +181,7 @@ get '/public/:author_id/:team_id/:vid_id/:year/:player_filter/:event_filter' do
 end
 
 get '/watch' do
+	@title = 'Watch Game'
 	@controllerName = 'RecordFullStatsController'
 	@author_id = session[:authorId]
 	if !logged_in?

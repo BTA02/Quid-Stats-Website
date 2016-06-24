@@ -46,3 +46,26 @@
 .statsHeader {
 	cursor: pointer;
 }
+
+.pageHeader {
+	background-color: #000;
+	text-align: center;
+}
+
+.openNav {
+	color: #fff;
+	padding-left: 5px;
+	float: left;
+	cursor: pointer;
+}
+
+.siteName {
+	color: #fff;
+	padding-right: 5px;
+	font-weight: bold;
+	float: right;
+}
+
+.pageTitle {
+	color: #fff;
+}
