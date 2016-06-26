@@ -479,6 +479,8 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
     if (
         ($scope.eventFilter == "AWAY_GOAL" 
         || $scope.eventFilter == "NOTE"
+        || $scope.eventFilter == "GAIN_CONTROL"
+        || $scope.eventFilter == "LOSE_CONTROL"
         || $scope.eventFilter == "OFFENSE"
         || $scope.eventFilter == "OFFENSIVE_DRIVE"
         || $scope.eventFilter == "DEFENSE"

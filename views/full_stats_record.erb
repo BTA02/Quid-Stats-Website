@@ -130,6 +130,8 @@
 				<option value="SUB">Sub</option>
 				<option value="AWAY_GOAL">Away Goals</option>
 				<option value="NOTE">Notes</option>
+				<option value="GAIN_CONTROL">Gain Control</option>
+				<option value="LOSE_CONTROL">Lose Control</option>
 				<option value="OFFENSE">Offensive Possesions</option>
 				<option value="OFFENSIVE_DRIVE">Offensive Drive</opiton>
 				<option value="DEFENSE">Defensive Possesion</option>
@@ -149,7 +151,7 @@
 			<p class="clickList" ng-click="addStat(null, null, 'PAUSE_CLOCK', null)">Pause Clock</p>
 			<p class="clickList" ng-click="instantReplay()">Instant Replay</p>
 		<p><b>Extras</b></p>
-			<p class="clickList">Add Note</p>
+			<p class="clickList" ng-click="startNote()">Add Note</p>
 	</div>
 	<div class="buttonGroupFull">
 		<p><b>Start Offense Against</b></p>
