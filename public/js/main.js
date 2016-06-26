@@ -48,7 +48,7 @@ app.filter('statNameFilter', function() {
 
 });
 
-app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', function($scope, $http, $interval) {
+app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', '$window', function($scope, $http, $interval, $window) {
   
   $interval( function(){
     if ($scope.videoPlayer !== null && $scope.videoPlayer !== undefined) {
@@ -56,6 +56,23 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
       $scope.updateScoreboard();
     }
   }, 500);
+  
+  $scope.vidHeight= window.innerHeight * .8;
+  
+  var w = angular.element($window);
+  w.bind('resize', function () {
+    console.log("resized to...", window.innerHeight * .8);
+    $scope.vidHeight = window.innerHeight * .8;
+    return;
+    console.log("resized to...");
+    if (window.innerHeight * .8 < 700) {
+      console.log(window.innerHeight * .8);
+      $scope.vidHeight = window.innerHeight * .8;
+    } else {
+      console.log("700px");
+      $scope.vidHeight = '700px';
+    }
+  });
   
   $scope.closeDialog = function(which) {
     document.getElementById(which).style.display='none';document.getElementById('fade').style.display='none';
