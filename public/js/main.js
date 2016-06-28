@@ -1,4 +1,4 @@
-var app = angular.module('app', ['youtube-embed', 'luegg.directives', 'angucomplete-alt', 'snap']);
+var app = angular.module('app', ['youtube-embed', 'luegg.directives', 'angucomplete-alt', 'snap', 'ngYoutubeEmbed']);
 
 app.filter('time', function() {
   var conversions = {
@@ -48,7 +48,7 @@ app.filter('statNameFilter', function() {
 
 });
 
-app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', '$window', function($scope, $http, $interval, $window) {
+app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', function($scope, $http, $interval) {
   
   $interval( function(){
     if ($scope.videoPlayer !== null && $scope.videoPlayer !== undefined) {
@@ -56,23 +56,6 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', '$w
       $scope.updateScoreboard();
     }
   }, 500);
-  
-  $scope.vidHeight= window.innerHeight * .8;
-  
-  var w = angular.element($window);
-  w.bind('resize', function () {
-    console.log("resized to...", window.innerHeight * .8);
-    $scope.vidHeight = window.innerHeight * .8;
-    return;
-    console.log("resized to...");
-    if (window.innerHeight * .8 < 700) {
-      console.log(window.innerHeight * .8);
-      $scope.vidHeight = window.innerHeight * .8;
-    } else {
-      console.log("700px");
-      $scope.vidHeight = '700px';
-    }
-  });
   
   $scope.closeDialog = function(which) {
     document.getElementById(which).style.display='none';document.getElementById('fade').style.display='none';
@@ -89,6 +72,8 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', '$w
     var idAndYear;
     idAndYear = $scope.vidObj.split(",");
     $scope.selectedVideo = idAndYear[0];
+    $scope.videoURL = 'https://www.youtube.com/watch?v=' + $scope.selectedVideo;
+    console.log($scope.videoURL);
     $scope.year = idAndYear[1];
     $scope.allPlayers = [];
     $http.get("/allPlayers/" + $scope.team + "/" + $scope.year).then(function(response) {
