@@ -466,6 +466,7 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
         stat : stat,
         bludger_count : bludgers
     };
+    
     // console.log("data");
     // console.log(data);
     
