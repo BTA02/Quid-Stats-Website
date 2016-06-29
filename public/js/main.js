@@ -441,6 +441,8 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
       stat = 'LOSE_CONTROL';
     } else if (stat == 'LOSE_CONTROL') {
       stat = 'GAIN_CONTROL';
+    } else if (stat == 'SEEKERS_RELEASED') {
+      // do nothing, but don't return
     } else if (stat == 'SNITCH_CATCH') {
       stat = 'AWAY_SNITCH_CATCH';
     } else if (stat == 'AWAY_SNITCH_CATCH') {
@@ -464,8 +466,8 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
         stat : stat,
         bludger_count : bludgers
     };
-    console.log("data");
-    console.log(data);
+    // console.log("data");
+    // console.log(data);
     
     if ($scope.opponent == null) {
       console.log("opponent is null");
