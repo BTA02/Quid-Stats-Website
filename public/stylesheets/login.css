@@ -1,3 +1,20 @@
-.left-div {
-	margin: 10px;
+.login-container {
+    display: flex;
+}
+
+.left-side {
+    flex: 0 1 auto;
+    min-width: 50%;
+    text-align: center
+}
+.left-side > a {
+    font-size: x-large;
+}
+.right-side {
+    flex: 0 1 auto;
+    min-width: 50%;
+}
+
+.login-section {
+    max-width: 250px;
 }

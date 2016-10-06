@@ -44,6 +44,7 @@
     <snap-drawer>
       <h4 class="username"><%= h(session[:username]) || 'Please Login' %></h4>
       <ul class="nav">
+        <li><a href="/">Home</a></li>
         <li><a href="/public/all">View Public Stats</a></li>
         <li><a href="/record">Take Stats on a Game</a></li>
         <li><a href="/stats">View Stats for a Team</a></li>
@@ -52,7 +53,6 @@
         <li><a href="/add_video">Add a Video</a></li>
         <li><a href="/full_stats_record">Take Stats on a Game (experimental)</a></li>
         <li><a href="/full_stats_view">View Stats for a Team (experimental)</a></li>
-        <li><a href="/">Sign In / My Account</a></li>
         <li snap-close onclick = "document.getElementById('helpText').style.display='block';document.getElementById('fade').style.display='block'"><a href="">Help</a></li>
       </ul>
     </snap-drawer>

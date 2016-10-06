@@ -50,8 +50,10 @@ get '/' do
 	@controllerName = 'HomeController'
 	if logged_in?
 		@teams = get_all_teams
-		erb :account
+		@logged_in = true
+		erb :login
 	else
+		@logged_in = false	
 		erb :login
 	end
 end
@@ -63,7 +65,7 @@ end
 
 post '/log_in' do
 	log_in_user(params)
-	redirect '/stats'
+	redirect '/'
 end
 
 # ROUTES

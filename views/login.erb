@@ -1,63 +1,59 @@
-<div class="left-div">
-	<div class="welcome">
-		<h3 align="center">Welcome to QuidStats</h3>
-
-		<h4>You must be logged in to view any pages (except Public Stats). If you keep ending up on this page, it's because you aren't logged in</h4>
-
-		<p>The primary goal of this website is to provide a tool for taking statistics on quidditch matches. With that said, this is also a tool to help generate more public quidditch film. All team rosters and videos will be public. Any user can login, select any team, and watch any game that has been submitted. Users can also submit videos of any team. However, all stats will be private to a user. I understand teams like to keep their film private, but hopefully teams find that getting stats actually makes posting their video a net win for them. Videos must be public YouTube videos to work on this site. Don't try and cheat the system.</p>
+<div class="login-container">
+	<div class="left-side">
+		<h2>Stats-Based Articles</h2>
+		<a href="http://quidstats.tumblr.com/post/150659107470/snitchcatch1">Evan Batzer on snitch catch percentages</a>
+		</br>
+		<a href="https://www.davidbrownman.com/blog/2016/08/19/quidditch-by-the-numbers/">David Brownman on game length</a>
+	</div>	
 	
-		<p>Also, currently, there isn't a way to share stats privately with other users, so I suggest making an account for your entire organization.</p>
-
-		<p>After signing up, you will not be automatically logged in. You will need to do that separatly in order to view the rest of the site.</p> 
+	<div class="right-side" ng-show="<%= !@logged_in %>"> 
+		<div class="login-form" align="center">
+			<h1>Login</h1>
+			<form action="/log_in" method="post">
+			 	<div class="form-group login-section">
+			    	<label for="loginUsername">Username</label>
+			    	<input name="loginUsername" class="form-control" id="loginUsername" placeholder="Username">
+			  	</div>
+			  	<div class="form-group login-section">
+			    	<label for="loginPassword">Password</label>
+			    	<input name="loginPassword" type="password" class="form-control" id="loginPassword" placeholder="Password">
+			  	</div>
+			  	<button type="submit" class="btn btn-default">Submit</button>
+			</form>
+		</div>
+	
+		<div class="login-form" align="center">
+			<h1>Sign-Up</h1>
+			<form action="/sign_up" method="post">
+			 	<div class="form-group login-section">
+			    	<label for="signupUsername">Username</label>
+			    	<input ng-model="signupUsername" name="signupUsername" class="form-control" id="signupUsername" placeholder="Username">
+			  	</div>
+			  	<div class="form-group login-section">
+			    	<label for="signupPassword1">Password</label>
+			    	<input name="signupPassword1" ng-model="pass1" type="password" class="form-control" id="signupPassword1" placeholder="Password">
+			  	</div>
+			  	<div class="form-group login-section">
+			    	<label for="signupPassword2">Confirm Password</label>
+			    	<input name="signupPassword2" ng-model="pass2" type="password" class="form-control" id="signupPassword2" placeholder="Confirm Password">
+			  	</div>
+			  	<button type="submit" class="btn btn-default" ng-show="checkPasswords() && checkUsername()">Submit</button>
+			  	<p ng-show="signupUsername && !checkUsername()" style="color:red">Invalid username</p>
+			  	<p ng-show="(pass1 || pass2) && !checkPasswords()" style="color:red">Passwords do not match</p>
+			</form>
+		</div>
+	</div>
+	
+	<div class="right-side" ng-show="<%= @logged_in %>">
+		<div align="center">
+			<h3>Welcome, <%= h(session[:username]) || 'NoName' %></h3>
+			<br>
+		</div>
+		<div align="center">
+			<a href="/log_out">Logout</a>
+		</div>
 	</div>
 </div>
-<!-- login form -->
-<div class="right-div">
-	
-
-	<div class="container-fluid form" align="center">
-		<h1>Login</h1>
-		<form action="/log_in" method="post">
-		 	<div class="form-group">
-		    	<label for="loginUsername">Username</label>
-		    	<input name="loginUsername" class="form-control" id="loginUsername" placeholder="Username">
-		  	</div>
-		  	<div class="form-group">
-		    	<label for="loginPassword">Password</label>
-		    	<input name="loginPassword" type="password" class="form-control" id="loginPassword" placeholder="Password">
-		  	</div>
-		  	<button type="submit" class="btn btn-default">Submit</button>
-		</form>
-	</div>
-
-	<div class="container-fluid form" align="center">
-		<h1>Sign-Up</h1>
-		<form action="/sign_up" method="post">
-		 	<div class="form-group">
-		    	<label for="signupUsername">Username</label>
-		    	<input ng-model="signupUsername" name="signupUsername" class="form-control" id="signupUsername" placeholder="Username">
-		  	</div>
-		  	<div class="form-group">
-		    	<label for="signupPassword1">Password</label>
-		    	<input name="signupPassword1" ng-model="pass1" type="password" class="form-control" id="signupPassword1" placeholder="Password">
-		  	</div>
-		  	<div class="form-group">
-		    	<label for="signupPassword2">Confirm Password</label>
-		    	<input name="signupPassword2" ng-model="pass2" type="password" class="form-control" id="signupPassword2" placeholder="Confirm Password">
-		  	</div>
-		  	<button type="submit" class="btn btn-default" ng-show="checkPasswords() && checkUsername()">Submit</button>
-		  	<p ng-show="signupUsername && !checkUsername()" style="color:red">Invalid username</p>
-		  	<p ng-show="(pass1 || pass2) && !checkPasswords()" style="color:red">Passwords do not match</p>
-		</form>
-	</div>
-</div>
-
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
 
 <div id="helpText" class="white_content">
 	<a href = "javascript:void(0)" onclick = "document.getElementById('helpText').style.display='none';document.getElementById('fade').style.display='none'">Close<br></a>
