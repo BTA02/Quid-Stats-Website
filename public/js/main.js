@@ -69,12 +69,11 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
   };
   
   $scope.getAllPlayers = function() {
-    var idAndYear;
-    idAndYear = $scope.vidObj.split(",");
-    $scope.selectedVideo = idAndYear[0];
-    $scope.videoURL = 'https://www.youtube.com/watch?v=' + $scope.selectedVideo;
-    console.log($scope.videoURL);
-    $scope.year = idAndYear[1];
+    var idAndYearAndOpponent;
+    idAndYearAndOpponent = $scope.vidObj.split(",");
+    $scope.selectedVideo = idAndYearAndOpponent[0];
+    $scope.year = idAndYearAndOpponent[1];
+    $scope.opponent = idAndYearAndOpponent[2];
     $scope.allPlayers = [];
     $http.get("/allPlayers/" + $scope.team + "/" + $scope.year).then(function(response) {
       $scope.allPlayers = response.data;
@@ -226,9 +225,15 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
   };
   
   $scope.startStat = function(stat) {
+    // Axtell here
+    // This is the idea that, when adding stats, if there are no subs, just add generic stats
+    if ($scope.subMap.size == 0) {
+      $scope.addStat(null, null, stat, null);
+    } else {
       $scope.statType = stat;
       $scope.videoPlayer.pauseVideo();
       document.getElementById('onFieldPlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
+    }
   };
   
   $scope.playerClicked = function(playerInId) {
@@ -367,6 +372,7 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
   
   $scope.addStat = function(playerId, playerInId, stat, bludgers) {
     $scope.videoPlayer.pauseVideo();
+    $scope.addOppositeStat(stat, bludgers);
     
     var data = {
         team_id : $scope.team,
@@ -415,11 +421,72 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
     // $http.post("/addStat",)
   };
   
+  $scope.addOppositeStat = function(stat, bludgers) {
+    console.log("adding opposite of", stat, bludgers);
+    // gotta get the opponent somehow
+    // also have to inverse the stat as well
+    if (stat == 'OFFENSE') {
+      stat = 'DEFENSE';
+    } else if (stat == 'DEFENSE') {
+      stat = 'OFFENSE';
+    } else if (stat == 'OFFENSIVE_DRIVE') {
+      stat = 'DEFENSIVE_DRIVE';
+    } else if (stat == 'DEFENSIVE_DRIVE') {
+      stat = 'OFFENSIVE_DRIVE';
+    } else if (stat == 'GOAL') {
+      stat = 'AWAY_GOAL';
+    } else if (stat == 'AWAY_GOAL') {
+      stat = 'GOAL';
+    } else if (stat == 'GAIN_CONTROL') {
+      stat = 'LOSE_CONTROL';
+    } else if (stat == 'LOSE_CONTROL') {
+      stat = 'GAIN_CONTROL';
+    } else if (stat == 'SEEKERS_RELEASED') {
+      // do nothing, but don't return
+    } else if (stat == 'SNITCH_CATCH') {
+      stat = 'AWAY_SNITCH_CATCH';
+    } else if (stat == 'AWAY_SNITCH_CATCH') {
+      stat = 'SNITCH_CATCH';
+    } else if (stat == 'START_CLOCK') {
+      // do nothing, but don't return
+    } else if (stat == 'PAUSE_CLOCK') {
+      // do nothing, but don't return
+    } else {
+      console.log("in here for some reason");
+      // do nothing, but DO return
+      return;
+    }
+    var data = {
+        team_id : $scope.opponent,
+        vid_id : $scope.selectedVideo,
+        year : $scope.year,
+        player_id : null,
+        player_in_id : null,
+        time : $scope.videoPlayer.getCurrentTime(),
+        stat : stat,
+        bludger_count : bludgers
+    };
+    
+    // console.log("data");
+    // console.log(data);
+    
+    if ($scope.opponent == null) {
+      console.log("opponent is null");
+      return;
+    }
+    // Don't actually need to do anything, just post the opposite, niiiice
+    $http.post("/addStat", data).then(function(response){
+      // I'm going to need to handle this
+      console.log("adding opposite response", response)
+    });
+  };
+  
   $scope.deleteStat = function(objId, statName) {
     var data = {
       object_id : objId,
       stat : statName
     };
+    // I also need to get the ID of the object created on the other team here
     $http.post("/deleteStat", data).then(function(response) {
       // do nothing for now
       //remove locally
@@ -1450,8 +1517,6 @@ app.controller('AddTeamController', ['$scope', '$http', function($scope, $http) 
 app.controller('AddVideoController', ['$scope', '$http', function($scope, $http) {
   
   $scope.addVideo = function() {
-    console.log("this");
-    console.log($scope.addTeamOpponent);
     if ($scope.team == null) {
       alert("Please select a team");
     }
