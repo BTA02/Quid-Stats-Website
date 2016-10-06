@@ -486,6 +486,7 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
       object_id : objId,
       stat : statName
     };
+    // I also need to get the ID of the object created on the other team here
     $http.post("/deleteStat", data).then(function(response) {
       // do nothing for now
       //remove locally
