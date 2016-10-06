@@ -1488,6 +1488,7 @@ app.controller('AddTeamController', ['$scope', '$http', function($scope, $http) 
         alert("Please add a team name");
         return;
       }
+      console.log("here?", "/newTeam/" + $scope.newTeamName + "/" + $scope.rosterYear + "/" + ids)
       $http.get("/newTeam/" + $scope.newTeamName + "/" + $scope.rosterYear + "/" + ids).then(function(response) {
         response["data"];
         location.reload();
