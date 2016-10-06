@@ -1,4 +1,17 @@
+#fullOuter {
+    height: calc(100% - 50px);
+    
+    display: flex;
+    flex-direction: column;
+}
+
+/*both a flex object, and a flex container*/
 #vidContainerFull {
+    height: calc(100% - 250px);
+    min-height: 390px;
+    
+    flex: 1 1 auto;
+    
     display: flex;
     justify-content: center;
 }
@@ -8,12 +21,19 @@
     width: 250px;
     min-width: 250px;
     padding-right: 5px;
+    
 }
 
 #videoFull {
     min-width: 700px;
     order: 2;
     flex: 1 1 auto;
+    
+    height: 100%;
+}
+
+#videoFull youtube-video {
+    height: 100%;
 }
 
 #statsAndFiltersFull {
@@ -24,13 +44,12 @@
 }
 
 #buttonsContainerFull {
+    height: 250px;
+    
     display: flex;
     justify-content: space-between;
-    padding: 5px;
     text-align: center;
 }
-
-
 
 .buttonGroupFull {
     flex: 1 1 auto;

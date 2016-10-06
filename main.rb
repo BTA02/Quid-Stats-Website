@@ -74,7 +74,7 @@ get '/log_out' do
 end
 
 get '/full_stats_record' do
-	@title = 'Take Stats'
+	@title = 'Take Stats (Experimental)'
 	@controllerName = 'RecordFullStatsController'
 	if !logged_in?
 		redirect '/noAuth'
@@ -84,7 +84,7 @@ get '/full_stats_record' do
 end
 
 get '/full_stats_view' do
-	@title = 'View Stats'
+	@title = 'View Stats (Experimental)'
 	@controllerName = 'ViewFullStatsController'
 	if !logged_in?
 		redirect '/noAuth'
