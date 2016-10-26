@@ -349,6 +349,24 @@ class CalcFullStats
 					end
 				}
 			}
+		elsif @per == 2
+			@stats_map.update(@stats_map) { |key, val|
+				val.update(val) { |key1, val1|
+					if key1 == 'first_name'
+						val1 = val['first_name']
+					elsif key1 == 'last_name'
+						val1 = val['last_name']
+					elsif key1 == 'time'
+						val1 = val['time']
+					elsif key1 == 'ratio'
+						val1 = val['ratio']
+					elsif val['time'] != 0
+						val1 = val1.to_f / (val['games_played'].to_f)
+						val1.round(2)
+					end
+				}
+				
+			}
 		end
 		@stats_map.values
 	end
@@ -558,7 +576,7 @@ class CalcFullStats
         		end
         	}
         	# loop through the vals here, modding each one
-			if @per == 1 
+			if @per == 1 # per minute
 	        	v.update(v) { |key1, val1|
 					if key1 != :time && v[:time] != 0 && key1 != :ratio
 	        			val1 = val1.to_f / (v[:time].to_f / 60.0)
@@ -568,6 +586,15 @@ class CalcFullStats
 					end
 
 	        	}
+			elsif @per ==2 # per game
+				v.update(v) { |key1, val1|
+					if key1 != :ratio && v[:games_played] != 0
+						val1 = val1.to_f / (v[:games_played].to_f)
+						val1.round(2)
+					else
+						val1 = v[key1]
+					end
+				}
 			end
 			
         	# this is cheating, sort of
