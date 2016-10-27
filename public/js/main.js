@@ -1075,8 +1075,6 @@ app.controller('ViewFullStatsController', ['$scope', '$http', function($scope, $
       return;
     }
 
-    $scope.per = 0;
-    $scope.per += $scope.perMinute;
   	$http.get("/calcFullStats/" + userId + "/" + $scope.statSelected + "/" + $scope.per + "?team_id=" + $scope.team + "&ids=" + ids).then(function(response) {
   		if ($scope.statSelected == "chaser_raw_stats") {
   			$scope.displayStatType = "raw";
@@ -1223,6 +1221,7 @@ app.controller('ViewStatsController', ['$scope', '$http', function($scope, $http
   			$scope.isPlusMinus = true;
   		}
   		$scope.statsDisp = response.data;
+  		// console.log("resp", response.data);
       if ($scope.isPlusMinus) {
         $scope.sortPMMap("GROUP");
       } else {

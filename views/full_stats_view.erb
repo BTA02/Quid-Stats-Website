@@ -1,11 +1,12 @@
 <div name="header" class="container-fluid text-center">
   <select name="teamSelect" ng-model="team" ng-change="getAllGames()">
-    <option value="">Select a team</option>
+    <option value="" select disabled>Select Team</option>
     <% @teams.each do |team| %>
       <option value="<%= team['objectId'] %>"><%= team['team_name'] %></option>
     <%end%>
   </select>
     <select name="statSelect" ng-model="statSelected">
+    <option value="" select disabled>Select Category</option>
     <option value="chaser_raw_stats">Chaser Raw Stats</option>
     <option value="beater_pairs">Beater Pairs</option>
     <option value="chaser_beater_beater">Chaser Beater Beater</option>
@@ -16,12 +17,14 @@
     <option value="possessions">Possessions (1 game)</option>
     <option value="possessions_agg">Aggregate Possesions</option>
   </select>
+  <select name="modifierSelect" ng-model="per">
+    <option value="" select disabled>Select Modifier</option>
+    <option value="0">Total</option>
+    <option value="1">Per Minute</option>
+    <option value="2">Per Game</option>
+  </select>
 
 <button class="btn btn-default" ng-click="calcStats('<%= @userId %>')">Go</button>
-</div>
-
-<div name="modifiers" class="container-fluid" align="center">
-  <input type="checkbox" ng-model="perMinute" ng-true-value="1" ng-false-value="0">Per Minute</input>
 </div>
 
 <!-- Games selector -->
@@ -41,6 +44,7 @@
       <table ng-show="displayStatType == 'pm'" class="table table-striped tabled-condensed" ng-model="statsDisp">
         <thead class="statsHeaders">
           <th class="statsHeader" ng-click="sortPMMap('group')">GROUP</th>
+          <th class="statsHeader" ng-click="sortPMMap('games_played')">GP</th>
           <th class="statsHeader" ng-click="sortPMMap('control_percent')">CONTROL PERCENT</th>
           <th class="statsHeader" ng-click="sortPMMap('gain_control')">GAIN CONTROL</th>
           <th class="statsHeader" ng-click="sortPMMap('lose_control')">LOSE CONTROL</th>
@@ -53,6 +57,7 @@
         <tbody>
           <tr ng-repeat="row in statsDisp">
             <td>{{row[0].join(', ')}}</td>
+            <td>{{row[1]["games_played"]}}</td>
             <td>{{row[1]["control_percent"]}}%</td>
             <td>{{row[1]["gain_control"]}}</td>
             <td>{{row[1]["lose_control"]}}</td>
@@ -71,6 +76,7 @@
           <!--<th class="statsHeader" ng-repeat="cat in rawCategoriesToDisplay" ng-click="sortMap(cat)">{{cat}}</th>-->
           <th class="statsHeader" ng-click="sortMap('first_name')">FIRST</th>
           <th class="statsHeader" ng-click="sortMap('last_name')">LAST</th>
+          <th class="statsHeader" ng-click="sortMap('games_played')">GP</th>
           <th class="statsHeader" ng-click="sortMap('shot')">SHOTS</th>
           <th class="statsHeader" ng-click="sortMap('goal')">GOALS</th>
           <th class="statsHeader" ng-click="sortMap('assist')">ASSISTS</th>
@@ -88,6 +94,7 @@
           <tr ng-repeat="row in statsDisp">
             <td>{{row['first_name']}}</td>
             <td>{{row['last_name']}}</td>
+            <td>{{row['games_played']}}</td>
             <td>{{row['shot']}}</td>
             <td>{{row['goal']}}</td>
             <td>{{row['assist']}}</td>

@@ -57,3 +57,7 @@
     width: 100px;
     display: block;
 }
+
+select option[disabled]:first-child {
+	display: none;
+}
