@@ -54,8 +54,15 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
     if ($scope.videoPlayer !== null && $scope.videoPlayer !== undefined) {
       $scope.updateOnFieldPlayers();
       $scope.updateScoreboard();
+      // focus the player so that when you click elsewhere, video gets the focus back
+      // $scope.giveFocus();
     }
   }, 500);
+  
+  $scope.giveFocus = function() {
+    document.getElementById("video").focus();
+    console.log(document.activeElement);
+  }
   
   $scope.closeDialog = function(which) {
     document.getElementById(which).style.display='none';document.getElementById('fade').style.display='none';

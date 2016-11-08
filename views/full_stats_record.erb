@@ -84,7 +84,7 @@
 		</div>
 	
 		<div id="videoFull">
-			<youtube-video video-id="selectedVideo" player="videoPlayer" player-width="'100%'" player-height="'100%'"></youtube-video>
+			<youtube-video id="video" video-id="selectedVideo" player="videoPlayer" player-width="'100%'" player-height="'100%'"></youtube-video>
 		</div>
 	
 		<div id="statsAndFiltersFull">
@@ -195,8 +195,8 @@
 		</div>
 		<div class="buttonGroupFull">
 			<p><b>Cards</b></p>
-				<p class="clickList">Yellow Card</p>
-				<p class="clickList">Red Card</p>
+				<p class="clickList" ng-click="addCard('YELLOW_CARD')">Yellow Card</p>
+				<p class="clickList" ng-click="addCard('RED_CARD')">Red Card</p>
 		</div>
 	</div>
 
