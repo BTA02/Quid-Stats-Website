@@ -702,9 +702,18 @@ def update_team(params)
 		q.eq('team_id', params['team_id'])
 		q.eq('fall_year', params['fall_year'])
 	end.get.first
-	update_team['player_ids'] = params['ids'].split(',')
-	result = update_team.save
-	result.to_json
+	if update_team == nil
+		new_roster = Parse::Object.new('Rosters')
+		new_roster['team_id'] = params['team_id']
+		new_roster['fall_year'] = params['fall_year']
+		new_roster['player_ids'] = params['ids'].split(',')
+		result = new_roster.save
+		result.to_json
+	else
+		update_team['player_ids'] = params['ids'].split(',')
+		result = update_team.save
+		result.to_json
+	end
 end
 
 # this needs to be re-written
