@@ -134,9 +134,7 @@
 					<option value="GAIN_CONTROL">Gain Control</option>
 					<option value="LOSE_CONTROL">Lose Control</option>
 					<option value="OFFENSE">Offensive Possesions</option>
-					<option value="OFFENSIVE_DRIVE">Offensive Drive</opiton>
 					<option value="DEFENSE">Defensive Possesion</option>
-					<option value="DEFENSIVE_DRIVE">Defensive Drive</option>
 				</select>
 			</div>
 		</div>
@@ -157,20 +155,12 @@
 				<p class="clickList" ng-click="addStat(null, null, 'OFFENSE', 0)">0 bludgers</p>
 				<p class="clickList" ng-click="addStat(null, null, 'OFFENSE', 1)">1 bludger</p>
 				<p class="clickList" ng-click="addStat(null, null, 'OFFENSE', 2)">2 bludgers</p>
-			<p><b>Start Drive Against</b></p>
-				<p class="clickList" ng-click="addStat(null, null, 'OFFENSIVE_DRIVE', 0)">0 bludgers</p>
-				<p class="clickList" ng-click="addStat(null, null, 'OFFENSIVE_DRIVE', 1)">1 bludger</p>
-				<p class="clickList" ng-click="addStat(null, null, 'OFFENSIVE_DRIVE', 2)">2 bludgers</p>
 		</div>
 		<div class="buttonGroupFull">
 			<p><b>Start Defense With</b></p>
 				<p class="clickList" ng-click="addStat(null, null, 'DEFENSE', 0)">0 bludgers</p>
 				<p class="clickList" ng-click="addStat(null, null, 'DEFENSE', 1)">1 bludger</p>
 				<p class="clickList" ng-click="addStat(null, null, 'DEFENSE', 2)">2 bludgers</p>
-			<p><b>Start Opponent Drive Against</b></p>
-				<p class="clickList" ng-click="addStat(null, null, 'DEFENSIVE_DRIVE', 0)">0 bludgers</p>
-				<p class="clickList" ng-click="addStat(null, null, 'DEFENSIVE_DRIVE', 1)">1 bludger</p>
-				<p class="clickList" ng-click="addStat(null, null, 'DEFENSIVE_DRIVE', 2)">2 bludgers</p>
 		</div>
 		<div class="buttonGroupFull">
 			<p><b>Home Stat</b></p>
@@ -179,8 +169,10 @@
 				<p class="clickList" ng-click="startStat('ASSIST')">Assist</p>
 				<p class="clickList" ng-click="startStat('TAKEAWAY')">Takeaway</p>
 				<p class="clickList" ng-click="startStat('TURNOVER')">Turnover</p>
+		</div>
+		<div class="buttonGroupFull">
 			<p><b>Away Stat</b></p>
-				<p class="clickList" ng-click="addStat(null, null, 'AWAY_GOAL', null)">Goal</p>
+			<p class="clickList" ng-click="addStat(null, null, 'AWAY_GOAL', null)">Goal</p>
 		</div>
 		<div class="buttonGroupFull">
 			<p><b>Bludgers</b></p>

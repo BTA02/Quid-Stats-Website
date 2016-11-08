@@ -75,8 +75,8 @@ get '/log_out' do
 	redirect '/'
 end
 
-get '/full_stats_record' do
-	@title = 'Take Stats (Experimental)'
+get '/record' do
+	@title = 'Take Stats'
 	@controllerName = 'RecordFullStatsController'
 	if !logged_in?
 		redirect '/noAuth'
@@ -115,18 +115,6 @@ get '/add_team' do
 	end
 	@teams = get_all_teams
 	erb :add_team
-end
-
-get '/record' do
-	@title = 'Take Stats'
-	@controllerName = 'RecordStatsController'
-	@author_id = session[:authorId]
-	if !logged_in?
-		redirect '/noAuth'
-	end
-	@teams = get_all_teams
-	erb :record_stats
-
 end
 
 get '/add_video' do

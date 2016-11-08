@@ -15,16 +15,14 @@
 
 #statsList {
     text-align: center;
-    /*margin: 0px auto;*/
-    height: 350px;
     width: 200px;
     overflow-x: scroll;
     white-space: nowrap;
     padding: 5px;
+    flex: 1 1 auto;
 }
 
 #statsList > div {
-	/*display: inline-block;*/
 	border: solid 1px black;
 	width: 175px;
 	margin-bottom: 5px;
@@ -38,5 +36,67 @@
 
 .playersOnPitch {
 	width: 1000px;
+}
+
+#buttonsContainerFull {
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+}
+
+#fullOuter {
+    height: calc(100% - 50px);
+    
+    display: flex;
+    flex-direction: column;
+}
+
+/*both a flex object, and a flex container*/
+#vidContainerFull {
+    height: calc(100% - 250px);
+    min-height: 390px;
+    flex: 1 1 auto;
+    display: flex;
+    justify-content: center;
+}
+
+#playersAndScoreboardFull {
+    order: 1;
+    width: 250px;
+    min-width: 250px;
+    padding-right: 5px;
+    
+}
+
+#videoFull {
+    min-width: 700px;
+    order: 2;
+    flex: 1 1 auto;
+    
+    height: 100%;
+}
+
+#videoFull youtube-video {
+    height: 100%;
+}
+
+#statsAndFiltersFull {
+    order: 3;
+    width: 250px;
+    min-width: 250px;
+    padding-left: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+.buttonGroupFull {
+    flex: 1 1 auto;
+    min-width: 50px;
+    width: 100px;
+    display: block;
+}
+
+select option[disabled]:first-child {
+	display: none;
 }
 
