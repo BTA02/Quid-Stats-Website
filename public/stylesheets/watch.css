@@ -1,6 +1,7 @@
 #watchVidContainerFull {
     display: flex;
     justify-content: center;
+    height: 90%;
 }
 
 #watchVideoFull {
