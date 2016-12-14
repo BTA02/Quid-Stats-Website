@@ -81,9 +81,13 @@
 					<p ng-show="curControl == -1">?</p>
 				</div>
 			</div>
+			<div>
+  				<input type="checkbox" ng-model="isCoachingTools" ng-true-value="1" ng-false-value="0">Coaching Tools</input>
+			</div>
 		</div>
 	
 		<div id="videoFull">
+			<canvas id="coachingCanvas" ng-show="isCoachingTools"></canvas>
 			<youtube-video id="video" video-id="selectedVideo" player="videoPlayer" player-width="'100%'" player-height="'100%'"></youtube-video>
 		</div>
 	
@@ -141,7 +145,7 @@
 	</div>
 	
 	<!--Options under the video -->
-	<div id="buttonsContainerFull">
+	<div id="buttonsContainerFull" ng-hide="isCoachingTools">
 		<div class="buttonGroupFull">
 			<p><b>Clock Management</b></p>
 				<p class="clickList" ng-click="addStat(null, null, 'START_CLOCK', null)">Start Clock</p>
@@ -190,6 +194,9 @@
 				<p class="clickList" ng-click="addCard('YELLOW_CARD')">Yellow Card</p>
 				<p class="clickList" ng-click="addCard('RED_CARD')">Red Card</p>
 		</div>
+	</div>
+	<div id="coachingToolsContainerFull" ng-show="isCoachingTools">
+		
 	</div>
 
 <!--End of column flex-->

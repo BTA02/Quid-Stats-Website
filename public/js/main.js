@@ -598,7 +598,71 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
     $scope.videoPlayer.pauseVideo();
     $scope.displayNoteText = $scope.displayStats[index].note;
     document.getElementById('displayNoteOverlay').style.display='block';document.getElementById('fade').style.display='block';
+  };
+  
+  var clickX = new Array();
+  var clickY = new Array();
+  var clickDrag = new Array();
+  var paint;
+
+  function addClick(x, y, dragging) {
+    clickX.push(x);
+    clickY.push(y);
+    clickDrag.push(dragging);
   }
+  
+  function redraw() {
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clears the canvas
+    context.strokeStyle = "#df4b26";
+    context.lineJoin = "round";
+    context.lineWidth = 5;
+  			
+    for(var i=0; i < clickX.length; i++) {		
+      context.beginPath();
+      if(clickDrag[i] && i){
+        context.moveTo(clickX[i-1], clickY[i-1]);
+       }else{
+         context.moveTo(clickX[i]-1, clickY[i]);
+       }
+       context.lineTo(clickX[i], clickY[i]);
+       context.closePath();
+       context.stroke();
+    }
+  };
+  
+  var canvas1 = document.getElementById('coachingCanvas');
+  var context = canvas1.getContext("2d");
+  $('#coachingCanvas').mousedown(function(e) {
+    console.log(e, e.pageX, this.offsetLeft);
+    var mouseX = e.pageX - this.offsetLeft;
+    var mouseY = e.pageY - this.offsetTop;
+    // mouseX = e.pageX + 251;
+    mouseY = e.pageY + e.offsetY - 100;
+    console.log("here", mouseX);
+  		
+    paint = true;
+    addClick(mouseX, mouseY);
+    redraw();
+  });
+  
+  $('#coachingCanvas').mousemove(function(e) {
+    if(paint){
+      var mouseX = e.pageX - this.offsetLeft;
+      var mouseY = e.pageY - this.offsetTop;
+      // mouseX = e.pageX + 251;
+      mouseY = e.pageY + e.offsetY - 100;
+      addClick(mouseX, mouseY, true);
+      redraw();
+    }
+  });
+  
+  $('#coachingCanvas').mouseup(function(e){
+    paint = false;
+  });
+  
+  $('#coachingCanvas').mouseleave(function(e){
+    paint = false;
+  });
   
 }]);
 

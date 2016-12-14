@@ -76,7 +76,7 @@ get '/log_out' do
 end
 
 get '/record' do
-	@title = 'Take Stats'
+	@title = 'Coaching Tools'
 	@controllerName = 'RecordFullStatsController'
 	if !logged_in?
 		redirect '/noAuth'

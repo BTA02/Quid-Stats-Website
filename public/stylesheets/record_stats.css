@@ -46,7 +46,6 @@
 
 #fullOuter {
     height: calc(100% - 50px);
-    
     display: flex;
     flex-direction: column;
 }
@@ -57,7 +56,6 @@
     min-height: 390px;
     flex: 1 1 auto;
     display: flex;
-    justify-content: center;
 }
 
 #playersAndScoreboardFull {
@@ -72,12 +70,23 @@
     min-width: 700px;
     order: 2;
     flex: 1 1 auto;
-    
     height: 100%;
+    position: relative;
 }
 
 #videoFull youtube-video {
     height: 100%;
+}
+
+#video {
+    z-index: 1;
+}
+
+#coachingCanvas {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 2;
 }
 
 #statsAndFiltersFull {
