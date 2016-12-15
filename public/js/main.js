@@ -600,10 +600,17 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
     document.getElementById('displayNoteOverlay').style.display='block';document.getElementById('fade').style.display='block';
   };
   
+  var canvas = document.getElementById('coachingCanvas');
+  var context = canvas.getContext("2d");
   var clickX = new Array();
   var clickY = new Array();
   var clickDrag = new Array();
   var paint;
+
+  $scope.initCanvas = function() {
+    context = canvas.getContext("2d");
+    console.log('context', context);
+  };
 
   function addClick(x, y, dragging) {
     clickX.push(x);
@@ -628,16 +635,12 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
        context.closePath();
        context.stroke();
     }
-  };
+  }
   
-  var canvas1 = document.getElementById('coachingCanvas');
-  var context = canvas1.getContext("2d");
   $('#coachingCanvas').mousedown(function(e) {
-    console.log(e, e.pageX, this.offsetLeft);
+    // console.log(e, e.pageX, this.offsetLeft);
     var mouseX = e.pageX - this.offsetLeft;
     var mouseY = e.pageY - this.offsetTop;
-    // mouseX = e.pageX + 251;
-    mouseY = e.pageY + e.offsetY - 100;
     console.log("here", mouseX);
   		
     paint = true;
@@ -650,7 +653,7 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
       var mouseX = e.pageX - this.offsetLeft;
       var mouseY = e.pageY - this.offsetTop;
       // mouseX = e.pageX + 251;
-      mouseY = e.pageY + e.offsetY - 100;
+      // mouseY = e.pageY + e.offsetY - 100;
       addClick(mouseX, mouseY, true);
       redraw();
     }
