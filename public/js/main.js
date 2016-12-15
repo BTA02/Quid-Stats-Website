@@ -602,15 +602,30 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
   
   var canvas = document.getElementById('coachingCanvas');
   var context = canvas.getContext("2d");
+  canvas.setAttribute('height', context.canvas.clientHeight);
+  canvas.setAttribute('width', context.canvas.clientWidth);
   var clickX = new Array();
   var clickY = new Array();
   var clickDrag = new Array();
   var paint;
-
-  $scope.initCanvas = function() {
-    context = canvas.getContext("2d");
-    console.log('context', context);
+  
+  window.onresize = resizeCanvas;
+  
+  $scope.coachingChanged = function() {
+    
+    
   };
+  
+  $scope.selectPenTool = function() {
+    resizeCanvas();
+  };
+  
+  function resizeCanvas() {
+    console.log('running2', context.canvas.clientHeight);
+    console.log('running3', context);
+    canvas.setAttribute('height', context.canvas.clientHeight);
+    canvas.setAttribute('width', context.canvas.clientWidth);
+  }
 
   function addClick(x, y, dragging) {
     clickX.push(x);
@@ -619,7 +634,7 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
   }
   
   function redraw() {
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clears the canvas
+    context.clearRect(0, 0, context.canvas.clientWidth, context.canvas.clientHeight); // Clears the canvas
     context.strokeStyle = "#df4b26";
     context.lineJoin = "round";
     context.lineWidth = 5;
@@ -638,11 +653,8 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
   }
   
   $('#coachingCanvas').mousedown(function(e) {
-    // console.log(e, e.pageX, this.offsetLeft);
-    var mouseX = e.pageX - this.offsetLeft;
-    var mouseY = e.pageY - this.offsetTop;
-    console.log("here", mouseX);
-  		
+    var mouseX = e.pageX - e.target.offsetParent.offsetLeft;
+    var mouseY = e.pageY - e.target.offsetParent.offsetTop;
     paint = true;
     addClick(mouseX, mouseY);
     redraw();
@@ -650,10 +662,8 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
   
   $('#coachingCanvas').mousemove(function(e) {
     if(paint){
-      var mouseX = e.pageX - this.offsetLeft;
-      var mouseY = e.pageY - this.offsetTop;
-      // mouseX = e.pageX + 251;
-      // mouseY = e.pageY + e.offsetY - 100;
+      var mouseX = e.pageX - e.target.offsetParent.offsetLeft;
+      var mouseY = e.pageY - e.target.offsetParent.offsetTop;
       addClick(mouseX, mouseY, true);
       redraw();
     }
@@ -842,7 +852,7 @@ app.controller('ViewStatsController', ['$scope', '$http', function($scope, $http
   			$scope.isPlusMinus = true;
   		}
   		$scope.statsDisp = response.data;
-  		// console.log("resp", response.data);
+  		//console.log("resp", response.data);
       if ($scope.isPlusMinus) {
         $scope.sortPMMap("GROUP");
       } else {

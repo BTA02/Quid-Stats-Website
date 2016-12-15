@@ -82,7 +82,7 @@
 				</div>
 			</div>
 			<div>
-  				<input type="checkbox" ng-model="isCoachingTools" ng-true-value="1" ng-false-value="0" ng-click="initCanvas()">Coaching Tools</input>
+  				<input type="checkbox" ng-model="isCoachingTools" ng-change="coachingChanged()" ng-true-value="1" ng-false-value="0">Coaching Tools</input>
 			</div>
 		</div>
 	
@@ -196,7 +196,10 @@
 		</div>
 	</div>
 	<div id="coachingToolsContainerFull" ng-show="isCoachingTools">
-		
+		<button class="btn btn-default" ng-click="selectPenTool()">Drawing Tool</button><br>
+		<button class="btn btn-default" ng-click="selectEraserTool()">Erasing Tool</button><br>
+		<button class="btn btn-default" ng-click="playVideo()">Play</button><br>
+		<button class="btn btn-default" ng-click="pauseVideo()">Pause</button><br>
 	</div>
 
 <!--End of column flex-->
