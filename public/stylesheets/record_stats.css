@@ -110,3 +110,7 @@ select option[disabled]:first-child {
 	display: none;
 }
 
+#coachingToolsContainerFull {
+    display: flex;
+}
+

@@ -56,6 +56,7 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
       $scope.updateScoreboard();
       // focus the player so that when you click elsewhere, video gets the focus back
     }
+    redraw();
   }, 500);
   
   $scope.closeDialog = function(which) {
@@ -600,53 +601,73 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
     document.getElementById('displayNoteOverlay').style.display='block';document.getElementById('fade').style.display='block';
   };
   
+  // Start of drawing stuff
   var canvas = document.getElementById('coachingCanvas');
   var context = canvas.getContext("2d");
   canvas.setAttribute('height', context.canvas.clientHeight);
   canvas.setAttribute('width', context.canvas.clientWidth);
-  var clickX = new Array();
-  var clickY = new Array();
-  var clickDrag = new Array();
+  // These need to be objects, with key being the time, val being the array
+  var clickXMap = {};
+  var clickYMap = {};
+  var clickDragMap = {};
   var paint;
   
   window.onresize = resizeCanvas;
   
   $scope.coachingChanged = function() {
-    
-    
+    redraw();
   };
   
   $scope.selectPenTool = function() {
     resizeCanvas();
+    redraw();
+  };
+  
+  $scope.playVideo = function() {
+    $scope.videoPlayer.playVideo();
+  };
+  
+  $scope.pauseVideo = function() {
+    $scope.videoPlayer.pauseVideo();
   };
   
   function resizeCanvas() {
-    console.log('running2', context.canvas.clientHeight);
-    console.log('running3', context);
     canvas.setAttribute('height', context.canvas.clientHeight);
     canvas.setAttribute('width', context.canvas.clientWidth);
   }
 
   function addClick(x, y, dragging) {
-    clickX.push(x);
-    clickY.push(y);
-    clickDrag.push(dragging);
+    var timeStamp = $scope.videoPlayer.getCurrentTime().toFixed(1);
+    if (!clickXMap[timeStamp]) {
+      clickXMap[timeStamp] = [];
+    }
+    if (!clickYMap[timeStamp]) {
+      clickYMap[timeStamp] = [];
+    }
+    if (!clickDragMap[timeStamp]) {
+      clickDragMap[timeStamp] = [];
+    }
+    clickXMap[timeStamp].push(x);
+    clickYMap[timeStamp].push(y);
+    clickDragMap[timeStamp].push(dragging);
   }
   
   function redraw() {
+    var timeStamp = $scope.videoPlayer.getCurrentTime().toFixed(1);
     context.clearRect(0, 0, context.canvas.clientWidth, context.canvas.clientHeight); // Clears the canvas
-    context.strokeStyle = "#df4b26";
+    context.strokeStyle = "#ffff00";
     context.lineJoin = "round";
     context.lineWidth = 5;
-  			
-    for(var i=0; i < clickX.length; i++) {		
+    
+    for(var i=0; i < clickXMap[timeStamp].length; i++) {		
+      $scope.videoPlayer.pauseVideo();
       context.beginPath();
-      if(clickDrag[i] && i){
-        context.moveTo(clickX[i-1], clickY[i-1]);
+      if(clickDragMap[timeStamp][i] && i){
+        context.moveTo(clickXMap[timeStamp][i-1], clickYMap[timeStamp][i-1]);
        }else{
-         context.moveTo(clickX[i]-1, clickY[i]);
+         context.moveTo(clickXMap[timeStamp][i]-1, clickYMap[timeStamp][i]);
        }
-       context.lineTo(clickX[i], clickY[i]);
+       context.lineTo(clickXMap[timeStamp][i], clickYMap[timeStamp][i]);
        context.closePath();
        context.stroke();
     }
