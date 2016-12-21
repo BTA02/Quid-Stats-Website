@@ -49,15 +49,18 @@ app.filter('statNameFilter', function() {
 });
 
 app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', function($scope, $http, $interval) {
-  
+
   $interval( function(){
     if ($scope.videoPlayer !== null && $scope.videoPlayer !== undefined) {
       $scope.updateOnFieldPlayers();
       $scope.updateScoreboard();
       // focus the player so that when you click elsewhere, video gets the focus back
+      if($scope.videoPlayer.getPlayerState() == 1){
+        console.log("redrawing");
+        redraw();
+      }
     }
-    redraw();
-  }, 500);
+  },100);
   
   $scope.closeDialog = function(which) {
     document.getElementById(which).style.display='none';document.getElementById('fade').style.display='none';
@@ -624,6 +627,7 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
   };
   
   $scope.playVideo = function() {
+    $scope.videoPlayer.seekTo($scope.videoPlayer.getCurrentTime() + .1);
     $scope.videoPlayer.playVideo();
   };
   
@@ -637,7 +641,9 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
   }
 
   function addClick(x, y, dragging) {
-    var timeStamp = $scope.videoPlayer.getCurrentTime().toFixed(1);
+    var timeStamp = $scope.videoPlayer.getCurrentTime();
+    // timeStamp = (Math.round(timeStamp * 2) / 2).toFixed(1);
+    timeStamp = (Math.round(timeStamp * 10) / 10);
     if (!clickXMap[timeStamp]) {
       clickXMap[timeStamp] = [];
     }
@@ -653,7 +659,9 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
   }
   
   function redraw() {
-    var timeStamp = $scope.videoPlayer.getCurrentTime().toFixed(1);
+    var timeStamp = $scope.videoPlayer.getCurrentTime();
+    // timeStamp = (Math.round(timeStamp * 2) / 2).toFixed(1);
+    timeStamp = (Math.round(timeStamp * 10) / 10);
     context.clearRect(0, 0, context.canvas.clientWidth, context.canvas.clientHeight); // Clears the canvas
     context.strokeStyle = "#ffff00";
     context.lineJoin = "round";
