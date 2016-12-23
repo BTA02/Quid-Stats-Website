@@ -56,7 +56,6 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
       $scope.updateScoreboard();
       // focus the player so that when you click elsewhere, video gets the focus back
       if($scope.videoPlayer.getPlayerState() == 1){
-        console.log("redrawing");
         redraw();
       }
     }
@@ -151,6 +150,14 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
       } else {
         $scope.statsPublic = false;
       }
+    });
+    console.log("????"); 
+    $http.get("/getDrawings/" + $scope.selectedVideo + "/" + $scope.team).then(function(response) {
+      console.log("rr", response);
+      clickXMap = JSON.parse(response.data[0].xMap);
+      clickYMap = JSON.parse(response.data[0].yMap);
+      clickDragMap = JSON.parse(response.data[0].dragMap);
+      console.log("clickXMap", clickXMap);
     });
   }
   
@@ -642,7 +649,6 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
 
   function addClick(x, y, dragging) {
     var timeStamp = $scope.videoPlayer.getCurrentTime();
-    // timeStamp = (Math.round(timeStamp * 2) / 2).toFixed(1);
     timeStamp = (Math.round(timeStamp * 10) / 10);
     if (!clickXMap[timeStamp]) {
       clickXMap[timeStamp] = [];
@@ -660,24 +666,26 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
   
   function redraw() {
     var timeStamp = $scope.videoPlayer.getCurrentTime();
-    // timeStamp = (Math.round(timeStamp * 2) / 2).toFixed(1);
     timeStamp = (Math.round(timeStamp * 10) / 10);
+    timeStamp = JSON.parse(JSON.stringify(timeStamp));
     context.clearRect(0, 0, context.canvas.clientWidth, context.canvas.clientHeight); // Clears the canvas
     context.strokeStyle = "#ffff00";
     context.lineJoin = "round";
     context.lineWidth = 5;
-    
-    for(var i=0; i < clickXMap[timeStamp].length; i++) {		
-      $scope.videoPlayer.pauseVideo();
-      context.beginPath();
-      if(clickDragMap[timeStamp][i] && i){
-        context.moveTo(clickXMap[timeStamp][i-1], clickYMap[timeStamp][i-1]);
-       }else{
-         context.moveTo(clickXMap[timeStamp][i]-1, clickYMap[timeStamp][i]);
-       }
-       context.lineTo(clickXMap[timeStamp][i], clickYMap[timeStamp][i]);
-       context.closePath();
-       context.stroke();
+    console.log('timestamp', timeStamp);
+    if (clickXMap[timeStamp]) {
+      for(var i=0; i < clickXMap[timeStamp].length; i++) {		
+        $scope.videoPlayer.pauseVideo();
+        context.beginPath();
+        if(clickDragMap[timeStamp][i] && i){
+          context.moveTo(clickXMap[timeStamp][i-1], clickYMap[timeStamp][i-1]);
+         }else{
+           context.moveTo(clickXMap[timeStamp][i]-1, clickYMap[timeStamp][i]);
+         }
+         context.lineTo(clickXMap[timeStamp][i], clickYMap[timeStamp][i]);
+         context.closePath();
+         context.stroke();
+      }
     }
   }
   
@@ -705,6 +713,20 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
   $('#coachingCanvas').mouseleave(function(e){
     paint = false;
   });
+  
+  $scope.saveDrawings = function() {
+    var timeStamp = $scope.videoPlayer.getCurrentTime();
+    timeStamp = (Math.round(timeStamp * 10) / 10);
+    var data = {
+      vid_id : $scope.selectedVideo,
+      team_id : $scope.team,
+      timeStamp : timeStamp,
+      clickXMap : JSON.stringify(clickXMap),
+      clickYMap : JSON.stringify(clickYMap),
+      clickDragMap : JSON.stringify(clickDragMap)
+    };
+    $http.post("/saveDrawings", data).then(function(response){});
+  };
   
 }]);
 
@@ -1082,7 +1104,6 @@ app.controller('ViewStatsController', ['$scope', '$http', function($scope, $http
 
 app.controller('AddTeamController', ['$scope', '$http', function($scope, $http) {
   
-  // Apparently I need to init my vals
   $scope.pendingRoster = [];
   
   

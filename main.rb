@@ -368,6 +368,17 @@ post '/setPermissions' do
 	'finished'
 end
 
+post '/saveDrawings' do
+	vals = JSON.parse(request.body.string)
+	save_drawings(vals)
+	'finished'
+end
+
+get '/getDrawings/:vid_id/:team_id' do
+	drawingJSON = get_all_drawings_from_game(params)
+	drawingJSON
+end
+
 get '/help' do
 	send_file 'views/help.html'
 end
@@ -769,6 +780,26 @@ def toggle_permissions(params)
 		permission_row = permission.first
 		permission_row.parse_delete
 	end
+end
+
+def save_drawings(params)
+	new_drawing = Parse::Object.new('Drawings')
+	new_drawing['team_id'] = params['team_id']
+	new_drawing['vid_id'] = params['vid_id']
+	new_drawing['author_id'] = session[:authorId]
+	new_drawing['xMap'] = params['clickXMap']
+	new_drawing['yMap'] = params['clickYMap']
+	new_drawing['dragMap'] = params['clickDragMap']
+	new_drawing.save
+end
+
+def get_all_drawings_from_game(params)
+	drawings = Parse::Query.new("Drawings").tap do |q|
+		q.eq('author_id', session[:authorId])
+		q.eq('team_id', params['team_id'])
+		q.eq('vid_id', params['vid_id'])
+	end.get
+	drawings.to_json
 end
 
 # to make this better, just wait until a few letters have been typed
