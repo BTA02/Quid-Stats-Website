@@ -375,7 +375,7 @@ post '/saveDrawings' do
 end
 
 get '/getDrawings/:vid_id/:team_id' do
-	drawingJSON = get_all_drawings_from_game(params)
+	drawingJSON = get_all_drawings_from_game(params, false)
 	drawingJSON
 end
 
@@ -783,23 +783,40 @@ def toggle_permissions(params)
 end
 
 def save_drawings(params)
-	new_drawing = Parse::Object.new('Drawings')
-	new_drawing['team_id'] = params['team_id']
-	new_drawing['vid_id'] = params['vid_id']
-	new_drawing['author_id'] = session[:authorId]
-	new_drawing['xMap'] = params['clickXMap']
-	new_drawing['yMap'] = params['clickYMap']
-	new_drawing['dragMap'] = params['clickDragMap']
-	new_drawing.save
+	existing_drawings = get_all_drawings_from_game(params, true)
+	if existing_drawings.nil? or existing_drawings.empty?
+		pp 'it doesnt exist'
+		new_drawing = Parse::Object.new('Drawings')
+		new_drawing['team_id'] = params['team_id']
+		new_drawing['vid_id'] = params['vid_id']
+		new_drawing['author_id'] = session[:authorId]
+		new_drawing['xMap'] = params['clickXMap']
+		new_drawing['yMap'] = params['clickYMap']
+		new_drawing['dragMap'] = params['clickDragMap']
+		new_drawing.save
+	else
+		pp 'it does exist'
+		pp existing_drawings['xMap']
+		pp params['clickXMap']
+		pp '----------------'
+		existing_drawings['xMap'] = params['clickXMap']
+		existing_drawings['yMap'] = params['clickYMap']
+		existing_drawings['dragMap'] = params['clickDragMap']
+		existing_drawings.save
+	end
 end
 
-def get_all_drawings_from_game(params)
+def get_all_drawings_from_game(params, getRawObject)
 	drawings = Parse::Query.new("Drawings").tap do |q|
 		q.eq('author_id', session[:authorId])
 		q.eq('team_id', params['team_id'])
 		q.eq('vid_id', params['vid_id'])
-	end.get
-	drawings.to_json
+	end.get.first
+	if(getRawObject)
+		drawings
+	else
+		drawings.to_json
+	end
 end
 
 # to make this better, just wait until a few letters have been typed

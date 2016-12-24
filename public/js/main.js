@@ -102,7 +102,6 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
     statsUrl = "/allStats/" + $scope.selectedVideo + "/" + $scope.team;
     notesUrl = "/allNotes/" + $scope.selectedVideo + "/" + $scope.team;
     $http.get(statsUrl).then(function(response) {
-      console.log(response);
       for (var i = 0; i < response.data.length; i++) {
         var statObj = response.data[i];
         $scope.originalStats.push(statObj);
@@ -151,13 +150,11 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
         $scope.statsPublic = false;
       }
     });
-    console.log("????"); 
     $http.get("/getDrawings/" + $scope.selectedVideo + "/" + $scope.team).then(function(response) {
-      console.log("rr", response);
-      clickXMap = JSON.parse(response.data[0].xMap);
-      clickYMap = JSON.parse(response.data[0].yMap);
-      clickDragMap = JSON.parse(response.data[0].dragMap);
-      console.log("clickXMap", clickXMap);
+      console.log("here1", response);
+      clickXMap = JSON.parse(response.data.xMap);
+      clickYMap = JSON.parse(response.data.yMap);
+      clickDragMap = JSON.parse(response.data.dragMap);
     });
   }
   
@@ -257,7 +254,6 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
       var indexOfCarded = -1;
       
       for (var i = 0; i < $scope.onFieldPlayers.length; i++) {
-        console.log($scope.onFieldPlayers[i]['objectId']);
         if ($scope.onFieldPlayers[i]['objectId'] == playerInId) {
           indexOfCarded = i;
         }
@@ -479,9 +475,6 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
         bludger_count : bludgers
     };
     
-    // console.log("data");
-    // console.log(data);
-    
     if ($scope.opponent == null) {
       console.log("opponent is null");
       return;
@@ -633,6 +626,15 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
     redraw();
   };
   
+  $scope.eraseDrawingsAtTimeStamp = function() {
+    var timeStamp = $scope.videoPlayer.getCurrentTime();
+    timeStamp = (Math.round(timeStamp * 10) / 10);
+    delete clickXMap[timeStamp];
+    delete clickYMap[timeStamp];
+    delete clickDragMap[timeStamp];
+    redraw();
+  };
+  
   $scope.playVideo = function() {
     $scope.videoPlayer.seekTo($scope.videoPlayer.getCurrentTime() + .1);
     $scope.videoPlayer.playVideo();
@@ -664,15 +666,17 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
     clickDragMap[timeStamp].push(dragging);
   }
   
-  function redraw() {
+  function redraw(time) {
     var timeStamp = $scope.videoPlayer.getCurrentTime();
     timeStamp = (Math.round(timeStamp * 10) / 10);
     timeStamp = JSON.parse(JSON.stringify(timeStamp));
+    if (time) {
+      timeStamp = time;
+    }
     context.clearRect(0, 0, context.canvas.clientWidth, context.canvas.clientHeight); // Clears the canvas
     context.strokeStyle = "#ffff00";
     context.lineJoin = "round";
     context.lineWidth = 5;
-    console.log('timestamp', timeStamp);
     if (clickXMap[timeStamp]) {
       for(var i=0; i < clickXMap[timeStamp].length; i++) {		
         $scope.videoPlayer.pauseVideo();
