@@ -97,6 +97,7 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
     setOnFieldToBlank();
     $scope.subMap = new Map();
     $scope.originalStats = [];
+    $scope.drawingsAndNotes = [];
     var statsUrl;
     var notesUrl;
     statsUrl = "/allStats/" + $scope.selectedVideo + "/" + $scope.team;
@@ -135,6 +136,7 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
         for (var i = 0; i < response.data.length; i++) {
           response.data[i].stat_name = "NOTE";
           $scope.originalStats.push(response.data[i]);
+          $scope.drawingsAndNotes.push(response.data[i]);
         }
         $scope.originalStats.sort(function(a, b){
             return a.time - b.time;
@@ -151,10 +153,16 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
       }
     });
     $http.get("/getDrawings/" + $scope.selectedVideo + "/" + $scope.team).then(function(response) {
-      console.log("here1", response);
       clickXMap = JSON.parse(response.data.xMap);
       clickYMap = JSON.parse(response.data.yMap);
       clickDragMap = JSON.parse(response.data.dragMap);
+      // add the approrpiate values in to my $scope.drawingsAndNotes field
+      for (var key in clickXMap) {
+        if (clickXMap.hasOwnProperty(key)) {
+          $scope.drawingsAndNotes.push({statName: 'DRAWING', time: key});
+        }
+      }
+      console.log("ddd", $scope.drawingsAndNotes);
     });
   }
   
@@ -618,6 +626,7 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
   window.onresize = resizeCanvas;
   
   $scope.coachingChanged = function() {
+    $scope.isCoachingTools = !$scope.isCoachingTools;
     redraw();
   };
   
