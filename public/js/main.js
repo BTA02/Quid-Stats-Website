@@ -145,7 +145,9 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
             return a.time - b.time;
           });
         $scope.filterEvents('init');
-        console.log("dd", $scope.drawingsAndNotes);
+        $scope.drawingsAndNotes.sort(function(a, b){
+          return a.time - b.time;
+        });
       });
     }
     
@@ -163,10 +165,12 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
       // add the approrpiate values in to my $scope.drawingsAndNotes field
       for (var key in clickXMap) {
         if (clickXMap.hasOwnProperty(key)) {
-          $scope.drawingsAndNotes.push({statName: 'DRAWING', time: key});
+          $scope.drawingsAndNotes.push({statName: 'DRAWING', time: parseFloat(key).toFixed(1)});
         }
       }
-      console.log("ddd", $scope.drawingsAndNotes);
+      $scope.drawingsAndNotes.sort(function(a, b){
+        return a.time - b.time;
+      });
     });
   }
   

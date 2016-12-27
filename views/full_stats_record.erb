@@ -96,7 +96,7 @@
 		</div>
 	
 		<div id="statsAndFiltersFull" ng-hide="isCoachingTools">
-			<div id="statsList">
+			<div class="statsList">
 				<div class="statsListItem" ng-repeat="statObj in displayStats">
 					<p ng-show="statObj.stat_name != 'NOTE'">{{statObj.stat_name | statNameFilter}}</p>
 					
@@ -148,10 +148,10 @@
 		</div>
 		
 		<div id="drawingsAndNotesFull" ng-hide="!isCoachingTools">
-			<div id="drawingsList">
-				<div class="drawingAndNoteListItem" ng-repeat="drawingAndNoteObj in drawingsAndNotes">
-					<p ng-show="drawingAndNoteObj.stat_name != 'NOTE'" ng-click="seekToTime(statObj.stat_name, statObj.time)">Drawing {{drawingAndNoteObj.time | time:'ss':'mm:ss'}}</p>
-					<p ng-show="drawingAndNoteObj.stat_name == 'NOTE'" ng-click="seekToTime(statObj.stat_name, statObj.time)">{{drawingAndNoteObj.time | time:'ss':'mm:ss'}} {{drawingAndNoteObj.note}}</p>
+			<div class="statsList">
+				<div class="statsListItem" ng-repeat="drawingAndNoteObj in drawingsAndNotes">
+					<p ng-show="drawingAndNoteObj.stat_name != 'NOTE'" ng-click="seekToTime(drawingAndNoteObj.stat_name, drawingAndNoteObj.time)">{{drawingAndNoteObj.time | time:'ss':'mm:ss'}} Drawing</p>
+					<p ng-show="drawingAndNoteObj.stat_name == 'NOTE'" ng-click="seekToTime(drawingAndNoteObj.stat_name, drawingAndNoteObj.time)">{{drawingAndNoteObj.time | time:'ss':'mm:ss'}} {{drawingAndNoteObj.note}}</p>
 				</div>
 			</div>
 		</div>
