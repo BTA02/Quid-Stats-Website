@@ -98,6 +98,9 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
     $scope.subMap = new Map();
     $scope.originalStats = [];
     $scope.drawingsAndNotes = [];
+    clickXMap = {};
+    clickYMap = {};
+    clickDragMap = {};
     var statsUrl;
     var notesUrl;
     statsUrl = "/allStats/" + $scope.selectedVideo + "/" + $scope.team;
@@ -142,6 +145,7 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
             return a.time - b.time;
           });
         $scope.filterEvents('init');
+        console.log("dd", $scope.drawingsAndNotes);
       });
     }
     
@@ -626,7 +630,6 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
   window.onresize = resizeCanvas;
   
   $scope.coachingChanged = function() {
-    $scope.isCoachingTools = !$scope.isCoachingTools;
     redraw();
   };
   
