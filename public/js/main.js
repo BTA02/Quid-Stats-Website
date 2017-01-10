@@ -56,6 +56,7 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
       $scope.updateScoreboard();
       // focus the player so that when you click elsewhere, video gets the focus back
       if($scope.videoPlayer.getPlayerState() == 1){
+        // redraw($scope.videoPlayer.getCurrentTime());
         redraw();
       }
     }
@@ -165,6 +166,7 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
       // add the approrpiate values in to my $scope.drawingsAndNotes field
       for (var key in clickXMap) {
         if (clickXMap.hasOwnProperty(key)) {
+          // Axtell this isn't working for some reason
           $scope.drawingsAndNotes.push({statName: 'DRAWING', time: parseFloat(key).toFixed(1)});
         }
       }
@@ -689,6 +691,7 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
     if (time) {
       timeStamp = time;
     }
+    $scope.videoPlayer.seekTo(timeStamp);
     context.clearRect(0, 0, context.canvas.clientWidth, context.canvas.clientHeight); // Clears the canvas
     context.strokeStyle = "#ffff00";
     context.lineJoin = "round";
