@@ -91,7 +91,7 @@
 		</div>
 	
 		<div id="videoFull">
-			<canvas id="coachingCanvas" ng-hide="!isCoachingTools"></canvas>
+			<canvas id="coachingCanvas"></canvas>
 			<youtube-video id="video" video-id="selectedVideo" player="videoPlayer" player-width="'100%'" player-height="'100%'"></youtube-video>
 		</div>
 	
@@ -209,7 +209,7 @@
 		</div>
 	</div>
 	<div id="coachingToolsContainerFull" ng-show="isCoachingTools">
-		<button class="btn btn-default" ng-click="selectPenTool()">Drawing Tool</button>
+		<button class="btn btn-default" ng-click="togglePenTool()" ng-init="penButtonText = 'Pen Tool'">{{penButtonText}}</button>
 		<button class="btn btn-default" ng-click="eraseDrawingsAtTimeStamp()">Erasing Tool</button>
 		<button class="btn btn-default" ng-click="playVideo()">Play</button>
 		<button class="btn btn-default" ng-click="pauseVideo()">Pause</button>

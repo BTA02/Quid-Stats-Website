@@ -56,8 +56,7 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
       $scope.updateScoreboard();
       // focus the player so that when you click elsewhere, video gets the focus back
       if($scope.videoPlayer.getPlayerState() == 1){
-        // redraw($scope.videoPlayer.getCurrentTime());
-        redraw();
+        redraw(true);
       }
     }
   },100);
@@ -639,8 +638,17 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
     redraw();
   };
   
-  $scope.selectPenTool = function() {
-    resizeCanvas();
+  $scope.togglePenTool = function() {
+    console.log('hitting', $scope.penSelected);
+    $scope.penSelected = !$scope.penSelected;
+    if($scope.penSelected) {
+      document.getElementById('coachingCanvas').style.zIndex = 3;
+      $scope.penButtonText = "Done Drawing";
+      resizeCanvas();
+    } else {
+      document.getElementById('coachingCanvas').style.zIndex = -1;
+      $scope.penButtonText = "Pen Tool";
+    } 
     redraw();
   };
   
@@ -684,21 +692,20 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
     clickDragMap[timeStamp].push(dragging);
   }
   
-  function redraw(time) {
+  function redraw(isFromPaused) {
     var timeStamp = $scope.videoPlayer.getCurrentTime();
     timeStamp = (Math.round(timeStamp * 10) / 10);
     timeStamp = JSON.parse(JSON.stringify(timeStamp));
-    if (time) {
-      timeStamp = time;
-    }
-    $scope.videoPlayer.seekTo(timeStamp);
     context.clearRect(0, 0, context.canvas.clientWidth, context.canvas.clientHeight); // Clears the canvas
     context.strokeStyle = "#ffff00";
     context.lineJoin = "round";
     context.lineWidth = 5;
     if (clickXMap[timeStamp]) {
+      $scope.videoPlayer.pauseVideo();
+      if(isFromPaused) {
+        $scope.videoPlayer.seekTo(timeStamp);
+      }
       for(var i=0; i < clickXMap[timeStamp].length; i++) {		
-        $scope.videoPlayer.pauseVideo();
         context.beginPath();
         if(clickDragMap[timeStamp][i] && i){
           context.moveTo(clickXMap[timeStamp][i-1], clickYMap[timeStamp][i-1]);
