@@ -633,6 +633,8 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
   var clickYMap = {};
   var clickDragMap = {};
   var paint;
+  var xScale = 1.0;
+  var yScale = 1.0;
   
   window.onresize = resizeCanvas;
   
@@ -684,6 +686,9 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
   };
   
   function resizeCanvas() {
+    xScale = context.canvas.clientWidth / parseFloat(1000);
+    yScale = context.canvas.clientHeight / parseFloat(1000);
+    
     canvas.setAttribute('height', context.canvas.clientHeight);
     canvas.setAttribute('width', context.canvas.clientWidth);
   }
@@ -700,6 +705,9 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
     if (!clickDragMap[timeStamp]) {
       clickDragMap[timeStamp] = [];
     }
+    // Convert from real coordinates to model coordinates
+    x = x / xScale;
+    y = y / yScale;
     clickXMap[timeStamp].push(x);
     clickYMap[timeStamp].push(y);
     clickDragMap[timeStamp].push(dragging);
@@ -720,12 +728,18 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
       }
       for(var i=0; i < clickXMap[timeStamp].length; i++) {		
         context.beginPath();
-        if(clickDragMap[timeStamp][i] && i){
-          context.moveTo(clickXMap[timeStamp][i-1], clickYMap[timeStamp][i-1]);
-         }else{
-           context.moveTo(clickXMap[timeStamp][i]-1, clickYMap[timeStamp][i]);
+        if (clickDragMap[timeStamp][i] && i) {
+          var x = clickXMap[timeStamp][i-1] * xScale;
+          var y = clickYMap[timeStamp][i-1] * yScale;
+          context.moveTo(x, y);
+         } else {
+           var xx = (clickXMap[timeStamp][i] * xScale) - 1;
+           var yy = clickYMap[timeStamp][i] * yScale;
+           context.moveTo(xx, yy);
          }
-         context.lineTo(clickXMap[timeStamp][i], clickYMap[timeStamp][i]);
+         var xxx = clickXMap[timeStamp][i] * xScale;
+         var yyy = clickYMap[timeStamp][i] * yScale;
+         context.lineTo(xxx, yyy);
          context.closePath();
          context.stroke();
       }
