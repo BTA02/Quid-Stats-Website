@@ -149,9 +149,11 @@
 		
 		<div id="drawingsAndNotesFull" ng-hide="!isCoachingTools">
 			<div class="statsList">
-				<div class="statsListItem" ng-repeat="drawingAndNoteObj in drawingsAndNotes">
-					<p ng-show="drawingAndNoteObj.stat_name != 'NOTE'" ng-click="seekToTime(drawingAndNoteObj.stat_name, drawingAndNoteObj.time)">{{drawingAndNoteObj.time | time:'ss':'mm:ss'}} Drawing</p>
-					<p ng-show="drawingAndNoteObj.stat_name == 'NOTE'" ng-click="seekToTime(drawingAndNoteObj.stat_name, drawingAndNoteObj.time)">{{drawingAndNoteObj.time | time:'ss':'mm:ss'}} {{drawingAndNoteObj.note}}</p>
+				<div class="statsListItem" ng-repeat="drawingAndNoteObj in drawingsAndNotes" ng-click="seekToTime(drawingAndNoteObj.stat_name, drawingAndNoteObj.time)">
+					<span ng-show="drawingAndNoteObj.stat_name != 'NOTE'" style="font-weight: bold;">{{Math.round(drawingAndNoteObj.time) | time:'ss':'mm:ss'}}</span>
+					<p ng-show="drawingAndNoteObj.stat_name != 'NOTE'">Drawing</p>
+					<span ng-show="drawingAndNoteObj.stat_name == 'NOTE'" style="font-weight: bold;">{{drawingAndNoteObj.time | time:'ss':'mm:ss'}}</span>
+					<p ng-show="drawingAndNoteObj.stat_name == 'NOTE'">{{drawingAndNoteObj.note}}</p>
 				</div>
 			</div>
 		</div>
@@ -209,11 +211,13 @@
 		</div>
 	</div>
 	<div id="coachingToolsContainerFull" ng-show="isCoachingTools">
-		<button class="btn btn-default" ng-click="togglePenTool()" ng-init="penButtonText = 'Pen Tool'">{{penButtonText}}</button>
-		<button class="btn btn-default" ng-click="eraseDrawingsAtTimeStamp()">Erasing Tool</button>
-		<button class="btn btn-default" ng-click="playVideo()">Play</button>
-		<button class="btn btn-default" ng-click="pauseVideo()">Pause</button>
-		<button class="btn btn-default" ng-click="saveDrawings()">Save Drawing</button>
+		<button class="btn btn-default drawing-button" ng-click="togglePenTool()" ng-init="penButtonText = 'Start Drawing'">{{penButtonText}}</button>
+		<button class="btn btn-default drawing-button" ng-click="eraseDrawingsAtTimeStamp()">Erase Screen</button>
+		<button class="btn btn-default drawing-button" ng-click="playVideo()">Play Video</button>
+		<button class="btn btn-default drawing-button" ng-click="pauseVideo()">Pause Video</button>
+		<button class="btn btn-default drawing-button" ng-click="saveDrawings()">Save Current Drawing</button>
+		<h4 ng-hide="!penSelected" style="margin-top: auto; margin-bottom: auto; margin-left: 10px;">Current Selection: Draw</h3>
+		<h4 ng-hide="penSelected" style="margin-top: auto; margin-bottom: auto; margin-left: 10px;">Current Selection: Video</h3>
 	</div>
 
 <!--End of column flex-->

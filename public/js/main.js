@@ -50,6 +50,8 @@ app.filter('statNameFilter', function() {
 
 app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', function($scope, $http, $interval) {
 
+  $scope.Math = window.Math;
+  
   $interval( function(){
     if ($scope.videoPlayer !== null && $scope.videoPlayer !== undefined) {
       $scope.updateOnFieldPlayers();
@@ -635,19 +637,30 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
   window.onresize = resizeCanvas;
   
   $scope.coachingChanged = function() {
+    if(!$scope.isCoachingTools) {
+      document.getElementById('coachingCanvas').style.zIndex = -1;
+      $scope.togglePenTool(false);
+    }
     redraw();
   };
   
-  $scope.togglePenTool = function() {
-    console.log('hitting', $scope.penSelected);
-    $scope.penSelected = !$scope.penSelected;
+  $scope.togglePenTool = function(valToMoveTo) {
+    if($scope.videoPlayer == undefined) {
+      return;
+    }
+    if(valToMoveTo != undefined) {
+      $scope.penSelected = valToMoveTo;
+    } else {
+      $scope.penSelected = !$scope.penSelected;
+    }
     if($scope.penSelected) {
-      document.getElementById('coachingCanvas').style.zIndex = 3;
+      $scope.videoPlayer.pauseVideo();
+      document.getElementById('coachingCanvas').style.zIndex = 2;
       $scope.penButtonText = "Done Drawing";
       resizeCanvas();
     } else {
       document.getElementById('coachingCanvas').style.zIndex = -1;
-      $scope.penButtonText = "Pen Tool";
+      $scope.penButtonText = "Start Drawing";
     } 
     redraw();
   };
