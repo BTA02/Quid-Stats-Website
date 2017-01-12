@@ -20,10 +20,9 @@
 </div>
 	
 <div id="fullOuter">
-
 	<!-- Video player object -->
 	<div id="vidContainerFull">
-		<div id="playersAndScoreboardFull">
+		<div id="playersAndScoreboardFull" ng-hide="isCoachingTools">
 			<div class="position" name="chasers">
 				<p style="text-align:center;"><b>Chasers</b></p>
 				<div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(0,3) track by $index">
@@ -74,7 +73,7 @@
 					<p ng-show="curOD != 'OFFENSE'">with</p>
 					<p ng-model="curBludgers">{{curBludgers}}</p>
 				</div>
-				<div clsas="scoreboardItem">
+				<div class="scoreboardItem">
 					<p>Control?</p>
 					<p ng-show="curControl == 1">Yes</p>
 					<p ng-show="curControl == 0">No</p>
@@ -84,11 +83,12 @@
 		</div>
 	
 		<div id="videoFull">
+			<canvas id="coachingCanvas"></canvas>
 			<youtube-video id="video" video-id="selectedVideo" player="videoPlayer" player-width="'100%'" player-height="'100%'"></youtube-video>
 		</div>
 	
-		<div id="statsAndFiltersFull">
-			<div id="statsList">
+		<div id="statsAndFiltersFull" ng-hide="isCoachingTools">
+			<div class="statsList">
 				<div class="statsListItem" ng-repeat="statObj in displayStats">
 					<p ng-show="statObj.stat_name != 'NOTE'">{{statObj.stat_name | statNameFilter}}</p>
 					
@@ -138,10 +138,21 @@
 				</select>
 			</div>
 		</div>
+		
+		<div id="drawingsAndNotesFull" ng-hide="!isCoachingTools">
+			<div class="statsList">
+				<div class="statsListItem" ng-repeat="drawingAndNoteObj in drawingsAndNotes" ng-click="seekToTime(drawingAndNoteObj.stat_name, drawingAndNoteObj.time)">
+					<span ng-show="drawingAndNoteObj.stat_name != 'NOTE'" style="font-weight: bold;">{{Math.round(drawingAndNoteObj.time) | time:'ss':'mm:ss'}}</span>
+					<p ng-show="drawingAndNoteObj.stat_name != 'NOTE'">Drawing</p>
+					<span ng-show="drawingAndNoteObj.stat_name == 'NOTE'" style="font-weight: bold;">{{drawingAndNoteObj.time | time:'ss':'mm:ss'}}</span>
+					<p ng-show="drawingAndNoteObj.stat_name == 'NOTE'">{{drawingAndNoteObj.note}}</p>
+				</div>
+			</div>
+		</div>
 	</div>
 	
 	<!--Options under the video -->
-	<div id="buttonsContainerFull">
+	<div id="buttonsContainerFull" ng-hide="isCoachingTools">
 		<div class="buttonGroupFull">
 			<p><b>Clock Management</b></p>
 				<p class="clickList" ng-click="addStat(null, null, 'START_CLOCK', null)">Start Clock</p>
@@ -190,6 +201,16 @@
 				<p class="clickList" ng-click="addCard('YELLOW_CARD')">Yellow Card</p>
 				<p class="clickList" ng-click="addCard('RED_CARD')">Red Card</p>
 		</div>
+	</div>
+	<div id="coachingToolsContainerFull" ng-show="isCoachingTools">
+		<button class="btn btn-default drawing-button" ng-click="togglePenTool()" ng-init="penButtonText = 'Start Drawing'">{{penButtonText}}</button>
+		<button class="btn btn-default drawing-button" ng-click="eraseDrawingsAtTimeStamp()">Erase Screen</button>
+		<button class="btn btn-default drawing-button" ng-click="playVideo()">Play Video</button>
+		<button class="btn btn-default drawing-button" ng-click="pauseVideo()">Pause Video</button>
+		<button class="btn btn-default drawing-button" ng-click="saveDrawings()">Save Current Drawing</button>
+		<button class="btn btn-default drawing-button" ng-click="startNote()">Add Note</button>
+		<h4 ng-hide="!penSelected" style="margin-top: auto; margin-bottom: auto; margin-left: 10px;">Current Selection: Draw</h3>
+		<h4 ng-hide="penSelected" style="margin-top: auto; margin-bottom: auto; margin-left: 10px;">Current Selection: Video</h3>
 	</div>
 
 <!--End of column flex-->

@@ -13,19 +13,18 @@
 	cursor: pointer;
 }
 
-#statsList {
+.statsList {
     text-align: center;
-    width: 200px;
     overflow-x: scroll;
-    white-space: nowrap;
     padding: 5px;
     flex: 1 1 auto;
 }
 
-#statsList > div {
+.statsListItem {
 	border: solid 1px black;
-	width: 175px;
+	width: 100%;
 	margin-bottom: 5px;
+	cursor: pointer;
 }
 
 
@@ -46,7 +45,6 @@
 
 #fullOuter {
     height: calc(100% - 50px);
-    
     display: flex;
     flex-direction: column;
 }
@@ -57,32 +55,51 @@
     min-height: 390px;
     flex: 1 1 auto;
     display: flex;
-    justify-content: center;
 }
 
 #playersAndScoreboardFull {
     order: 1;
-    width: 250px;
-    min-width: 250px;
+    min-width: 150px;
     padding-right: 5px;
-    
+    flex: 0 1 auto;
 }
 
 #videoFull {
     min-width: 700px;
     order: 2;
     flex: 1 1 auto;
-    
     height: 100%;
+    position: relative;
 }
 
 #videoFull youtube-video {
     height: 100%;
 }
 
+#video {
+    z-index: 1;
+}
+
+#coachingCanvas {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+    cursor: crosshair;
+}
+
 #statsAndFiltersFull {
     order: 3;
-    width: 250px;
+    min-width: 150px;
+    padding-left: 5px;
+    flex: 0 1 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+#drawingsAndNotesFull {
+    order: 4;
+    width: 400px;
     min-width: 250px;
     padding-left: 5px;
     display: flex;
@@ -98,5 +115,16 @@
 
 select option[disabled]:first-child {
 	display: none;
+}
+
+#coachingToolsContainerFull {
+    display: flex;
+    
+}
+
+.drawing-button {
+    margin-left: 10px;
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
