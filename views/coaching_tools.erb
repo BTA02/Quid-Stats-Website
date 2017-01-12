@@ -1,0 +1,107 @@
+<div name="header" class="container-fluid text-center" ng-init="isCoachingTools = true">
+	<!-- Team Selector -->
+	<select name="teamSelect" ng-model="team" ng-change="getAllGames()">
+		<option value="">Select a team</option>
+		<% @teams.each do |team| %>
+		<option value="<%= team['objectId']%>"><%=team['team_name']%></option>
+		<%end%>
+	</select>
+	<!-- Video Selector and allPlayers populator--> 
+	<select ng-model="vidObj" ng-change="getAllPlayers()" ng-options="game.vid_id+','+game.fall_year+','+game.opponent_id as game.description for game in allGames">
+    </select>
+</div>
+	
+<div id="fullOuter">
+	<!-- Video player object -->
+	<div id="vidContainerFull">
+		<div id="videoFull">
+			<canvas id="coachingCanvas"></canvas>
+			<youtube-video id="video" video-id="selectedVideo" player="videoPlayer" player-width="'100%'" player-height="'100%'"></youtube-video>
+		</div>
+	
+		<div id="drawingsAndNotesFull">
+			<div class="statsList">
+				<div class="statsListItem" ng-repeat="drawingAndNoteObj in drawingsAndNotes" ng-click="seekToTime(drawingAndNoteObj.stat_name, drawingAndNoteObj.time)">
+					<span ng-show="drawingAndNoteObj.stat_name != 'NOTE'" style="font-weight: bold;">{{Math.round(drawingAndNoteObj.time) | time:'ss':'mm:ss'}}</span>
+					<p ng-show="drawingAndNoteObj.stat_name != 'NOTE'">Drawing</p>
+					<span ng-show="drawingAndNoteObj.stat_name == 'NOTE'" style="font-weight: bold;">{{drawingAndNoteObj.time | time:'ss':'mm:ss'}}</span>
+					<p ng-show="drawingAndNoteObj.stat_name == 'NOTE'">{{drawingAndNoteObj.note}}</p>
+					<!--<button ng-show="drawingAndNoteObj.stat_name == 'NOTE'" class="btn btn-danger btn-xs" ng-click="deleteStat(statObj.objectId, statObj.stat_name)">Delete</button>-->
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!--Options under the video -->
+	<div id="coachingToolsContainerFull">
+		<button class="btn btn-default drawing-button" ng-click="togglePenTool()" ng-init="penButtonText = 'Start Drawing'">{{penButtonText}}</button>
+		<button class="btn btn-default drawing-button" ng-click="startNote()">Add Note</button>
+		<h4 ng-hide="!penSelected" style="margin-top: auto; margin-bottom: auto; margin-left: 10px;">Current Selection: Pen</h3>
+		<h4 ng-hide="penSelected" style="margin-top: auto; margin-bottom: auto; margin-left: 10px;">Current Selection: Video</h3>
+		<button class="btn btn-default drawing-button" ng-show="penSelected" ng-click="playVideo()">Play Video</button>
+		<button class="btn btn-default drawing-button" ng-show="penSelected" ng-click="pauseVideo()">Pause Video</button>
+		<button class="btn btn-default drawing-button" ng-show="penSelected" ng-click="eraseDrawingsAtTimeStamp()">Erase Screen</button>
+		<button class="btn btn-default drawing-button" ng-show="penSelected" ng-click="saveDrawings()">Save Current Drawing</button>
+	</div>
+
+<!--End of column flex-->
+</div>
+
+<!-- Div for note overlay -->
+
+<div id="noteOverlay" class="white_content" align="center">
+	<select ng-model="oD">
+		<option>General</option>
+		<option>Offense</option>
+		<option>Defense</option>
+		<option>Transition</option>
+	</select>
+	<br>
+	<select ng-model="goodBad">
+		<option>Neutral</option>
+		<option>Positive</option>
+		<option>Negative</option>
+	</select>
+	<br>
+	<textarea ng-model="noteText" type="text" placeholder="Note" style="width:400px;height:150px;"></textarea><br>
+	<button class="btn btn-default" ng-click="addNote()">Add</button><br>
+	<button class="btn btn-default" ng-click="closeDialog('noteOverlay')">Close<br></button>
+</div>
+
+<div id="displayNoteOverlay" class="white_content" align="center">
+	<p ng-model="displayNoteText">{{displayNoteText}}</p>
+	<a href="javascript:void(0)" ng-click="closeDialog('displayNoteOverlay')">Close<br></a>
+	
+</div>
+<div id="fade" class="black_overlay"/>
+
+<div id="helpText" class="white_content">
+	<a href="javascript:void(0)" ng-click="closeDialog('helpText')">Close<br></a>
+	<h3>This page is experimental. I recommend being familiar with the regular style before going through this.</h3>
+	<h3>Good news, all stats are treated equally. Stats taken in the regular mode will show up here, and vice-versa.</h3>
+	<h4>This page is for recording stats for a given game.</h4>
+	<h5>1. Select a team from the dropdown menu. Then, the next dropdown will automatically populate with all the games stored for that particular team.</h5>
+	<p>Don't see the game you want? Try adding it using the 'Video' tab</p>
+	<h5>2. Once your game is selected, the video will automatically load.</h5>
+	<h5>3. If this is the first time you are taking stats on a game, the players that load will be 'chaserA', 'chaserB', and so on. Those are dummy players.</h5>
+	<h5>4. Now that everything has loaded, it's time to take stats.</h5>
+	<p>a. First step, sub in the starters. Click on a player to sub them in and out.</p>
+	<p>b. Next, use the lists underneath the video to add stats as they happen.</p>
+	<p>Stats are added with the time stamp on the video, so make sure you mark when things happen properly.</p>
+	<p>For an explanation of some the more confusing options, see below.</p>
+	<p>c. For seekers, click 'Seekers Released' when appropriate, then sub in the seeker on the left hand side.</p>
+	<p>d. When you're done, make sure you mark the snitch catch. The snitch catch happens BEFORE a 'Pause Clock'.</p>
+	<h4>Explanations:</h4>
+	<h5>1. Start Offense Against...</h5>
+	<p>a. This is meant to be when a possession starts, and how many bludgers the DEFENSE has. The 'offense' is the team the stats are being recorded for.</p>
+	<p>b. If the defense changes the amount of bludgers they have, DON'T start a new possession.</p>
+	<h5>2. Start Drive Against...</h5>
+	<p>a. This is meant to be when the offense actually begins a drive at the defenses hoops. Again, mark how many bludgers the defense has. This doesn't have to be equal to the amount at the start of the possession.</p>
+	<h5>3. Start Defense With...</h5>
+	<p>a. Similar to 'Start Offense Against...', but this time for defense. Again, mark the bludgers the DEFENSE has.</p>
+	<h5>4. Start Opponent Drive Against...</h5>
+	<p>a. Same as 'Start Drive Against...', but this time it's when the opponent actually attempts to score.</p>
+	<h4>Cards and notes currently are disabled. They will be added eventually.</h4>
+	<a href="javascript:void(0)" ng-click="closeDialog('helpText')">Close<br></a>
+</div>
+<div id="fade" class="black_overlay"/>

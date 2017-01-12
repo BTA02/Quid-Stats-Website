@@ -17,14 +17,6 @@
         <input ng-model="statsPublic" ng-change="togglePublic()" type="checkbox" id="unchecked" class="cbx hidden"/>
         <label id="pubLabel" for="unchecked" class="lbl"></label>
 	</div>
-    <div class="pull-right">
-        <label ng-show="isCoachingTools" for="coachingLabel">Tools</label>
-        <label ng-show="!isCoachingTools" for="coachingLabel">Stats</label>
-    </div>
-    <div class="material-switch pull-right">
-        <input ng-model="isCoachingTools" ng-change="coachingChanged()" type="checkbox" id="coachingSwitch" class="cbx hidden"/>
-        <label id="coachingLabel" for="coachingSwitch" class="lbl"></label>
-	</div>
 </div>
 	
 <div id="fullOuter">
@@ -81,7 +73,7 @@
 					<p ng-show="curOD != 'OFFENSE'">with</p>
 					<p ng-model="curBludgers">{{curBludgers}}</p>
 				</div>
-				<div clsas="scoreboardItem">
+				<div class="scoreboardItem">
 					<p>Control?</p>
 					<p ng-show="curControl == 1">Yes</p>
 					<p ng-show="curControl == 0">No</p>

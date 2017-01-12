@@ -76,13 +76,23 @@ get '/log_out' do
 end
 
 get '/record' do
-	@title = 'Coaching Tools'
+	@title = 'Take Stats'
 	@controllerName = 'RecordFullStatsController'
 	if !logged_in?
 		redirect '/noAuth'
 	end
 	@teams = get_all_teams
 	erb :full_stats_record
+end
+
+get '/coaching' do
+	@title = 'Coaching Tools'
+	@controllerName = 'RecordFullStatsController'
+	if !logged_in?
+		redirect '/noAuth'
+	end
+	@teams = get_all_teams
+	erb :coaching_tools
 end
 
 get '/full_stats_view' do

@@ -61,7 +61,7 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
 				redraw(true);
 			}
 		}
-	},100);
+	},50);
 	
 	$scope.closeDialog = function(which) {
 		document.getElementById(which).style.display='none';document.getElementById('fade').style.display='none';
@@ -637,9 +637,11 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
 	
 	// Start of drawing stuff
 	var canvas = document.getElementById('coachingCanvas');
-	var context = canvas.getContext("2d");
-	canvas.setAttribute('height', context.canvas.clientHeight);
-	canvas.setAttribute('width', context.canvas.clientWidth);
+	if (canvas) {
+		var context = canvas.getContext("2d");
+		canvas.setAttribute('height', context.canvas.clientHeight);
+		canvas.setAttribute('width', context.canvas.clientWidth);
+	}
 	// These need to be objects, with key being the time, val being the array
 	var clickXMap = {};
 	var clickYMap = {};
@@ -649,13 +651,6 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
 	var yScale = 1.0;
 	
 	window.onresize = resizeCanvas;
-	
-	$scope.coachingChanged = function() {
-		if(!$scope.isCoachingTools) {
-			$scope.togglePenTool(false);
-		}
-		redraw();
-	};
 	
 	$scope.togglePenTool = function(valToMoveTo) {
 		if($scope.videoPlayer == undefined) {
