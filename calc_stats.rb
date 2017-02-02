@@ -6,7 +6,8 @@ class CalcStats
 
 	attr_accessor :stats_map
 
-	def initialize(team_id, game_ids, author_id, per)
+	def initialize(client, team_id, game_ids, author_id, per)
+		@client = client
 		@team_id = team_id
 		@game_ids = game_ids
 		@players = get_players_from_team
@@ -22,7 +23,7 @@ class CalcStats
 		array_of_game_ids_sliced = @game_ids.each_slice(5).to_a
 		all_stats = []
 		array_of_game_ids_sliced.each do |array_of_ids|
-			stats_to_add = Parse::Query.new('Stats').tap do |q|
+			stats_to_add = @client.query('Stats').tap do |q|
 				q.eq('team_id', @team_id)
 				q.eq('author_id', @author_id)
 				q.value_in('vid_id', array_of_ids)
@@ -384,11 +385,8 @@ class CalcStats
 		return_array
 	end
 
-
-	
-
 	def get_game_events_for_team
-		Parse::Query.new("Videos").eq("team_id", @team_id).get
+		@client.query("Videos").eq("team_id", @team_id).get
 	end
 
 	def getTimeFromMilliPretty(milliseconds)
@@ -402,12 +400,14 @@ class CalcStats
 	end
 
 	def get_players_from_team
-		resp = Parse::Query.new("Rosters").tap do |q|
+		pp 'why not?'
+		pp @client
+		resp = @client.query("Rosters").tap do |q|
 			q.eq("team_id", @team_id)
 		end.get
 		playersSet = Set.new
 		for i in 0..resp.length-1
-			players = Parse::Query.new("Players").tap do |q|
+			players = @client.query("Players").tap do |q|
 				q.value_in("objectId", resp[i]["player_ids"])
 				q.order_by = "first_name"
 			end.get

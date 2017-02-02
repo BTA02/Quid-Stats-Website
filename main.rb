@@ -8,7 +8,6 @@ require 'tilt/erb'
 require_relative 'calc_stats'
 require_relative 'calc_full_stats'
 require_relative 'raw_stats'
-
 configure do
 	if settings.development?
 		require 'dotenv'
@@ -17,7 +16,8 @@ configure do
 	end
 	enable :sessions
 	set :session_secret, 'super secret string'
-	Parse.init :application_id => ENV["PARSE_APP_ID"], :master_key => ENV["PARSE_API_KEY"]
+	# Parse.init :application_id => ENV["PARSE_APP_ID"], :master_key => ENV["PARSE_API_KEY"]
+	$client = Parse.create :application_id => ENV["PARSE_APP_ID"], :master_key => ENV["PARSE_API_KEY"], :host => 'https://parseapi.back4app.com', :path => ''
 end
 
 helpers do
@@ -32,7 +32,7 @@ helpers do
 	end
 	
 	def is_public?(author, team, vid)
-		permission = Parse::Query.new('Permissions').tap do |q|
+		permission = $client.query('Permissions').tap do |q|
 			q.eq('author_id', author)
 			q.eq('team_id', team)
 			q.eq('vid_id', vid)
@@ -49,7 +49,6 @@ get '/' do
 	@title = 'Home'
 	@controllerName = 'HomeController'
 	if logged_in?
-		@teams = get_all_teams
 		@logged_in = true
 		erb :login
 	else
@@ -299,7 +298,7 @@ get '/calcStats/:user_id/:stat_selected/:per' do
 	stat_selected = params[:stat_selected]
 	team_id = params[:team_id]
 	game_ids = params[:ids].split(",")
-	calc_stats = CalcStats.new(team_id, game_ids, user_id, params[:per])
+	calc_stats = CalcStats.new($client, team_id, game_ids, user_id, params[:per])
 	case stat_selected
 	when 'raw_stats'
 		raw_stats_map_json = calc_stats.raw_stats.to_json
@@ -335,7 +334,7 @@ get '/calcFullStats/:user_id/:stat_selected/:per' do
 	team_id = params[:team_id]
 	game_ids = params[:ids].split(",")
 	
-	calc_full_stats = CalcFullStats.new(team_id, game_ids, user_id, params[:per])
+	calc_full_stats = CalcFullStats.new($client, team_id, game_ids, user_id, params[:per])
 	case stat_selected
 	when 'chaser_raw_stats'
 		raw_stats_map_json = calc_full_stats.chaser_raw_stats.to_json
@@ -395,7 +394,7 @@ end
 
 def sign_up_user(params)
 	#params has username and password
-	user = Parse::Object.new("_User")
+	user = $client.object("_User")
 	user[:username] = params["signupUsername"].to_s
 	user[:password] = params["signupPassword1"].to_s
 	ret_val = user.save
@@ -408,7 +407,7 @@ end
 def log_in_user(params)
 	username = params["loginUsername"].to_s
 	password = params["loginPassword"].to_s
-	user = Parse::User.authenticate(username, password)
+	user = Parse::User.authenticate(username, password, $client)
 	session[:sessionToken] = user["sessionToken"]
 	session[:authorId] = user["objectId"]
 	session[:username] = user["username"]
@@ -416,7 +415,7 @@ def log_in_user(params)
 end
 
 def get_all_teams
-	teams_array = Parse::Query.new("Teams").tap do |q|
+	teams_array = $client.query("Teams").tap do |q|
 		q.order_by = 'team_name'
 	end.get
 	@teams_map = Hash.new
@@ -429,24 +428,23 @@ end
 # gets teams that I actually have stats for
 # only going to be used in view stats, I think
 def get_relevant_teams
-	teams_array = Parse::Query.new("Teams").tap do |q|
+	teams_array = $client.query("Teams").tap do |q|
 		q.order_by = 'team_name'
 	end.get
 	# this just gets all teams for now
 	# now, pare this down based on what stats i actually have
 	
-	
 	teams_array
 end
 
 def get_users
-	Parse::Query.new("_User").get
+	$client.query("_User").get
 end
 
 def get_all_games_for_team(params)
 	team_id = params[:team_id]
 
-	resp = Parse::Query.new("Videos").tap do |q|
+	resp = $client.query("Videos").tap do |q|
 		q.eq("team_id", team_id)
 	end.get
 	ret = []	
@@ -471,7 +469,7 @@ def get_done_games_for_team(params)
 		user_id = params[:user_id]
 	end
 
-	vids = Parse::Query.new("Videos").tap do |q|
+	vids = $client.query("Videos").tap do |q|
 		q.eq("team_id", team_id)
 	end.get
 	ids = []
@@ -479,7 +477,7 @@ def get_done_games_for_team(params)
 		ids.push(e['vid_id'])
 	end
 	catch_names = ['SNITCH_CATCH', 'AWAY_SNITCH_CATCH']
-	done_games = Parse::Query.new("Stats").tap do |q|
+	done_games = $client.query("Stats").tap do |q|
 		q.eq("team_id", team_id)
 		q.value_in("vid_id", ids)
 		q.eq("author_id", user_id)
@@ -512,7 +510,7 @@ def get_done_games_for_team(params)
 		# doneGames = all videos for a team that have stats for them, taken by the userId
 		# I want to loop through all videos I can have (public vids)
 		# and compare them to what the user in question has accomplished
-		public_vids = Parse::Query.new("Permissions").tap do |q|
+		public_vids = $client.query("Permissions").tap do |q|
 			q.eq('team_id', team_id)
 			q.eq('author_id', user_id)
 		end.get
@@ -556,12 +554,12 @@ def get_done_games_for_team(params)
 end
 
 def get_players_for_team(team_id, fall_year)
-	resp = Parse::Query.new("Rosters").tap do |q|
+	resp = $client.query("Rosters").tap do |q|
 		q.eq("team_id", team_id)
 		q.eq("fall_year", fall_year)
 	end.get
 
-	players = Parse::Query.new("Players").tap do |q|
+	players = $client.query("Players").tap do |q|
 		q.value_in("objectId", resp[0]["player_ids"])
 		q.order_by = "first_name"
 	end.get
@@ -570,7 +568,7 @@ def get_players_for_team(team_id, fall_year)
 end
 
 def get_all_stats_from_game(vid, team, author)
-	resp = Parse::Query.new('Stats').tap do |q|
+	resp = $client.query('Stats').tap do |q|
 		q.eq("vid_id", vid)
 		q.eq("team_id", team)
 		q.eq("author_id", author)
@@ -581,7 +579,7 @@ def get_all_stats_from_game(vid, team, author)
 end
 
 def get_all_notes_from_game(params, author_id)
-	resp = Parse::Query.new('Notes').tap do |q|
+	resp = $client.query('Notes').tap do |q|
 		q.eq("vid_id", params[:vid_id])
 		q.eq("team_id", params[:team_id])
 		q.eq("author_id", author_id)
@@ -592,7 +590,7 @@ def get_all_notes_from_game(params, author_id)
 end
 
 def add_stat(params, author_id)
-	new_stat = Parse::Object.new('Stats')
+	new_stat = $client.object('Stats')
 	new_stat['vid_id'] = params['vid_id']
 	new_stat['team_id'] = params['team_id']
 	new_stat['author_id'] = author_id
@@ -607,7 +605,7 @@ def add_stat(params, author_id)
 end
 
 def add_note(params, author_id)
-	new_stat = Parse::Object.new("Notes")
+	new_stat = $client.object("Notes")
 	new_stat['vid_id'] = params['vid_id']
 	new_stat['team_id'] = params['team_id']
 	new_stat['author_id'] = author_id
@@ -626,14 +624,14 @@ end
 
 def delete_stat(id, stat_name)
 	if stat_name == 'NOTE'
-		stat_to_del = Parse::Query.new('Notes').tap do |q|
+		stat_to_del = $client.query('Notes').tap do |q|
 			q.eq("objectId", id);
 		end.get.first
 		retObj = stat_to_del.clone
 		stat_to_del.parse_delete
 		retObj.to_json
 	else
-		stat_to_del = Parse::Query.new('Stats').tap do |q|
+		stat_to_del = $client.query('Stats').tap do |q|
 			q.eq("objectId", id);
 		end.get.first
 		retObj = stat_to_del.clone
@@ -643,7 +641,7 @@ def delete_stat(id, stat_name)
 end
 
 def update_stat(params)
-	update_stat = Parse::Query.new('Stats').tap do |q|
+	update_stat = $client.query('Stats').tap do |q|
 		q.eq('objectid', params['object_id'])
 	end.get.first
 	update_stat['time'] = params['new_time']
@@ -659,7 +657,7 @@ def add_video(params)
 	year = params['fall_year']
 	description = params['description']
 
-	new_video = Parse::Object.new("Videos")
+	new_video = $client.object("Videos")
 	new_video['team_id'] = team
 	new_video['opponent_id'] = opponent_id
 	new_video['vid_id'] = video 
@@ -671,7 +669,7 @@ def add_video(params)
 end
 
 def get_roster(params)
-	resp = Parse::Query.new('Rosters').tap do |q|
+	resp = $client.query('Rosters').tap do |q|
 		q.eq('team_id', params['team_id'])
 		q.eq('fall_year', params['fall_year'])
 	end.get
@@ -679,7 +677,7 @@ def get_roster(params)
 end
 
 def add_player(params)
-	new_player = Parse::Object.new('Players')
+	new_player = $client.object('Players')
 	new_player['first_name'] = params['first_name']
 	new_player['last_name'] = params['last_name']
 
@@ -688,7 +686,7 @@ def add_player(params)
 end
 
 def update_player(params)
-	update_player = Parse::Query.new('Players').tap do |q|
+	update_player = $client.query('Players').tap do |q|
 		q.eq('objectid', params['player_id'])
 	end.get.first
 
@@ -701,12 +699,12 @@ def update_player(params)
 end
 
 def add_new_team(params)
-	new_team = Parse::Object.new('Teams')
+	new_team = $client.object('Teams')
 	new_team['team_name'] = params['team_name']
 
 	result = new_team.save
 
-	new_roster = Parse::Object.new('Rosters')
+	new_roster = $client.object('Rosters')
 	new_roster['team_id'] = result['objectId']
 	new_roster['fall_year'] = params['fall_year']
 	new_roster['player_ids'] = nil
@@ -719,12 +717,12 @@ def add_new_team(params)
 end
 
 def update_team(params)
-	update_team = Parse::Query.new('Rosters').tap do |q|
+	update_team = $client.query('Rosters').tap do |q|
 		q.eq('team_id', params['team_id'])
 		q.eq('fall_year', params['fall_year'])
 	end.get.first
 	if update_team == nil
-		new_roster = Parse::Object.new('Rosters')
+		new_roster = $client.object('Rosters')
 		new_roster['team_id'] = params['team_id']
 		new_roster['fall_year'] = params['fall_year']
 		new_roster['player_ids'] = params['ids'].split(',')
@@ -741,7 +739,7 @@ end
 # just make one call to get all the permissions from the table
 # I have to do that anyway, might as well be now
 def build_public_teams_map(users)
-	permissions_rows = Parse::Query.new('Permissions').get
+	permissions_rows = $client.query('Permissions').get
 	users.each do |user|
 		set_of_public_teams = Set.new
 		permissions_rows.each do |permission|
@@ -754,7 +752,7 @@ def build_public_teams_map(users)
 end
 
 def get_video_permissions(params)
-	permission = Parse::Query.new('Permissions').tap do |q|
+	permission = $client.query('Permissions').tap do |q|
 		q.eq('author_id', session[:authorId])
 		q.eq('team_id', params[:team_id])
 		q.eq('vid_id', params[:vid_id])
@@ -770,7 +768,7 @@ end
 def toggle_permissions(params)
 	set_to = params['privacy']
 
-	permission = Parse::Query.new('Permissions').tap do |q|
+	permission = $client.query('Permissions').tap do |q|
 		q.eq('author_id', session[:authorId])
 		q.eq('team_id', params['team_id'])
 		q.eq('vid_id', params['vid_id'])
@@ -780,7 +778,7 @@ def toggle_permissions(params)
 		if permission.length != 0
 			# do nothing, already public
 		else
-			new_permission = Parse::Object.new('Permissions')
+			new_permission = $client.object('Permissions')
 			new_permission['team_id'] = params['team_id']
 			new_permission['vid_id'] = params['vid_id']
 			new_permission['author_id'] = session[:authorId]
@@ -795,8 +793,7 @@ end
 def save_drawings(params)
 	existing_drawings = get_all_drawings_from_game(params, true)
 	if existing_drawings.nil? or existing_drawings.empty?
-		pp 'it doesnt exist'
-		new_drawing = Parse::Object.new('Drawings')
+		new_drawing = $client.object('Drawings')
 		new_drawing['team_id'] = params['team_id']
 		new_drawing['vid_id'] = params['vid_id']
 		new_drawing['author_id'] = session[:authorId]
@@ -805,10 +802,6 @@ def save_drawings(params)
 		new_drawing['dragMap'] = params['clickDragMap']
 		new_drawing.save
 	else
-		pp 'it does exist'
-		pp existing_drawings['xMap']
-		pp params['clickXMap']
-		pp '----------------'
 		existing_drawings['xMap'] = params['clickXMap']
 		existing_drawings['yMap'] = params['clickYMap']
 		existing_drawings['dragMap'] = params['clickDragMap']
@@ -817,7 +810,7 @@ def save_drawings(params)
 end
 
 def get_all_drawings_from_game(params, getRawObject)
-	drawings = Parse::Query.new("Drawings").tap do |q|
+	drawings = $client.query("Drawings").tap do |q|
 		q.eq('author_id', session[:authorId])
 		q.eq('team_id', params['team_id'])
 		q.eq('vid_id', params['vid_id'])
@@ -832,7 +825,7 @@ end
 # to make this better, just wait until a few letters have been typed
 # then look it all up
 def get_all_players
-	Parse::Query.new("Players").tap do |q|
+	$client.query("Players").tap do |q|
 		q.limit = 1000
 	end.get
 end
@@ -845,7 +838,7 @@ end
 # New stuff
 
 def add_full_stat(vals, author_id)
-	new_stat = Parse::Object.new('Stats')
+	new_stat = $client.object('Stats')
 	new_stat['vid_id'] = vals['vid_id']
 	new_stat['team_id'] = vals['team_id']
 	new_stat['author_id'] = author_id
@@ -862,14 +855,14 @@ end
 
 def delete_full_stat(vals)
 	if vals['stat'] == 'NOTE'
-		stat_to_del = Parse::Query.new('Notes').tap do |q|
+		stat_to_del = $client.query('Notes').tap do |q|
 			q.eq("objectId", vals['object_id']);
 		end.get.first
 		retObj = stat_to_del.clone
 		stat_to_del.parse_delete
 		retObj.to_json
 	else
-		stat_to_del = Parse::Query.new('Stats').tap do |q|
+		stat_to_del = $client.query('Stats').tap do |q|
 			q.eq("objectId", vals['object_id']);
 		end.get.first
 		retObj = stat_to_del.clone
