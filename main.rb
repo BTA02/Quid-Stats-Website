@@ -161,6 +161,13 @@ get '/public/:userId/stats' do
 	erb :view_stats
 end
 
+
+get '/rankings' do
+	@title = 'Rankings'
+	@controllerName = 'RankingsController'
+	erb :rankings
+end
+
 # this will need to get updated to watch_film
 get '/public/:author_id/:team_id/:vid_id/:year/:player_filter/:event_filter' do
 	if is_public?(params[:author_id], params[:team_id], params[:vid_id])
