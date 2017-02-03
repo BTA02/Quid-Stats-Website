@@ -1,0 +1,21 @@
+<div class="rankings_container">
+    <table class="table table-striped table-hover">
+        <thead>
+            <th>Team</th>
+            <th>QuidStats Elo</th>
+            <th>Eighth Man Elo</th>
+            <th>Eighth Man Media</th>
+            <th>Average</th>
+        </thead>
+        <tbody>
+            <tr ng-repeat="teamArray in combinedRankings">
+                <td>{{teamArray[0]}}</td>
+                <td>{{teamArray[1]}}</td>
+                <td>{{teamArray[2]}}</td>
+                <td>{{teamArray[3]}}</td>
+                <td ng-hide="teamArray[3] == 'NR'">{{(teamArray[1] + teamArray[2] + teamArray[3]) / 3}}</td>
+                <td ng-show="teamArray[3] == 'NR'">{{(teamArray[1] + teamArray[2] + 30) / 3}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

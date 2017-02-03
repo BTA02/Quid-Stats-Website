@@ -1,0 +1,23 @@
+.rankings_container {
+    display: flex;
+}
+
+.rankings_quid_elo {
+    flex: 1 1 auto;
+    order: 1;
+}
+
+.rankings_eighth_man_media {
+    flex: 1 1 auto;
+    order: 2;
+}
+
+.rankings_eight_man_elo {
+    flex: 1 1 auto;
+    order: 3;
+}
+
+.rankings_average {
+    flex: 1 1 auto;
+    order: 4;
+}
