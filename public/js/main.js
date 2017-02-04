@@ -1381,5 +1381,51 @@ app.controller('RankingsController', ['$scope', function($scope) {
 	$scope.combinedRankings.push(["Florida's Finest",35, 27, 20]);
 	$scope.combinedRankings.push(["Penn State University Nittany Lions",27, 15, "NR"]);
 	$scope.combinedRankings.push(["Arizona State University",26, 18, 22]);
-
+	
+	function qsComparator(a, b) {
+		if (a[1] < b[1]) return -1;
+		if (a[1] > b[1]) return 1;
+		return 0;
+	}
+	function eeloComparator(a, b) {
+		if (a[2] < b[2]) return -1;
+		if (a[2] > b[2]) return 1;
+		return 0;
+	}
+	function emComparator(a, b) {
+		var rA = a[3] == 'NR' ? 30 : a[3]
+		var rB = b[3] == 'NR' ? 30 : b[3]
+		if (rA < rB) return -1;
+		if (rA > rB) return 1;
+		return 0;
+	}
+	function combComparator(a, b) {
+		var frA = 30;
+		var frB = 30;
+		if (a[3] != 'NR') {
+			frA = a[3]
+		}
+		if (b[3] != 'NR') {
+			frB = b[3]
+		}
+		var avgA = (a[1] + a[2] + frA) / 3 
+		var avgB = (b[1] + b[2] + frB) / 3 
+		if (avgA < avgB) return -1;
+		if (avgA > avgB) return 1;
+		return 0;
+	}
+	
+	$scope.sortRankings = function(which) {
+		if (which == 1) {
+			$scope.combinedRankings.sort(qsComparator);
+		} else if (which == 2) {
+			$scope.combinedRankings.sort(eeloComparator);
+		} else if (which == 3) {
+			$scope.combinedRankings.sort(emComparator);
+		} else if (which == 4) {
+			$scope.combinedRankings.sort(combComparator);
+		}
+	};
+	
+	
 }]);
