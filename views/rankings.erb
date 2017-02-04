@@ -1,0 +1,23 @@
+<div class="rankings_container">
+    <table class="table table-striped table-hover">
+        <thead>
+            <th>Rank</th>
+            <th>Team</th>
+            <th ng-click="sortRankings(1)" class="statsHeader">QuidStats Elo</th>
+            <th ng-click="sortRankings(2)" class="statsHeader">Eighth Man Elo</th>
+            <th ng-click="sortRankings(3)" class="statsHeader">Eighth Man Media</th>
+            <th ng-click="sortRankings(4)" class="statsHeader">Average</th>
+        </thead>
+        <tbody>
+            <tr ng-repeat="teamArray in combinedRankings track by $index">
+                <td>{{$index + 1}}</td>
+                <td>{{teamArray[0]}}</td>
+                <td>{{teamArray[1]}}</td>
+                <td>{{teamArray[2]}}</td>
+                <td>{{teamArray[3]}}</td>
+                <td ng-hide="teamArray[3] == 'NR'">{{(teamArray[1] + teamArray[2] + teamArray[3]) / 3}}</td>
+                <td ng-show="teamArray[3] == 'NR'">{{(teamArray[1] + teamArray[2] + 30) / 3}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
