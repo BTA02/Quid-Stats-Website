@@ -24,7 +24,8 @@
     "ng-youtube-embed": "~0.3.3",
     "videogular": "~1.4.4",
     "videogular-themes-default": "~1.4.4",
-    "angular-sanitize": "~1.6.1"
+    "angular-sanitize": "~1.6.1",
+    "angular-route": "1.6.1"
   },
   "resolutions": {
     "angular": ">=1.4.0"
