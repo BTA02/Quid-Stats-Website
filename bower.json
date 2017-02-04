@@ -21,7 +21,10 @@
     "anguvideo": "~0.0.1",
     "angucomplete-alt": "git://github.com/BTA02/angucomplete-alt.git#7127cdfaf4511b86763990c487769636ab1d9f84",
     "angular-snap": "~1.8.5",
-    "ng-youtube-embed": "~0.3.3"
+    "ng-youtube-embed": "~0.3.3",
+    "videogular": "~1.4.4",
+    "videogular-themes-default": "~1.4.4",
+    "angular-sanitize": "~1.6.1"
   },
   "resolutions": {
     "angular": ">=1.4.0"

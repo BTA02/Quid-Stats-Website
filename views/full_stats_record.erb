@@ -83,8 +83,12 @@
 		</div>
 	
 		<div id="videoFull">
-			<canvas id="coachingCanvas"></canvas>
+			<!--<canvas id="coachingCanvas"></canvas>-->
 			<youtube-video id="video" video-id="selectedVideo" player="videoPlayer" player-width="'100%'" player-height="'100%'"></youtube-video>
+			<videogular vg-theme="controller.config.theme">
+				<vg-media vg-src="controller.config.sources" vg-tracks="controller.config.tracks">
+				</vg-media>
+			</videogular>
 		</div>
 	
 		<div id="statsAndFiltersFull" ng-hide="isCoachingTools">
