@@ -53,6 +53,26 @@ app.filter('statNameFilter', function() {
 });
 
 app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', '$sce', function($scope, $http, $interval, $sce) {
+	this.init = function init() {
+	var tweets = [];
+    for (var i=0; i<3; i++) {
+        var tweet = {};
+        var start = 4;
+        var end = 7;
+
+        tweet.timeLapse = {
+            start: start,
+            end: end
+        };
+
+        tweet.onLeave = this.onLeave.bind(this);
+        tweet.onUpdate = this.onUpdate.bind(this);
+        tweet.onComplete = this.onComplete.bind(this);
+
+        tweet.params = "hh";
+
+        tweets.push(tweet);
+    }
 	this.config = {
 		sources: [
 			// Dummy video of US Nat 9
@@ -65,7 +85,23 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', '$s
 		plugins: {
 			poster: "http://www.videogular.com/assets/images/videogular/png"
 		},
+		cuePoints: {
+			tweets: tweets
+		},
 	};
+	};
+	
+	this.onLeave = function onLeave(currentTime, timeLapse, params) {
+		alert("hey");
+	};
+	this.onComplete = function onLeave(currentTime, timeLapse, params) {
+		alert("he1y");
+	};
+	this.onUpdate = function onLeave(currentTime, timeLapse, params) {
+		alert("hey3");
+	};
+	
+	this.init();
 
 	$scope.Math = window.Math;
 	
