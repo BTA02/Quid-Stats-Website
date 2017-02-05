@@ -53,26 +53,31 @@ app.filter('statNameFilter', function() {
 });
 
 app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', '$sce', function($scope, $http, $interval, $sce) {
-	this.init = function init() {
-	var tweets = [];
-    for (var i=0; i<3; i++) {
-        var tweet = {};
-        var start = 4;
-        var end = 7;
-
-        tweet.timeLapse = {
-            start: start,
-            end: end
-        };
-
-        tweet.onLeave = this.onLeave.bind(this);
-        tweet.onUpdate = this.onUpdate.bind(this);
-        tweet.onComplete = this.onComplete.bind(this);
-
-        tweet.params = "hh";
-
-        tweets.push(tweet);
-    }
+	var point = {
+		timeLapse: {
+			start: 4,
+			end: 7
+		},
+		// onLeave: this.onLeave.bind(this),
+		// onUpdate: this.onUpdate.bind(this),
+		// onComplete: this.onLeave.bind(this),
+		params: {
+			message: 'Test'
+		}
+	};
+		
+	this.onLeave = function onLeave(currentTime, timeLapse, params) {
+		alert("hey");
+	};
+	this.onComplete = function onLeave(currentTime, timeLapse, params) {
+		alert("he1y");
+	};
+	this.onUpdate = function onLeave(currentTime, timeLapse, params) {
+		alert("hey3");
+	};
+	
+	var cuePoints = [];
+	cuePoints.push(point);
 	this.config = {
 		sources: [
 			// Dummy video of US Nat 9
@@ -86,22 +91,23 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', '$s
 			poster: "http://www.videogular.com/assets/images/videogular/png"
 		},
 		cuePoints: {
-			tweets: tweets
+			console: [
+				{
+					timeLapse: {
+						start:1,
+						end: 4,
+					},
+					onLeave: this.onLeave.bind(this),
+					onUpdate: this.onUpdate.bind(this),
+					onComplete: this.onComplete.bind(this),
+					params: {
+						messsage: "hello, world"
+					}
+				}
+			] 
 		},
 	};
-	};
-	
-	this.onLeave = function onLeave(currentTime, timeLapse, params) {
-		alert("hey");
-	};
-	this.onComplete = function onLeave(currentTime, timeLapse, params) {
-		alert("he1y");
-	};
-	this.onUpdate = function onLeave(currentTime, timeLapse, params) {
-		alert("hey3");
-	};
-	
-	this.init();
+
 
 	$scope.Math = window.Math;
 	
@@ -134,6 +140,7 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', '$s
 		// Set this to my videogular config
 		var videoUrl = "https://www.youtube.com/watch?v=" + $scope.selectedVideo;
 		this.controller.config['sources'] = [{src:videoUrl}];
+		console.log(this.controller.config['cuePoints']);
 		$scope.year = idAndYearAndOpponent[1];
 		$scope.opponent = idAndYearAndOpponent[2];
 		$scope.allPlayers = [];
