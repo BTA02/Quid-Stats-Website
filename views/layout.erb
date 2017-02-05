@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css"  media="screen">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"  />
 
-
     <link rel="stylesheet" href="/stylesheets/add_team.css">
     <link rel="stylesheet" href="/stylesheets/login.css">
     <link rel="stylesheet" href="/stylesheets/nav.css">
@@ -41,9 +40,6 @@
     
   </head>
 
-  <!--what if I do something tricky here, and the controller is a variable?-->
-  <!--This will require some copy pasting, but I'm good with that-->
-  
   <body ng-controller="<%= @controllerName %> as controller">
     <snap-drawer>
       <h4 class="username"><%= h(session[:username]) || 'Please Login' %></h4>

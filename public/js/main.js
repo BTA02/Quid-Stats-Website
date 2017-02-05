@@ -53,31 +53,26 @@ app.filter('statNameFilter', function() {
 });
 
 app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', '$sce', function($scope, $http, $interval, $sce) {
-	var point = {
-		timeLapse: {
-			start: 4,
-			end: 7
-		},
-		// onLeave: this.onLeave.bind(this),
-		// onUpdate: this.onUpdate.bind(this),
-		// onComplete: this.onLeave.bind(this),
-		params: {
-			message: 'Test'
-		}
-	};
-		
-	this.onLeave = function onLeave(currentTime, timeLapse, params) {
-		alert("hey");
-	};
-	this.onComplete = function onLeave(currentTime, timeLapse, params) {
-		alert("he1y");
-	};
-	this.onUpdate = function onLeave(currentTime, timeLapse, params) {
-		alert("hey3");
+
+
+	// Videogular code
+	var controller = this;
+	controller.API = null;
+	controller.onPlayerReady = function(API) {
+		controller.API = API;
 	};
 	
-	var cuePoints = [];
-	cuePoints.push(point);
+	this.onEnterDrawing = function onEnter(currentTime, timeLapse, params) {
+		this.API.pause();
+		redraw();
+	};
+	this.onEnterNote = function onLeave(currentTime, timeLapse, params) {
+		// alert("hey");
+	};
+	this.onEnterEvent = function onLeave(currentTime, timeLapse, params) {
+		// alert("he1y");
+	};
+	
 	this.config = {
 		sources: [
 			// Dummy video of US Nat 9
@@ -91,21 +86,18 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', '$s
 			poster: "http://www.videogular.com/assets/images/videogular/png"
 		},
 		cuePoints: {
-			console: [
-				{
-					timeLapse: {
-						start:1,
-						end: 4,
-					},
-					onLeave: this.onLeave.bind(this),
-					onUpdate: this.onUpdate.bind(this),
-					onComplete: this.onComplete.bind(this),
-					params: {
-						messsage: "hello, world"
-					}
-				}
-			] 
+			events: []
 		},
+	};
+	
+	this.addCuePoint = function(timeStamp) {
+		var point = {
+			timeLapse: {
+				start: timeStamp
+			},
+			onEnter: this.onEnterDrawing.bind(this),
+		};
+		this.controller.cuePoints.events.push(point);
 	};
 
 
@@ -116,11 +108,8 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', '$s
 			$scope.updateOnFieldPlayers();
 			$scope.updateScoreboard();
 			// focus the player so that when you click elsewhere, video gets the focus back
-			if($scope.videoPlayer.getPlayerState() == 1 && $scope.isCoachingTools){
-				redraw(true);
-			}
 		}
-	},50);
+	},100);
 	
 	$scope.closeDialog = function(which) {
 		document.getElementById(which).style.display='none';document.getElementById('fade').style.display='none';
@@ -140,7 +129,6 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', '$s
 		// Set this to my videogular config
 		var videoUrl = "https://www.youtube.com/watch?v=" + $scope.selectedVideo;
 		this.controller.config['sources'] = [{src:videoUrl}];
-		console.log(this.controller.config['cuePoints']);
 		$scope.year = idAndYearAndOpponent[1];
 		$scope.opponent = idAndYearAndOpponent[2];
 		$scope.allPlayers = [];
@@ -231,6 +219,7 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', '$s
 			for (var key in clickXMap) {
 				if (clickXMap.hasOwnProperty(key)) {
 					$scope.drawingsAndNotes.push({statName: 'DRAWING', time: parseFloat(key).toFixed(1)});
+					this.addCuePoint(parseFloat(key));
 				}
 			}
 			$scope.drawingsAndNotes.sort(function(a, b){
@@ -759,12 +748,12 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', '$s
 		$scope.saveDrawings();
 		$scope.videoPlayer.seekTo($scope.videoPlayer.getCurrentTime() + .1);
 		context.clearRect(0, 0, context.canvas.clientWidth, context.canvas.clientHeight); // Clears the canvas
-		$scope.videoPlayer.playVideo();
+		// $scope.videoPlayer.playVideo();
 	};
 	
 	$scope.pauseVideo = function() {
 		$scope.saveDrawings();
-		$scope.videoPlayer.pauseVideo();
+		// $scope.videoPlayer.pauseVideo();
 	};
 	
 	function resizeCanvas() {
@@ -795,7 +784,11 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', '$s
 		clickXMap[timeStamp].push(x);
 		clickYMap[timeStamp].push(y);
 		clickDragMap[timeStamp].push(dragging);
+		
+		// add a cuepoint, right?
+		addCuePoint(timeStamp);
 	}
+	
 	
 	function redraw(isFromPaused) {
 		var timeStamp = $scope.videoPlayer.getCurrentTime();
