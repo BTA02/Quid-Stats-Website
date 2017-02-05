@@ -21,14 +21,17 @@
     <link rel="stylesheet" href="/lib/angular-snap/angular-snap.css">
 
     <script src="/lib/angular/angular.min.js"></script>
-    <script src="/lib/anguvideo/js/anguvideo.js"></script>
-    <script src="/lib/angular-youtube-mb/dist/angular-youtube-embed.min.js"></script>
     <script src="/lib/angular-scroll-glue/src/scrollglue.js"></script>
     <script src="/lib/angucomplete-alt/dist/angucomplete-alt.min.js"></script>
     <script src="/lib/snapjs/snap.js"></script>
     <script src="/lib/angular-snap/angular-snap.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/lib/ng-youtube-embed/build/ng-youtube-embed.min.js"></script>
-    <!--<script src="/lib/videogular/videogular.js"></script>-->
+    <script src="/lib/angular-route/angular-route.js"></script>
+    <script src="/lib/angular-sanitize/angular-sanitize.js"></script>
+    <script src="/lib/videogular/videogular.js"></script>
+    <script src="/lib/videogular-controls/vg-controls.js"></script>
+    <script src="/lib/videogular-buffering/vg-buffering.js"></script>
+    <script src="/lib/videogular-poster/vg-poster.js"></script>
+    <script src="/lib/bower-videogular-youtube/youtube.js"></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="/bootstrap/js/bootstrap.min.js"></script>
@@ -41,7 +44,7 @@
   <!--what if I do something tricky here, and the controller is a variable?-->
   <!--This will require some copy pasting, but I'm good with that-->
   
-  <body ng-controller="<%= @controllerName %>">
+  <body ng-controller="<%= @controllerName %> as controller">
     <snap-drawer>
       <h4 class="username"><%= h(session[:username]) || 'Please Login' %></h4>
       <ul class="nav">

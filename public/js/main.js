@@ -1,4 +1,8 @@
-var app = angular.module('app', ['youtube-embed', 'luegg.directives', 'angucomplete-alt', 'snap', 'ngYoutubeEmbed']);
+'use strict';
+var app = angular.module('app', ['angucomplete-alt', 'snap', 
+								'ngSanitize', 'com.2fdevs.videogular', 
+								'com.2fdevs.videogular.plugins.controls',
+								'info.vietnamcode.nampnq.videogular.plugins.youtube']);
 
 app.filter('time', function() {
 	var conversions = {
@@ -48,26 +52,19 @@ app.filter('statNameFilter', function() {
 
 });
 
-app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', function($scope, $http, $interval) {
+app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', '$sce', function($scope, $http, $interval, $sce) {
 	this.config = {
 		sources: [
+			// Dummy video of US Nat 9
+			{src: "https://www.youtube.com/watch?v=VfzdLacYQto"},
 			{src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.mp4"), type: "video/mp4"},
 			{src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.webm"), type: "video/mp4"},
 			{src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.ogg"), type: "video/mp4"}
 		],
-		tracks: [
-			{
-				src: "http://www.videogular.com/assets/subs.pale-blue-dot.vtt",
-				kind: "subtitles",
-				srclang: "en",
-				label: "English",
-				default
-			}
-		],
 		theme: "/lib/videogular-themes-default/videogular.css",
 		plugins: {
 			poster: "http://www.videogular.com/assets/images/videogular/png"
-		}
+		},
 	};
 
 	$scope.Math = window.Math;
@@ -98,6 +95,9 @@ app.controller('RecordFullStatsController', ['$scope', '$http', '$interval', fun
 		var idAndYearAndOpponent;
 		idAndYearAndOpponent = $scope.vidObj.split(",");
 		$scope.selectedVideo = idAndYearAndOpponent[0];
+		// Set this to my videogular config
+		var videoUrl = "https://www.youtube.com/watch?v=" + $scope.selectedVideo;
+		this.controller.config['sources'] = [{src:videoUrl}];
 		$scope.year = idAndYearAndOpponent[1];
 		$scope.opponent = idAndYearAndOpponent[2];
 		$scope.allPlayers = [];

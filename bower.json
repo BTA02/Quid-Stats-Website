@@ -16,16 +16,17 @@
   ],
   "directory": "public/lib",
   "dependencies": {
-    "angular-youtube-mb": "~1.1.1",
     "angular-scroll-glue": "~2.0.6",
-    "anguvideo": "~0.0.1",
     "angucomplete-alt": "git://github.com/BTA02/angucomplete-alt.git#7127cdfaf4511b86763990c487769636ab1d9f84",
     "angular-snap": "~1.8.5",
-    "ng-youtube-embed": "~0.3.3",
     "videogular": "~1.4.4",
     "videogular-themes-default": "~1.4.4",
-    "angular-sanitize": "~1.6.1",
-    "angular-route": "1.6.1"
+    "angular-sanitize": "1.6.1",
+    "angular-route": "1.6.1",
+    "videogular-controls": "~1.4.4",
+    "videogular-buffering": "~1.4.4",
+    "videogular-poster": "~1.4.4",
+    "bower-videogular-youtube": "videogular-youtube#~2.0.6"
   },
   "resolutions": {
     "angular": ">=1.4.0"
