@@ -46,12 +46,16 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 	$scope.Math = window.Math;
 	
 	$interval( function(){
-		if ($scope.videoPlayer !== null && $scope.videoPlayer !== undefined) {
+		if ($scope.vidObj) {
 			$scope.updateOnFieldPlayers();
 			$scope.updateScoreboard();
 			// focus the player so that when you click elsewhere, video gets the focus back
 		}
 	},100);
+	
+	var getTimeInSeconds = function() {
+		return $scope.videoPlayer.API.currentTime / 1000;
+	}
 	
 	$scope.closeDialog = function(which) {
 		document.getElementById(which).style.display='none';document.getElementById('fade').style.display='none';
@@ -135,9 +139,6 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 						return a.time - b.time;
 					});
 				$scope.filterEvents('init');
-				$scope.drawingsAndNotes.sort(function(a, b){
-					return a.time - b.time;
-				});
 			});
 		}
 		
@@ -199,7 +200,7 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 			return;
 		}
 		var startTime = 0;
-		var endTime = $scope.videoPlayer.getCurrentTime() + 1;
+		var endTime = getTimeInSeconds() + 1;
 		setOnFieldToBlank();
 		for (var i = startTime; i < endTime; i++) {
 			if ($scope.subMap.get(i) !== null && $scope.subMap.get(i) !== undefined) {
@@ -213,14 +214,14 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
  
 	$scope.startSub = function(playerId) {
 		$scope.statType = "SUB";
-		$scope.videoPlayer.pause();
+		$scope.videoPlayer.API.pause();
 		$scope.subbingPlayer = playerId;
 		document.getElementById('allPlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
 	};
  
 	$scope.startSwap = function(playerId) {
 		$scope.statType = "SWAP";
-		$scope.videoPlayer.pause();
+		$scope.videoPlayer.API.pause();
 		$scope.subbingPlayer = playerId;
 		document.getElementById('onFieldPlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
 	};
@@ -232,7 +233,7 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 			$scope.addStat(null, null, stat, null);
 		} else {
 			$scope.statType = stat;
-			$scope.videoPlayer.pause();
+			$scope.videoPlayer.API.pause();
 			document.getElementById('onFieldPlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
 		}
 	};
@@ -289,7 +290,10 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 	}
 	
 	$scope.updateScoreboard = function() {
-		var endTime = $scope.videoPlayer.currentTime + 1;
+		if ($scope.originalStats == undefined) {
+			return;
+		}
+		var endTime = getTimeInSeconds() + 1;
 		$scope.homeScore = 0;
 		$scope.awayScore = 0;
 		
@@ -333,13 +337,13 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 	
 	$scope.addCard = function(cardType) {
 		$scope.statType = cardType;
-		$scope.videoPlayer.pause();
+		$scope.videoPlayer.API.pause();
 		
 		document.getElementById('onFieldPlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
 	};
 	
 	$scope.startNote = function() {
-		$scope.videoPlayer.pause();
+		$scope.videoPlayer.API.pause();
 		document.getElementById('noteOverlay').style.display='block';document.getElementById('fade').style.display='block';
 	};
 	
@@ -348,7 +352,7 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 				vid_id : $scope.selectedVideo,
 				team_id : $scope.team,
 				fall_year : $scope.year,
-				time : $scope.videoPlayer.currentTime,
+				time : getTimeInSeconds(),
 				good_bad_filter : $scope.goodBad,
 				o_d_filter : $scope.oD,
 				note : $scope.noteText
@@ -374,7 +378,7 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 	};
 	
 	$scope.addStat = function(playerId, playerInId, stat, bludgers) {
-		$scope.videoPlayer.pause();
+		$scope.videoPlayer.API.pause();
 		$scope.addOppositeStat(stat, bludgers);
 		
 		var data = {
@@ -383,7 +387,7 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 				year : $scope.year,
 				player_id : playerId,
 				player_in_id : playerInId,
-				time : $scope.videoPlayer.currentTime,
+				time : getTimeInSeconds(),
 				stat : stat,
 				bludger_count : bludgers
 		};
@@ -455,7 +459,7 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 		} else if (stat == 'PAUSE_CLOCK') {
 			// do nothing, but don't return
 		} else {
-			console.log("in here for some reason");
+			console.log("No opposite stat to add (like a sub)");
 			// do nothing, but DO return
 			return;
 		}
@@ -465,7 +469,7 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 				year : $scope.year,
 				player_id : null,
 				player_in_id : null,
-				time : $scope.videoPlayer.currentTime,
+				time : getTimeInSeconds(),
 				stat : stat,
 				bludger_count : bludgers
 		};
@@ -517,16 +521,18 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 	}
 	
 	$scope.instantReplay = function() {
-		// Axtell fix
-		$scope.seekToTime("", $scope.videoPlayer.currentTime);
+		$scope.seekToTime("", getTimeInSeconds());
 	};
 
 	$scope.seekToTime = function(statName, time) {
 		// Axtell fix
+		time = statName ? time : time/1000;
+		// just to prevent going below 0, which isn't allowed
+		time = time < 5 ? 5 : time;
 		if (statName == 'SUB' || statName == "SWAP" || statName == 'PAUSE_CLOCK' || statName == 'START_CLOCK') {
-			$scope.videoPlayer.seekTime(time, false);
+			$scope.videoPlayer.API.seekTime(time, false);
 		} else {
-			$scope.videoPlayer.seekTo(time-5);
+			$scope.videoPlayer.API.seekTime(time-5, false);
 		}
 	};
 
@@ -596,7 +602,7 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 	};
 	
 	$scope.showNote = function(index) {
-		$scope.videoPlayer.pauseVideo();
+		$scope.videoPlayer.API.pause();
 		$scope.displayNoteText = $scope.displayStats[index].note;
 		document.getElementById('displayNoteOverlay').style.display='block';document.getElementById('fade').style.display='block';
 	};
