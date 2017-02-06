@@ -76,7 +76,7 @@ end
 
 get '/record' do
 	@title = 'Take Stats'
-	@controllerName = 'RecordFullStatsController'
+	@controllerName = 'RecordStatsController'
 	if !logged_in?
 		redirect '/noAuth'
 	end
@@ -86,7 +86,7 @@ end
 
 get '/coaching' do
 	@title = 'Coaching Tools'
-	@controllerName = 'RecordFullStatsController'
+	@controllerName = 'CoachingToolsController'
 	if !logged_in?
 		redirect '/noAuth'
 	end
@@ -96,7 +96,7 @@ end
 
 get '/full_stats_view' do
 	@title = 'View Stats (Experimental)'
-	@controllerName = 'ViewFullStatsController'
+	@controllerName = 'ViewStatsControllerExp'
 	if !logged_in?
 		redirect '/noAuth'
 	end
