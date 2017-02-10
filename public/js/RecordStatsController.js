@@ -366,10 +366,6 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 					return a.time - b.time;
 				});
 			$scope.filterEvents('added');
-			$scope.drawingsAndNotes.push(response.data);
-			$scope.drawingsAndNotes.sort(function(a, b) {
-				return a.time - b.time;
-			});
 		});
 		$scope.goodBad = "";
 		$scope.oD = "";
@@ -492,18 +488,7 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 		};
 		// I also need to get the ID of the object created on the other team here
 		$http.post("/deleteStat", data).then(function(response) {
-			// do nothing for now
-			//remove locally
 			var index = findStatIndex(response.data);
-			if (statName === 'NOTE') {
-				var func = function(drawingObject) {
-					return drawingObject.time.toFixed(1) === $scope.originalStats[index].time.toFixed(1);
-				};
-				var ii = $scope.drawingsAndNotes.findIndex(func);
-				if (ii > -1) {
-					$scope.drawingsAndNotes.splice(ii, 1);
-				}
-			}
 			if (index !== -1) {
 				$scope.originalStats.splice(index, 1);
 			}
@@ -525,9 +510,7 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 	};
 
 	$scope.seekToTime = function(statName, time) {
-		// Axtell fix
 		time = statName ? time : time/1000;
-		// just to prevent going below 0, which isn't allowed
 		time = time < 5 ? 5 : time;
 		if (statName == 'SUB' || statName == "SWAP" || statName == 'PAUSE_CLOCK' || statName == 'START_CLOCK') {
 			$scope.videoPlayer.API.seekTime(time, false);
