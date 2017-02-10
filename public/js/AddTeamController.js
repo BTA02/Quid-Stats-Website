@@ -5,6 +5,9 @@ angular.module('app').controller('AddTeamController', ['$scope', '$http', functi
 	
 	$scope.getRoster = function() {
 		$scope.roster = [];
+		if (!$scope.teamToAdd || !$scope.rosterYear) {
+			return;
+		}
 		$http.get("/allPlayers/" + $scope.teamToAdd 
 			+ "/" + $scope.rosterYear).then(function(response) {
 				$scope.roster = response["data"];
