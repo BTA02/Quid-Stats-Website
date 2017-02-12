@@ -50,14 +50,12 @@
 	
 	<!--Options under the video -->
 	<div id="coachingToolsContainerFull">
-		<button class="btn btn-default drawing-button" ng-click="togglePenTool()" ng-init="penButtonText = 'Start Drawing'">{{penButtonText}}</button>
 		<button class="btn btn-default drawing-button" ng-click="startNote()">Add Note</button>
-		<h4 ng-hide="!penSelected" style="margin-top: auto; margin-bottom: auto; margin-left: 10px;">Current Selection: Pen</h3>
-		<h4 ng-hide="penSelected" style="margin-top: auto; margin-bottom: auto; margin-left: 10px;">Current Selection: Video</h3>
-		<button class="btn btn-default drawing-button" ng-show="penSelected" ng-click="playVideo()">Play Video</button>
-		<button class="btn btn-default drawing-button" ng-show="penSelected" ng-click="pauseVideo()">Pause Video</button>
-		<button class="btn btn-default drawing-button" ng-show="penSelected" ng-click="eraseDrawingsAtTimeStamp()">Erase Screen</button>
-		<button class="btn btn-default drawing-button" ng-show="penSelected" ng-click="saveDrawings()">Save Current Drawing</button>
+		<button class="btn btn-default drawing-button" ng-click="instantReplay()">Replay</button>
+		<button class="btn btn-default drawing-button" ng-click="playVideo()">Play Video</button>
+		<button class="btn btn-default drawing-button" ng-click="pauseVideo()">Pause Video</button>
+		<button class="btn btn-default drawing-button" ng-click="eraseDrawingsAtTimeStamp()">Erase Screen</button>
+		<button class="btn btn-default drawing-button" ng-click="saveDrawings()">Save Current Drawing</button>
 	</div>
 
 <!--End of column flex-->

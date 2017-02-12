@@ -9,13 +9,21 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 		controller.API = API;
 	};
 	
+	// Using floor so timestamps are more consistent
 	var getTimeInSeconds = function() {
-		return (Math.round($scope.videoPlayer.API.currentTime / 100) / 10);
+		return (Math.floor($scope.videoPlayer.API.currentTime / 100) / 10);
 	};
+	
 	
 	$scope.that.onEnterDrawing = function onEnter(currentTime, timeLapse, params) {
 		$scope.that.API.pause();
-		$scope.togglePenTool(true);
+		console.log("Here");
+		console.log(currentTime);
+		console.log(timeLapse);
+		console.log(getTimeInSeconds());
+		for(var i = 0; i < $scope.drawingsAndNotes.length; i++) {
+			console.log($scope.drawingsAndNotes[i].time);	
+		}
 		redraw(getTimeInSeconds());
 	};
 	$scope.that.onEnterNote = function onLeave(currentTime, timeLapse, params) {
@@ -40,9 +48,11 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 	};
 	
 	$scope.that.addCuePoint = function(timeStamp) {
+		console.log("here1");
 		var point = {
 			timeLapse: {
-				start: timeStamp
+				start: timeStamp,
+				end: timeStamp+.1
 			},
 			onEnter: $scope.that.onEnterDrawing.bind($scope.that),
 		};
@@ -71,9 +81,11 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 		// Set this to my videogular config
 		var videoUrl = "https://www.youtube.com/watch?v=" + $scope.selectedVideo;
 		$scope.that.config['sources'] = [{src:videoUrl}];
+		$scope.seekToTime(null, 0);
 		$scope.year = idAndYearAndOpponent[1];
 		$scope.opponent = idAndYearAndOpponent[2];
 		$scope.drawingsAndNotes = [];
+		document.getElementById('coachingCanvas').style.zIndex = 3;
 		clickXMap = {};
 		clickYMap = {};
 		clickDragMap = {};
@@ -95,7 +107,6 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 				if (clickXMap.hasOwnProperty(key)) {
 					$scope.drawingsAndNotes.push({statName: 'DRAWING', time: parseFloat(key).toFixed(1)});
 					$scope.that.addCuePoint(parseFloat(key));
-					// this.addCuePoint(parseFloat(key));
 				}
 			}
 			$scope.drawingsAndNotes.sort(function(a, b){
@@ -105,18 +116,6 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 	};
 	
 	
-	$scope.startStat = function(stat) {
-		// Axtell here
-		// This is the idea that, when adding stats, if there are no subs, just add generic stats
-		if ($scope.subMap.size == 0) {
-			$scope.addStat(null, null, stat, null);
-		} else {
-			$scope.statType = stat;
-			$scope.videoPlayer.API.pause();
-			document.getElementById('onFieldPlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
-		}
-	};
-
 	$scope.startNote = function() {
 		$scope.videoPlayer.pause();
 		document.getElementById('noteOverlay').style.display='block';document.getElementById('fade').style.display='block';
@@ -188,11 +187,10 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 	}
 	
 	$scope.instantReplay = function() {
-		$scope.seekToTime("", getTimeInSeconds());
+		$scope.seekToTime(null, getTimeInSeconds());
 	};
-
+	
 	$scope.seekToTime = function(statName, time) {
-		time = statName ? time : time/1000;
 		time = time < 5 ? 5 : time;
 		if (statName == 'SUB' || statName == "SWAP" || statName == 'PAUSE_CLOCK' || statName == 'START_CLOCK') {
 			$scope.videoPlayer.API.seekTime(time, false);
@@ -213,6 +211,7 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 		canvas.setAttribute('height', context.canvas.clientHeight);
 		canvas.setAttribute('width', context.canvas.clientWidth);
 	}
+	
 	// These need to be objects, with key being the time, val being the array
 	var clickXMap = {};
 	var clickYMap = {};
@@ -222,28 +221,7 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 	var yScale = 1.0;
 	
 	window.onresize = resizeCanvas;
-	
-	$scope.togglePenTool = function(valToMoveTo) {
-		if($scope.videoPlayer == undefined) {
-			return;
-		}
-		if(valToMoveTo != undefined) {
-			$scope.penSelected = valToMoveTo;
-		} else {
-			$scope.penSelected = !$scope.penSelected;
-		}
-		if($scope.penSelected) {
-			$scope.videoPlayer.API.pause();
-			document.getElementById('coachingCanvas').style.zIndex = 2;
-			$scope.penButtonText = "Done Drawing";
-			resizeCanvas();
-		} else {
-			document.getElementById('coachingCanvas').style.zIndex = -1;
-			$scope.penButtonText = "Start Drawing";
-		} 
-		redraw(getTimeInSeconds());
-		$scope.saveDrawings();
-	};
+	// resizeCanvas();
 	
 	$scope.eraseDrawingsAtTimeStamp = function() {
 		var timeStamp = getTimeInSeconds();
@@ -265,9 +243,8 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 	// These are functions for the buttons on the .erb screen
 	$scope.playVideo = function() {
 		$scope.saveDrawings();
-		$scope.videoPlayer.seekTo(getTimeInSeconds() + .1);
 		context.clearRect(0, 0, context.canvas.clientWidth, context.canvas.clientHeight); // Clears the canvas
-		// $scope.videoPlayer.playVideo();
+		$scope.videoPlayer.API.play();
 	};
 	
 	$scope.pauseVideo = function() {
@@ -304,8 +281,6 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 		clickYMap[timeStamp].push(y);
 		clickDragMap[timeStamp].push(dragging);
 		
-		// add a cuepoint, right?
-		$scope.that.addCuePoint(timeStamp);
 	}
 	
 	
@@ -362,8 +337,15 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 	
 	$scope.saveDrawings = function(fromDelete) {
 		var timeStamp = getTimeInSeconds();
-		timeStamp = (Math.round(timeStamp * 10) / 10);
+		console.log("Saving");
+		console.log(timeStamp);
+		console.log(timeStamp.toString());
+		console.log("--------");
 		// if there are no drawings at this timestamp don't add anything to the thing...
+		// Don't know what to do about that yet
+		if (clickXMap[timeStamp] == null) {
+			return;
+		}
 		var data = {
 			vid_id : $scope.selectedVideo,
 			team_id : $scope.team,
@@ -382,6 +364,7 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 					$scope.drawingsAndNotes.sort(function(a, b){
 						return a.time - b.time;
 					});
+					$scope.that.addCuePoint(timeStamp);
 				}
 			} else {
 				alert('Failed to save drawing, please try again');
