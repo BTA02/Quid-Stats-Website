@@ -11,11 +11,11 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 	
 	// Using floor so timestamps are more consistent
 	var getTimeInSeconds = function() {
-		return (Math.floor($scope.videoPlayer.API.currentTime / 100) / 10);
+		return (Math.round($scope.videoPlayer.API.currentTime / 10) / 100);
 	};
 	
 	
-	$scope.that.onEnterDrawing = function onEnter(currentTime, timeLapse, params) {
+	$scope.that.onEnterDrawing = function(currentTime, timeLapse, params) {
 		$scope.that.API.pause();
 		console.log("Here");
 		console.log(currentTime);
@@ -24,7 +24,7 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 		for(var i = 0; i < $scope.drawingsAndNotes.length; i++) {
 			console.log($scope.drawingsAndNotes[i].time);	
 		}
-		redraw(getTimeInSeconds());
+		redraw(timeLapse.start);
 	};
 	$scope.that.onEnterNote = function onLeave(currentTime, timeLapse, params) {
 		// alert("hey");
@@ -48,15 +48,15 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 	};
 	
 	$scope.that.addCuePoint = function(timeStamp) {
-		console.log("here1");
 		var point = {
 			timeLapse: {
 				start: timeStamp,
 				end: timeStamp+.1
 			},
-			onEnter: $scope.that.onEnterDrawing.bind($scope.that),
+			onUpdate: $scope.that.onEnterDrawing.bind($scope.that),
 		};
 		$scope.that.config.cuePoints.events.push(point);
+		console.log("cue point added");
 	};
 
 
@@ -264,7 +264,6 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 
 	function addClick(x, y, dragging) {
 		var timeStamp = getTimeInSeconds();
-		timeStamp = (Math.round(timeStamp * 10) / 10);
 		if (!clickXMap[timeStamp]) {
 			clickXMap[timeStamp] = [];
 		}
