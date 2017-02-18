@@ -17,13 +17,15 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 	
 	$scope.that.onEnterDrawing = function(currentTime, timeLapse, params) {
 		$scope.that.API.pause();
-		console.log("Here");
+		
+		console.log("Enter");
 		console.log(currentTime);
 		console.log(timeLapse);
 		console.log(getTimeInSeconds());
-		for(var i = 0; i < $scope.drawingsAndNotes.length; i++) {
-			console.log($scope.drawingsAndNotes[i].time);	
-		}
+		
+		// I need to set a value here that basically overrides the currentTimeStamp
+		// That way, I can "addToDrawing" as opposed to making a new
+		// This will be a good addition to getTimeInSeconds
 		redraw(timeLapse.start);
 	};
 	$scope.that.onEnterNote = function onLeave(currentTime, timeLapse, params) {
@@ -53,10 +55,9 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 				start: timeStamp,
 				end: timeStamp+.1
 			},
-			onUpdate: $scope.that.onEnterDrawing.bind($scope.that),
+			onEnter: $scope.that.onEnterDrawing.bind($scope.that),
 		};
 		$scope.that.config.cuePoints.events.push(point);
-		console.log("cue point added");
 	};
 
 
@@ -78,17 +79,22 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 		var idAndYearAndOpponent;
 		idAndYearAndOpponent = $scope.vidObj.split(",");
 		$scope.selectedVideo = idAndYearAndOpponent[0];
-		// Set this to my videogular config
+		
 		var videoUrl = "https://www.youtube.com/watch?v=" + $scope.selectedVideo;
 		$scope.that.config['sources'] = [{src:videoUrl}];
 		$scope.seekToTime(null, 0);
+		
 		$scope.year = idAndYearAndOpponent[1];
 		$scope.opponent = idAndYearAndOpponent[2];
 		$scope.drawingsAndNotes = [];
+		
 		document.getElementById('coachingCanvas').style.zIndex = 3;
+		resizeCanvas();
+		
 		clickXMap = {};
 		clickYMap = {};
 		clickDragMap = {};
+		
 		var notesUrl;
 		notesUrl = "/allNotes/" + $scope.selectedVideo + "/" + $scope.team;
 		
@@ -98,6 +104,7 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 				$scope.drawingsAndNotes.push(response.data[i]);
 			}
 		});
+		
 		$http.get("/getDrawings/" + $scope.selectedVideo + "/" + $scope.team).then(function(response) {
 			clickXMap = JSON.parse(response.data.xMap);
 			clickYMap = JSON.parse(response.data.yMap);
@@ -105,7 +112,7 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 			// add the approrpiate values in to my $scope.drawingsAndNotes field
 			for (var key in clickXMap) {
 				if (clickXMap.hasOwnProperty(key)) {
-					$scope.drawingsAndNotes.push({statName: 'DRAWING', time: parseFloat(key).toFixed(1)});
+					$scope.drawingsAndNotes.push({statName: 'DRAWING', time: parseFloat(key)});
 					$scope.that.addCuePoint(parseFloat(key));
 				}
 			}
@@ -131,7 +138,6 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 				o_d_filter : $scope.oD,
 				note : $scope.noteText
 		};
-		// $scope.addStat($scope.posNegNeut, $scope.oDBreak);
 		$http.post("/addNote", data).then(function(response) {
 			$scope.noteText = "";
 			// add it to the all stats? how would I do that?
@@ -187,6 +193,8 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 	}
 	
 	$scope.instantReplay = function() {
+		$scope.saveDrawings();
+		context.clearRect(0, 0, context.canvas.clientWidth, context.canvas.clientHeight); // Clears the canvas
 		$scope.seekToTime(null, getTimeInSeconds());
 	};
 	
@@ -221,17 +229,15 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 	var yScale = 1.0;
 	
 	window.onresize = resizeCanvas;
-	// resizeCanvas();
 	
 	$scope.eraseDrawingsAtTimeStamp = function() {
 		var timeStamp = getTimeInSeconds();
-		timeStamp = (Math.round(timeStamp * 10) / 10);
 		delete clickXMap[timeStamp];
 		delete clickYMap[timeStamp];
 		delete clickDragMap[timeStamp];
 		context.clearRect(0, 0, context.canvas.clientWidth, context.canvas.clientHeight); // Clears the canvas
 		var func = function findIndexByTimeStamp(drawingObject) {
-			return drawingObject.time === timeStamp.toFixed(1);
+			return drawingObject.time === timeStamp;
 		};
 		var index = $scope.drawingsAndNotes.findIndex(func);
 		if (index > -1) {
@@ -336,12 +342,10 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 	
 	$scope.saveDrawings = function(fromDelete) {
 		var timeStamp = getTimeInSeconds();
-		console.log("Saving");
-		console.log(timeStamp);
-		console.log(timeStamp.toString());
-		console.log("--------");
-		// if there are no drawings at this timestamp don't add anything to the thing...
-		// Don't know what to do about that yet
+		// console.log("Saving");
+		// console.log(timeStamp);
+		// console.log(timeStamp.toString());
+		// console.log("--------");
 		if (clickXMap[timeStamp] == null) {
 			return;
 		}
@@ -356,10 +360,10 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 		$http.post("/saveDrawings", data).then(function(response){
 			if (response.status === 200) {
 				var func = function findIndexByTimeStamp(drawingObject) {
-					return drawingObject.time === timeStamp.toFixed(1);
+					return drawingObject.time === timeStamp;
 				};
 				if($scope.drawingsAndNotes.findIndex(func) === -1 && !fromDelete && screenIsNotEmpty(timeStamp)) {
-					$scope.drawingsAndNotes.push({statName: 'DRAWING', time: timeStamp.toFixed(1)});
+					$scope.drawingsAndNotes.push({statName: 'DRAWING', time: timeStamp});
 					$scope.drawingsAndNotes.sort(function(a, b){
 						return a.time - b.time;
 					});
