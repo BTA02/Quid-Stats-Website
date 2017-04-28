@@ -14,7 +14,6 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 		return (Math.round($scope.videoPlayer.API.currentTime / 10) / 100);
 	};
 	
-	
 	$scope.that.onEnterDrawing = function(currentTime, timeLapse, params) {
 		$scope.that.API.pause();
 		
@@ -46,7 +45,7 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 		},
 		cuePoints: {
 			events: []
-		},
+		}
 	};
 	
 	$scope.that.addCuePoint = function(timeStamp) {
@@ -59,8 +58,9 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 		};
 		$scope.that.config.cuePoints.events.push(point);
 	};
-
-
+	
+	// END VIDEOGULAR
+	
 	$scope.Math = window.Math;
 	
 	$scope.closeDialog = function(which) {
@@ -80,7 +80,7 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 		idAndYearAndOpponent = $scope.vidObj.split(",");
 		$scope.selectedVideo = idAndYearAndOpponent[0];
 		
-		var videoUrl = "https://www.youtube.com/watch?v=" + $scope.selectedVideo;
+		var videoUrl = "https://www.youtube.com/watch?v=" + $scope.selectedVideo + "?rel=0";
 		$scope.that.config['sources'] = [{src:videoUrl}];
 		$scope.seekToTime(null, 0);
 		

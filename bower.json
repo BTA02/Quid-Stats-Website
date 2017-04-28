@@ -29,6 +29,8 @@
     "bower-videogular-youtube": "videogular-youtube#~2.0.6"
   },
   "resolutions": {
-    "angular": ">=1.4.0"
+    "angular": "1.6.1",
+    "videogular": "~1.4.4",
+    "angular-sanitize": "1.6.1"
   }
 }
