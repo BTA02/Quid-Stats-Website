@@ -7,7 +7,7 @@
 		<%end%>
 	</select>
 	<!-- Video Selector and allPlayers populator--> 
-	<select ng-model="vidObj" ng-change="getAllPlayers()" ng-options="game.vid_id+','+game.fall_year+','+game.opponent_id as game.description for game in allGames">
+	<select ng-model="vidObj" ng-change="initVals()" ng-options="game.vid_id+','+game.fall_year+','+game.opponent_id as game.description for game in allGames">
     </select>
 </div>
 	
@@ -16,7 +16,22 @@
 	<div id="vidContainerFull">
 		<div id="videoFull">
 			<canvas id="coachingCanvas"></canvas>
-			<youtube-video id="video" video-id="selectedVideo" player="videoPlayer" player-width="'100%'" player-height="'100%'"></youtube-video>
+			<videogular vg-player-ready="controller.onPlayerReady($API)" vg-theme="controller.config.theme" vg-cue-points="controller.config.cuePoints">
+				<vg-media vg-src="controller.config.sources" vg-youtube="rel=1;showinfo=1">
+				</vg-media>
+				<vg-controls>
+					<vg-play-pause-button></vg-play-pause-button>
+					<vg-time-display>{{ currentTime | date:'mm:ss':'+0000'}}</vg-time-display>
+					<vg-scrub-bar>
+						<vg-scrub-bar-current-time></vg-scrub-bar-current-time>
+					</vg-scrub-bar>
+					<vg-time-display>{{ totalTime | date:'mm:ss':'+0000'}}</vg-time-display>
+					<vg-volume>
+						<vg-mute-button></vg-mute-button>
+						<vg-volume-bar></vg-volume-bar>
+					</vg-volume>
+				</vg-controls>
+			</videogular>
 		</div>
 	
 		<div id="drawingsAndNotesFull">
@@ -34,14 +49,12 @@
 	
 	<!--Options under the video -->
 	<div id="coachingToolsContainerFull">
-		<button class="btn btn-default drawing-button" ng-click="togglePenTool()" ng-init="penButtonText = 'Start Drawing'">{{penButtonText}}</button>
 		<button class="btn btn-default drawing-button" ng-click="startNote()">Add Note</button>
-		<h4 ng-hide="!penSelected" style="margin-top: auto; margin-bottom: auto; margin-left: 10px;">Current Selection: Pen</h3>
-		<h4 ng-hide="penSelected" style="margin-top: auto; margin-bottom: auto; margin-left: 10px;">Current Selection: Video</h3>
-		<button class="btn btn-default drawing-button" ng-show="penSelected" ng-click="playVideo()">Play Video</button>
-		<button class="btn btn-default drawing-button" ng-show="penSelected" ng-click="pauseVideo()">Pause Video</button>
-		<button class="btn btn-default drawing-button" ng-show="penSelected" ng-click="eraseDrawingsAtTimeStamp()">Erase Screen</button>
-		<button class="btn btn-default drawing-button" ng-show="penSelected" ng-click="saveDrawings()">Save Current Drawing</button>
+		<button class="btn btn-default drawing-button" ng-click="instantReplay()">Replay</button>
+		<button class="btn btn-default drawing-button" ng-click="playVideo()">Play Video</button>
+		<button class="btn btn-default drawing-button" ng-click="pauseVideo()">Pause Video</button>
+		<button class="btn btn-default drawing-button" ng-click="eraseDrawingsAtTimeStamp()">Erase Screen</button>
+		<button class="btn btn-default drawing-button" ng-click="saveDrawings()">Save Current Drawing</button>
 	</div>
 
 <!--End of column flex-->
