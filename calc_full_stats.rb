@@ -40,7 +40,8 @@ class CalcFullStats
 	def is_non_player_event?(event)
 		non_player_events = ['PAUSE_CLOCK','START_CLOCK','GAME_START',
 		'AWAY_GOAL','AWAY_SNITCH_CATCH','SEEKERS_RELEASED','OFFENSE',
-		'OFFENSIVE_DRIVE','DEFENSE','DEFENSIVE_DRIVE','GAIN_CONTROL', 'LOSE_CONTROL']
+		'OFFENSIVE_DRIVE','DEFENSE','DEFENSIVE_DRIVE','GAIN_CONTROL', 
+		'LOSE_CONTROL']
 
 		
 		if non_player_events.index(event).nil?
@@ -227,24 +228,23 @@ class CalcFullStats
 			end
 			cur_game = event["vid_id"]
 			player_id = nil
+			
+			# pick the player to focus
 			if event["stat_name"] == "SUB"
 				player_id = event["player_in_id"]
 			else
 				player_id = event["player_id"]
 			end
-
 			
+			# If the player isn't on the field, but should be, skip
 			event_type = event["stat_name"]
-
-			
 			index1 = on_field_array.index(event["player_id"])
 			if (index1 == nil && !is_non_player_event?(event_type))
 				next
 			end
-			
 
 			unless @stats_map.include?(player_id)
-				if (!player_id.nil?)
+				if (!player_id.nil? && player_id != "null")
 					first_name = '?'
 					last_name = '?'
 					player_index = @players.find_index { |item| 
@@ -486,8 +486,10 @@ class CalcFullStats
 			when 'LOSE_CONTROL'
 				if start_bludger_time != -1
 					bludger_time_to_add = event["time"] - start_bludger_time
+					if bludger_time_to_add != 0
 					all_combos.each do |combo|
-						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, bludger_time_to_add, 'bludger_time', cur_game)
+							add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, bludger_time_to_add, 'bludger_time', cur_game)
+						end
 					end
 				end
 				
@@ -500,8 +502,10 @@ class CalcFullStats
     		when 'SUB'
 				if start_time != -1
 					time_to_add = event["time"] - start_time
-					all_combos.each do |combo|
-						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, time_to_add, 'time', cur_game)
+					if time_to_add != 0
+						all_combos.each do |combo|
+							add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, time_to_add, 'time', cur_game)
+						end
 					end
 					start_time = event["time"]
 				end
@@ -509,10 +513,11 @@ class CalcFullStats
 				
 				if start_bludger_time != -1
 					bludger_time_to_add = event["time"] - start_bludger_time
-					all_combos.each do |combo|
-						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, bludger_time_to_add, 'bludger_time', cur_game)
+					if bludger_time_to_add != 0
+						all_combos.each do |combo|
+							add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, bludger_time_to_add, 'bludger_time', cur_game)
+						end
 					end
-					
 					start_bludger_time = event["time"]
 				end
 					
@@ -522,16 +527,20 @@ class CalcFullStats
 			when 'SWAP'
 				if start_time != -1
 					time_to_add = event["time"] - start_time
-					all_combos.each do |combo|
-						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, time_to_add, 'time', cur_game)
+					if time_to_add != 0
+						all_combos.each do |combo|
+							add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, time_to_add, 'time', cur_game)
+						end
 					end
 					start_time = event["time"]
 				end
 				
 				if start_bludger_time != -1
 					bludger_time_to_add = event["time"] - start_bludger_time
-					all_combos.each do |combo|
-						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, bludger_time_to_add, 'bludger_time', cur_game)
+					if bludger_time_to_add != 0
+						all_combos.each do |combo|
+							add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, bludger_time_to_add, 'bludger_time', cur_game)
+						end
 					end
 					start_bludger_time = event["time"]
 				end
@@ -544,16 +553,20 @@ class CalcFullStats
     		when 'PAUSE_CLOCK'
 				if start_time != -1
 					time_to_add = event["time"] - start_time
-					all_combos.each do |combo|
-						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, time_to_add, 'time', cur_game)
+					if time_to_add != 0
+						all_combos.each do |combo|
+							add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, time_to_add, 'time', cur_game)
+						end
 					end
 					start_time = -1
 				end
 				
 				if start_bludger_time != -1
 					bludger_time_to_add = event["time"] - start_bludger_time
-					all_combos.each do |combo|
-						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, bludger_time_to_add, 'bludger_time', cur_game)
+					if bludger_time_to_add != 0
+						all_combos.each do |combo|
+							add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, bludger_time_to_add, 'bludger_time', cur_game)
+						end
 					end
 					start_bludger_time = -1
 				end
@@ -604,7 +617,7 @@ class CalcFullStats
         	}
 			if @per == 1 # per minute
 	        	v.update(v) { |key1, val1|
-					if key1 != :time && v[:time] != 0 && key1 != :ratio
+					if key1 != :time && v[:time] != 0 && key1 != :ratio && key1 != :control_percent && key1 != :games_played
 	        			val1 = val1.to_f / (v[:time].to_f / 60.0)
 						val1.round(2)
 					else
@@ -614,7 +627,7 @@ class CalcFullStats
 	        	}
 			elsif @per == 2 # per game
 				v.update(v) { |key1, val1|
-					if key1 != :games_played && key1 != :ratio && v[:games_played] != 0
+					if key1 != :games_played && key1 != :ratio && v[:games_played] != 0 && key1 != :control_percent
 						val1 = val1.to_f / (v[:games_played].to_f)
 						if key1 == :time
 							val1.round(0)
