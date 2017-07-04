@@ -253,14 +253,6 @@ class CalcFullStats
 					if !player_index.nil?
 						first_name = @players[player_index]['first_name']
 						last_name = @players[player_index]['last_name']
-					else
-						pp "index1"
-						pp index1
-						pp !is_non_player_event?(event_type)
-						pp event_type
-						pp "something missed:"
-						pp event
-						pp player_id
 					end
 					
 					
