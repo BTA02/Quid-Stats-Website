@@ -312,9 +312,6 @@ get '/calcStats/:user_id/:stat_selected/:per' do
 	when 'beater_pairs'
 		pos_arr = [[4,5],[4,5]]
 		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
-	when 'chaser_beater_beater'
-		pos_arr = [[0,1,2],[4,5],[4,5]]
-		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
 	when 'chasers_pairs'
 		pos_arr = [[0,1,2],[0,1,2]]
 		stats_json = calc_stats.calc_plus_minus_stat(pos_arr).to_json
@@ -363,8 +360,6 @@ get '/calcFullStats/:user_id/:stat_selected/:per' do
 	when 'full_line_up'
 		pos_arr =[[0,1,2],[0,1,2],[0,1,2],[3],[4,5],[4,5]]
 		stats_json = calc_full_stats.calc_plus_minus_stat(pos_arr).to_json
-	when 'possessions'
-		possessions_json = calc_full_stats.calc_possessions.to_json
 	when 'possessions_agg'
 		possessions_agg_json = calc_full_stats.calc_possessions_agg.to_json
 	end
