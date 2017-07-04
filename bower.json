@@ -26,7 +26,8 @@
     "videogular-controls": "~1.4.4",
     "videogular-buffering": "~1.4.4",
     "videogular-poster": "~1.4.4",
-    "bower-videogular-youtube": "videogular-youtube#~2.0.6"
+    "bower-videogular-youtube": "videogular-youtube#~2.0.6",
+    "videogular-quality": "*"
   },
   "resolutions": {
     "angular": "1.6.1",
