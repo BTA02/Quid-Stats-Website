@@ -38,3 +38,9 @@ DEPENDENCIES
   parse-ruby-client!
   sinatra (~> 1.4)
   thin (~> 1.6)
+
+RUBY VERSION
+   ruby 2.2.1p85
+
+BUNDLED WITH
+   1.15.1

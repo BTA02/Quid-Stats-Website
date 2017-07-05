@@ -26,14 +26,11 @@
     "videogular-controls": "~1.4.4",
     "videogular-buffering": "~1.4.4",
     "videogular-poster": "~1.4.4",
-    "bower-videogular-youtube": "videogular-youtube#~2.0.6",
-    "videogular-dash": "~1.4.4",
-    "videogular-quality": "*"
+    "bower-videogular-youtube": "videogular-youtube#~2.0.6"
   },
   "resolutions": {
     "angular": "1.6.1",
     "videogular": "~1.4.4",
-    "angular-sanitize": "1.6.1",
-    "videogular-dash": "master"
+    "angular-sanitize": "1.6.1"
   }
 }

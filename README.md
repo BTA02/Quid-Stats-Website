@@ -17,3 +17,4 @@ You'll need a `.env` file that defines `PARSE_APP_ID` and `PARSE_API_KEY` to act
 Then, run `bundle exec rackukp` and go to the listed port (probably 4567): `localhost:4567` to see the app.
 
 Run on c9: ruby main.rb -p $PORT -o $IP
+Also use the shell command option for the runner

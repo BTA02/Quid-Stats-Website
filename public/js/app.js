@@ -1,8 +1,7 @@
 var app = angular.module('app', ['angucomplete-alt', 'snap', 
 						'ngSanitize', 'com.2fdevs.videogular', 
 						'com.2fdevs.videogular.plugins.controls',
-						'info.vietnamcode.nampnq.videogular.plugins.youtube',
-						'th.co.softever.videogular.plugins.quality']);
+						'info.vietnamcode.nampnq.videogular.plugins.youtube']);
 						
 app.filter('time', function() {
 	var conversions = {
