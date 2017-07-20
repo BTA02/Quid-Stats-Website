@@ -1,61 +1,13 @@
 angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$interval', '$sce', function($scope, $http, $interval, $sce) {
 	
-	$scope.videoPlayer = this;
-	$scope.API = null;
-	$scope.videoPlayer.onPlayerReady = function(API) {
-		$scope.videoPlayer.API = API;
-	};
-    this.videogularInit = function () {
-	    
-		this.onEnterEvent = function onLeave(currentTime, timeLapse, params) {
-			// alert("he1y");
-			console.log("Here we are again...");
-		};
-		
-		this.config = {
-			sources: [
-				// Dummy video of US Nat 9
-				{src: "https://www.youtube.com/watch?v=VfzdLacYQto"},
-				{src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.mp4"), type: "video/mp4"},
-				{src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.webm"), type: "video/mp4"},
-				{src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.ogg"), type: "video/mp4"}
-			],
-			theme: "/lib/videogular-themes-default/videogular.css",
-			plugins: {
-				poster: "http://www.videogular.com/assets/images/videogular/png"
-			},
-			cuePoints: {
-				events: []
-			},
-		};
-		
-		this.addCuePoint = function(timeStamp) {
-			var point = {
-				timeLapse: {
-					start: timeStamp
-				},
-				onEnter: this.onEnterDrawing.bind(this),
-			};
-			this.controller.cuePoints.events.push(point);
-		};
-   };
-   
-   this.videogularInit();
-
-
 	$scope.Math = window.Math;
 	
 	$interval( function(){
 		if ($scope.vidObj) {
 			$scope.updateOnFieldPlayers();
 			$scope.updateScoreboard();
-			// focus the player so that when you click elsewhere, video gets the focus back
 		}
-	},100);
-	
-	var getTimeInSeconds = function() {
-		return $scope.videoPlayer.API.currentTime / 1000;
-	}
+	},50);
 	
 	$scope.closeDialog = function(which) {
 		document.getElementById(which).style.display='none';document.getElementById('fade').style.display='none';
@@ -74,7 +26,6 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 		$scope.selectedVideo = idAndYearAndOpponent[0];
 		// Set this to my videogular config
 		var videoUrl = "https://www.youtube.com/watch?v=" + $scope.selectedVideo;
-		this.controller.config['sources'] = [{src:videoUrl}];
 		$scope.year = idAndYearAndOpponent[1];
 		$scope.opponent = idAndYearAndOpponent[2];
 		$scope.allPlayers = [];
@@ -200,7 +151,7 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 			return;
 		}
 		var startTime = 0;
-		var endTime = getTimeInSeconds() + 1;
+		var endTime = $scope.videoPlayer.getCurrentTime() + 1;
 		setOnFieldToBlank();
 		for (var i = startTime; i < endTime; i++) {
 			if ($scope.subMap.get(i) !== null && $scope.subMap.get(i) !== undefined) {
@@ -214,14 +165,14 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
  
 	$scope.startSub = function(playerId) {
 		$scope.statType = "SUB";
-		$scope.videoPlayer.API.pause();
+		$scope.videoPlayer.pauseVideo();
 		$scope.subbingPlayer = playerId;
 		document.getElementById('allPlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
 	};
  
 	$scope.startSwap = function(playerId) {
 		$scope.statType = "SWAP";
-		$scope.videoPlayer.API.pause();
+		$scope.videoPlayer.pauseVideo();
 		$scope.subbingPlayer = playerId;
 		document.getElementById('onFieldPlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
 	};
@@ -233,7 +184,7 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 			$scope.addStat(null, null, stat, null);
 		} else {
 			$scope.statType = stat;
-			$scope.videoPlayer.API.pause();
+			$scope.videoPlayer.pauseVideo();
 			document.getElementById('onFieldPlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
 		}
 	};
@@ -293,7 +244,7 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 		if ($scope.originalStats == undefined) {
 			return;
 		}
-		var endTime = getTimeInSeconds() + 1;
+		var endTime = $scope.videoPlayer.getCurrentTime() + 1;
 		$scope.homeScore = 0;
 		$scope.awayScore = 0;
 		
@@ -337,13 +288,13 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 	
 	$scope.addCard = function(cardType) {
 		$scope.statType = cardType;
-		$scope.videoPlayer.API.pause();
+		$scope.videoPlayer.pauseVideo();
 		
 		document.getElementById('onFieldPlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
 	};
 	
 	$scope.startNote = function() {
-		$scope.videoPlayer.API.pause();
+		$scope.videoPlayer.pauseVideo();
 		document.getElementById('noteOverlay').style.display='block';document.getElementById('fade').style.display='block';
 	};
 	
@@ -352,7 +303,7 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 				vid_id : $scope.selectedVideo,
 				team_id : $scope.team,
 				fall_year : $scope.year,
-				time : getTimeInSeconds(),
+				time : $scope.videoPlayer.getCurrentTime(),
 				good_bad_filter : $scope.goodBad,
 				o_d_filter : $scope.oD,
 				note : $scope.noteText
@@ -374,7 +325,7 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 	};
 	
 	$scope.addStat = function(playerId, playerInId, stat, bludgers) {
-		$scope.videoPlayer.API.pause();
+		$scope.videoPlayer.pauseVideo();
 		$scope.addOppositeStat(stat, bludgers);
 		
 		var data = {
@@ -383,7 +334,7 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 				year : $scope.year,
 				player_id : playerId,
 				player_in_id : playerInId,
-				time : getTimeInSeconds(),
+				time : $scope.videoPlayer.getCurrentTime(),
 				stat : stat,
 				bludger_count : bludgers
 		};
@@ -465,7 +416,7 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 				year : $scope.year,
 				player_id : null,
 				player_in_id : null,
-				time : getTimeInSeconds(),
+				time : $scope.videoPlayer.getCurrentTime(),
 				stat : stat,
 				bludger_count : bludgers
 		};
@@ -486,7 +437,6 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 			object_id : objId,
 			stat : statName
 		};
-		// I also need to get the ID of the object created on the other team here
 		$http.post("/deleteStat", data).then(function(response) {
 			var index = findStatIndex(response.data);
 			if (index !== -1) {
@@ -506,16 +456,14 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 	}
 	
 	$scope.instantReplay = function() {
-		$scope.seekToTime("", getTimeInSeconds());
+		$scope.seekToTime("", $scope.videoPlayer.getCurrentTime());
 	};
-
+	
 	$scope.seekToTime = function(statName, time) {
-		time = statName ? time : time/1000;
-		time = time < 5 ? 5 : time;
 		if (statName == 'SUB' || statName == "SWAP" || statName == 'PAUSE_CLOCK' || statName == 'START_CLOCK') {
-			$scope.videoPlayer.API.seekTime(time, false);
+			$scope.videoPlayer.seekTo(time);
 		} else {
-			$scope.videoPlayer.API.seekTime(time-5, false);
+			$scope.videoPlayer.seekTo(time-5);
 		}
 	};
 
@@ -585,7 +533,7 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 	};
 	
 	$scope.showNote = function(index) {
-		$scope.videoPlayer.API.pause();
+		$scope.videoPlayer.pauseVideo();
 		$scope.displayNoteText = $scope.displayStats[index].note;
 		document.getElementById('displayNoteOverlay').style.display='block';document.getElementById('fade').style.display='block';
 	};
