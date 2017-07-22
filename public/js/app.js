@@ -1,8 +1,5 @@
-var app = angular.module('app', ['angucomplete-alt', 'snap', 
-						'ngSanitize', 'com.2fdevs.videogular', 
-						'com.2fdevs.videogular.plugins.controls',
-						'info.vietnamcode.nampnq.videogular.plugins.youtube', 
-						'youtube-embed']);
+var app = angular.module('app', ['angucomplete-alt', 'snap', 'ngSanitize',
+									'youtube-embed']);
 						
 app.filter('time', function() {
 	var conversions = {
@@ -49,5 +46,4 @@ app.filter('statNameFilter', function() {
 		ret = ret.replace(/\"|\[|\]/g, "");
 		return ret;
 	};
-
 });						
