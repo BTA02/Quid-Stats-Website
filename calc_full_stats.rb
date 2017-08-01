@@ -723,9 +723,6 @@ class CalcFullStats
 		return_array
 	end
 
-
-	
-
 	def get_game_events_for_team
 		@client.query("Videos").eq("team_id", @team_id).get
 	end
@@ -765,9 +762,21 @@ class CalcFullStats
 	def getStatsMap
 		@stats_map
 	end
-
-
-
-
+	
+	def calcAPM
+		# events_from_games = get_stats_rows_from_games()
+		# if events_from_games.nil?
+			# return nil
+		# end
+		# stintTime = -1
+		# stint = Array.new
+		# events_from_games.each do |event|
+			# if event.vid_id != cur_game
+				# if it's a new game... restart stuff?
+				# I don't know enough ruby for this shit
+			# end
+		
+		# @stints = 
+	end
 end
 
