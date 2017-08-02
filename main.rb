@@ -362,6 +362,8 @@ get '/calcFullStats/:user_id/:stat_selected/:per' do
 		stats_json = calc_full_stats.calc_plus_minus_stat(pos_arr).to_json
 	when 'possessions_agg'
 		possessions_agg_json = calc_full_stats.calc_possessions_agg.to_json
+	when 'apm'
+		apm_json = calc_full_stats.calc_apm.to_json
 	end
 end
 

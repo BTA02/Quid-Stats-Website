@@ -763,20 +763,114 @@ class CalcFullStats
 		@stats_map
 	end
 	
-	def calcAPM
-		# events_from_games = get_stats_rows_from_games()
-		# if events_from_games.nil?
-			# return nil
-		# end
-		# stintTime = -1
-		# stint = Array.new
-		# events_from_games.each do |event|
-			# if event.vid_id != cur_game
-				# if it's a new game... restart stuff?
-				# I don't know enough ruby for this shit
-			# end
-		
-		# @stints = 
+	def calc_apm
+		# Gets all the events
+		all_stats = get_stats_rows_from_games
+
+		if all_stats.nil?
+			return nil
+		end
+
+        combo_stat_map = Hash.new
+        
+        # I'm going to add each stint, an array, to this table
+        stint_table = Array.new
+        header_stint = Array.new
+        # I need to do a foreach loop on the players or something, this appends an array, not individual stuff
+        header_stint.push(0, 'Plus', 'Minus', 'Time', @players)
+        stint_table.push(header_stint)
+        pp 'Start'
+        pp header_stint
+        
+		cur_game = "notAGame"
+    	on_field_array = ["chaserA", "chaserB", "chaserC", "keeper", "beaterA", "beaterB"]
+    	stint_time = 0;
+    	stint_plus = 0;
+    	stint_minus = 0;
+    	
+		start_time = -1
+		start_bludger_time = -1
+		have_control = false
+
+    	all_stats.each do |event|
+    		if event["vid_id"] != cur_game
+    			if cur_game != "notAGame"
+    				addStintToTable(stint_plus, stint_minus, stint_time, on_field_array, stint_table)
+					stint_plus = 0
+					stint_minus = 0
+					stint_time = 0
+				end
+    			on_field_array = ["chaserA", "chaserB", "chaserC", "keeper", "beaterA", "beaterB", "seeker"]
+    		end
+    		cur_game = event['vid_id']
+    		sorted_on_field_array = sort_on_field_array_by_position(on_field_array)
+    		case event['stat_name']
+    		when 'GOAL'
+    			stint_plus += 1
+    		when 'AWAY_GOAL'
+    			stint_minus += 1
+    		when 'SUB'
+    			# mark up a "stint"
+				if start_time != -1
+					time_to_add = event["time"] - start_time
+					stint_time += time_to_add
+					addStintToTable(stint_plus, stint_minus, stint_time, on_field_array, stint_table)
+					stint_plus = 0
+					stint_minus = 0
+					stint_time = 0
+					start_time = event["time"]
+				end
+				
+				ind = on_field_array.index(event['player_id'])
+				on_field_array[ind] = event["player_in_id"]
+			when 'SWAP'
+				if start_time != -1
+					time_to_add = event["time"] - start_time
+					stint_time += time_to_add
+					start_time = event["time"]
+				end
+				
+				ind = on_field_array.index(event['player_id'])
+				ind2 = on_field_array.index(event['player_in_id'])
+				on_field_array[ind] = event["player_in_id"]
+				on_field_array[ind2] = event["player_id"]
+				
+    		when 'PAUSE_CLOCK'
+				if start_time != -1
+					time_to_add = event["time"] - start_time
+					stint_time += time_to_add
+					start_time = -1
+				end
+				
+    		when 'START_CLOCK'
+    			start_time = event["time"]
+    			if have_control
+    				start_bludger_time = event["time"]
+    			end
+    		when 'GAME_START'
+    			start_time = event["time"]
+    			if have_control
+    				start_bludger_time = event["time"]
+    			end
+    		end
+    	end
+	end
+	
+	def addStintToTable(plus, minus, time, on_field_array, stint_table)
+		columns = stint_table.length
+		new_stint = Array.new(columns, 0)
+		new_stint[0] = plus
+		new_stint[1] = minus
+		new_stint[2] = time
+		table_index = 0
+		stint_table.each do |player|
+			table_id = player["objectId"]
+			on_field_array.each do |on_field_player|
+				if on_field_player = table_id
+					new_stint[table_index] = 1
+				end
+			end
+			table_index += 1
+		end
 	end
 end
-
