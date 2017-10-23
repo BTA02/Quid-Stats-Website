@@ -40,7 +40,7 @@ angular.module('app').controller('ViewStatsControllerExp', ['$scope', '$http', f
 			}
 			$scope.statsDisp = response.data;
 			console.log("response data");
-			// console.log($scope.statsDisp);
+			console.log($scope.statsDisp);
 			// if ($scope.isPlusMinus) {
 			//   $scope.sortPMMap("GROUP");
 			// } else {
@@ -63,7 +63,7 @@ angular.module('app').controller('ViewStatsControllerExp', ['$scope', '$http', f
 	
 	$scope.downloadVariable = function() {
 		console.log("2");
-	};
+	}
 	
 	$scope.selectedGames = {};
 	$scope.changeAllSelected = function() {

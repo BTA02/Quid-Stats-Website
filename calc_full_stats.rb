@@ -811,10 +811,14 @@ class CalcFullStats
 				if start_time != -1
 					time_to_add = event["time"] - start_time
 					stint_time += time_to_add
-					add_stint_to_table(stint_plus, stint_minus, stint_time, on_field_array, stint_table)
-					stint_plus = 0
-					stint_minus = 0
-					stint_time = 0
+					if stint_time < 7 && stint_plus == 0 && stint_minus == 0
+						# do nothing
+					else
+						add_stint_to_table(stint_plus, stint_minus, stint_time, on_field_array, stint_table)
+						stint_plus = 0
+						stint_minus = 0
+						stint_time = 0
+					end
 					start_time = event["time"]
 				end
 				
@@ -881,7 +885,12 @@ class CalcFullStats
 					new_stint[index] = 1
 				end
 			end
-			stint_table.push(new_stint)
+			if index < 4
+				pp "here"
+				pp new_stint
+			end
+			
 		end
+		stint_table.push(new_stint)
 	end
 end
