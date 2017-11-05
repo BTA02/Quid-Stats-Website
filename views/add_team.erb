@@ -2,7 +2,7 @@
 <div id="team-year" class="container-fluid" align="center">
 	<h2>To add or edit a team, first, select the team and the year.</h2>
 	<p>Base the year on what year it is/was during the fall</p>
-	<p>Hint: We are currently in fall year 2016</p>
+	<p>Hint: We are currently in fall year 2017</p>
 
     <select name="teamSelect" ng-model="teamToAdd" ng-change="getRoster()">
 		<option value="new">New Team</option>
@@ -16,7 +16,8 @@
 		<option value="2013">2013</option>
 		<option value="2014">2014</option>
 		<option value="2015">2015</option>
-		<option selected value="2016">2016</option>
+		<option value="2016">2016</option>
+		<option selected value="2017">2017</option>
 	</select>
 
 	<h4 ng-show="teamToAdd && rosterYear" style="color:red">You must hit "Save Roster" after you are done adding players. If you forget to do this, all your work will be lost</h4>
@@ -73,7 +74,7 @@
 	
 	<h4>This page is for adding / editing your roster.</h4>
 	<h5>1. Select a team from the dropdown menu. Or, choose 'New Team' if you want to add a new team to the database.</h5>
-	<h5>2. The next dropdown is for the year of the roster. So, if you want to add a team for this season, use 2016. The year is based on the fall year for that season.</h5>
+	<h5>2. The next dropdown is for the year of the roster. So, if you want to add a team for this season, use 2017. The year is based on the fall year for that season.</h5>
 	<h5>3. If you selected a new team, then give it a name, and start adding players.</h5>
 	<p>4. Once you're done adding players, you MUST hit 'Save Roster'. If you don't, all your work will be for naught.</p>
 	<h5>5. Once you've saved your roster, the page will reload. Double check everything worked by selecting your team from the dropdown. Your roster should populate.</h5>
