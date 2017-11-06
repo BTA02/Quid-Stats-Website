@@ -40,7 +40,7 @@ DEPENDENCIES
   thin (~> 1.6)
 
 RUBY VERSION
-   ruby 2.2.1p85
+   ruby 2.2.2p95
 
 BUNDLED WITH
-   1.15.1
+   1.15.4
