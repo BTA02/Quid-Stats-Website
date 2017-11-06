@@ -771,16 +771,12 @@ class CalcFullStats
 			return nil
 		end
 
-        combo_stat_map = Hash.new
-        
         # I'm going to add each stint, an array, to this table
         stint_table = Array.new
         header_stint = Array.new
         # I need to do a foreach loop on the players or something, this appends an array, not individual stuff
-        header_stint.push(0, 'Plus', 'Minus', 'Time', @players)
+        header_stint.push(0, 'Plus', 'Minus', 'Time', @players).flatten!
         stint_table.push(header_stint)
-        pp 'Start'
-        pp header_stint
         
 		cur_game = "notAGame"
     	on_field_array = ["chaserA", "chaserB", "chaserC", "keeper", "beaterA", "beaterB"]
@@ -795,7 +791,8 @@ class CalcFullStats
     	all_stats.each do |event|
     		if event["vid_id"] != cur_game
     			if cur_game != "notAGame"
-    				addStintToTable(stint_plus, stint_minus, stint_time, on_field_array, stint_table)
+    				pp "NEW GAME"
+    				add_stint_to_table(stint_plus, stint_minus, stint_time, on_field_array, stint_table)
 					stint_plus = 0
 					stint_minus = 0
 					stint_time = 0
@@ -814,10 +811,14 @@ class CalcFullStats
 				if start_time != -1
 					time_to_add = event["time"] - start_time
 					stint_time += time_to_add
-					addStintToTable(stint_plus, stint_minus, stint_time, on_field_array, stint_table)
-					stint_plus = 0
-					stint_minus = 0
-					stint_time = 0
+					if stint_time < 7 && stint_plus == 0 && stint_minus == 0
+						# do nothing
+					else
+						add_stint_to_table(stint_plus, stint_minus, stint_time, on_field_array, stint_table)
+						stint_plus = 0
+						stint_minus = 0
+						stint_time = 0
+					end
 					start_time = event["time"]
 				end
 				
@@ -854,23 +855,42 @@ class CalcFullStats
     			end
     		end
     	end
+    	stint_table
 	end
 	
-	def addStintToTable(plus, minus, time, on_field_array, stint_table)
-		columns = stint_table.length
+	def add_stint_to_table(plus, minus, time, on_field_array, stint_table)
+		columns = stint_table[0].length
+		# pp on_field_array
+		# pp plus
+		# pp minus
+		# pp time
+		
 		new_stint = Array.new(columns, 0)
-		new_stint[0] = plus
-		new_stint[1] = minus
-		new_stint[2] = time
-		table_index = 0
-		stint_table.each do |player|
+		new_stint[0] = -2
+		new_stint[1] = plus
+		new_stint[2] = minus
+		new_stint[3] = time
+		
+		stint_table[0].each_with_index do |player, index|
+			if index < 4
+				next
+			end
+			
 			table_id = player["objectId"]
-			on_field_array.each do |on_field_player|
-				if on_field_player = table_id
-					new_stint[table_index] = 1
+			on_field_array.each_with_index do |on_field_player, index2|
+				if index2 == 6
+					next
+				end
+				if on_field_player == table_id
+					new_stint[index] = 1
 				end
 			end
-			table_index += 1
+			if index < 4
+				pp "here"
+				pp new_stint
+			end
+			
 		end
+		stint_table.push(new_stint)
 	end
 end

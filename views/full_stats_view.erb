@@ -54,18 +54,18 @@
           <th class="statsHeader" ng-click="sortPMMap('time')">TIME</th>
         </thead>
         <tbody>
-          <tr ng-repeat="row in statsDisp">
-            <td>{{row[0].join(', ')}}</td>
-            <td>{{row[1]["games_played"]}}</td>
-            <td>{{row[1]["control_percent"]}}%</td>
-            <td>{{row[1]["gain_control"]}}</td>
-            <td>{{row[1]["lose_control"]}}</td>
-            <td>{{row[1]["plusses"]}}</td>
-            <td>{{row[1]["minuses"]}}</td>
-            <td>{{row[1]["net"]}}</td>
-            <td>{{row[1]["ratio"]}}</td>
-            <td>{{row[1]["time"] | time:'ss':'mm:ss'}}</td>
-          </tr>
+          <!--<tr ng-repeat="row in statsDisp">-->
+            <!--<td>{{row[0].join(', ')}}</td>-->
+            <!--<td>{{row[1]["games_played"]}}</td>-->
+            <!--<td>{{row[1]["control_percent"]}}%</td>-->
+            <!--<td>{{row[1]["gain_control"]}}</td>-->
+            <!--<td>{{row[1]["lose_control"]}}</td>-->
+            <!--<td>{{row[1]["plusses"]}}</td>-->
+            <!--<td>{{row[1]["minuses"]}}</td>-->
+            <!--<td>{{row[1]["net"]}}</td>-->
+            <!--<td>{{row[1]["ratio"]}}</td>-->
+            <!--<td>{{row[1]["time"] | time:'ss':'mm:ss'}}</td>-->
+          <!--</tr>-->
 
         </tbody>
       </table>
@@ -153,9 +153,16 @@
         </tbody>
       </table>
       
+      <div ng-show="displayStatType == 'apm'">
+        <p>Hello</p>
+        <a ng-show="displayStatType == 'apm'" href="data:' + statsDisp + '" download="apm.json">download JSON</a>
+      </div>
+
       
     </div>
+  
   </div>
+
 </div>
 <div id="helpText" class="white_content">
   <a href = "javascript:void(0)" onclick = "document.getElementById('helpText').style.display='none';document.getElementById('fade').style.display='none'">Close<br></a>

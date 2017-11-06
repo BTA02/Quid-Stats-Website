@@ -32,6 +32,9 @@ angular.module('app').controller('ViewStatsControllerExp', ['$scope', '$http', f
 				$scope.displayStatType = "possessions";
 			} else if ($scope.statSelected == "possessions_agg") {
 				$scope.displayStatType = "possessions_agg";
+			} else if ($scope.statSelected == "apm") {
+       			$scope.displayStatType = "apm";
+				
 			} else {
 				$scope.displayStatType = "pm";
 			}
@@ -45,6 +48,22 @@ angular.module('app').controller('ViewStatsControllerExp', ['$scope', '$http', f
 			// }
 		});
 	};
+	
+	var me = $scope;
+	me.downloadVariable = function() {
+		
+		console.log("downloading");
+		var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(me.statsDisp));
+		var downloader = document.createElement('a');
+
+		downloader.setAttribute('href', data);
+		downloader.setAttribute('download', 'file.json');
+		downloader.click();
+	};
+	
+	$scope.downloadVariable = function() {
+		console.log("2");
+	}
 	
 	$scope.selectedGames = {};
 	$scope.changeAllSelected = function() {
