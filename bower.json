@@ -25,7 +25,6 @@
   },
   "resolutions": {
     "angular": "1.6.1",
-    "videogular": "~1.4.4",
     "angular-sanitize": "1.6.1"
   }
 }
