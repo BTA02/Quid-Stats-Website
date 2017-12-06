@@ -2,16 +2,9 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
     
 	$scope.Math = window.Math;
 	
-	$interval( function(){
-		if ($scope.vidObj) {
-			$scope.checkCuepoints($scope.videoPlayer.getCurrentTime());
-		}
-	},10);
-	
-	$scope.playerVars = {
-		controls: 0
-	};
-	
+	var interv;
+	$scope.curStoppedTime;
+		
 	$scope.closeDialog = function(which) {
 		document.getElementById(which).style.display='none';document.getElementById('fade').style.display='none';
 	};
@@ -29,6 +22,7 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 		idAndYearAndOpponent = $scope.vidObj.split(",");
 		$scope.selectedVideo = idAndYearAndOpponent[0];
 		
+		$scope.originalStats = [];
 		$scope.year = idAndYearAndOpponent[1];
 		$scope.opponent = idAndYearAndOpponent[2];
 		$scope.drawingsAndNotes = [];
@@ -68,7 +62,7 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 	
 	
 	$scope.startNote = function() {
-		$scope.videoPlayer.pauseVideo();
+		$scope.pauseVideo();
 		document.getElementById('noteOverlay').style.display='block';document.getElementById('fade').style.display='block';
 	};
 	
@@ -90,7 +84,6 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 			$scope.originalStats.sort(function(a, b){
 					return a.time - b.time;
 				});
-			$scope.filterEvents('added');
 			$scope.drawingsAndNotes.push(response.data);
 			$scope.drawingsAndNotes.sort(function(a, b) {
 				return a.time - b.time;
@@ -124,7 +117,6 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 			if (index !== -1) {
 				$scope.originalStats.splice(index, 1);
 			}
-			$scope.filterEvents('deleted');
 		});
 	};
 	
@@ -137,7 +129,6 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 	}
 	
 	$scope.instantReplay = function() {
-		$scope.saveDrawings();
 		context.clearRect(0, 0, context.canvas.clientWidth, 
 							context.canvas.clientHeight);
 		$scope.seekToTime("", $scope.videoPlayer.getCurrentTime());
@@ -152,39 +143,56 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 	};
 
 	$scope.showNote = function(index) {
-		$scope.videoPlayer.pauseVideo();
+		$scope.pauseVideo();
 		$scope.displayNoteText = $scope.displayStats[index].note;
 		document.getElementById('displayNoteOverlay').style.display='block';document.getElementById('fade').style.display='block';
 	};
 	
 	// These are functions for the buttons on the .erb screen
 	$scope.playVideo = function() {
-		$scope.saveDrawings();
-		context.clearRect(0, 0, context.canvas.clientWidth, context.canvas.clientHeight); // Clears the canvas
+		$scope.curStoppedTime = null;
 		$scope.videoPlayer.playVideo();
+		interv = $interval( function() {
+			if ($scope.vidObj) {
+				$scope.checkCuepoints($scope.videoPlayer.getCurrentTime());
+				console.log("looking...");
+			}
+		}, 5);
+		context.clearRect(0, 0, context.canvas.clientWidth, context.canvas.clientHeight);
 	};
 	
 	$scope.pauseVideo = function() {
-		$scope.saveDrawings();
+		$interval.cancel(interv);
 		$scope.videoPlayer.pauseVideo();
 	};
 	
 	// Cuepoints
 	$scope.checkCuepoints = function(time) {
-		// I could check here for.... what? time and time + .1? 
-		// yeah i figure no drawings will be any closer than that, right?
-		// just jump to the timestamp?
-		// hm...
-		var timeToCheck = Math.round(100*time)/100;
+		var timeToCheck = $scope.getRoundedTime(time);
 
-		if( clickXMap[timeToCheck] != null 
-			|| clickXMap[timeToCheck-.01] != null
-			|| clickXMap[time+.01] != null ) {
+		// AXTELL this checks for 1.04, 1.05 AND 1.06 and checks
+
+		if (clickXMap[timeToCheck] != null) { 
+			// || clickXMap[timeToCheck-.01] != null
+			// || clickXMap[time+.01] != null ) {
+			$scope.pauseVideo();
+			$scope.curStoppedTime = timeToCheck;
+			redraw($scope.curStoppedTime);
 			console.log("there is something at " + time);
-			$scope.videoPlayer.pauseVideo();
-			redraw(timeToCheck);
 		}
 	};
+
+	$scope.getRoundedTimePaused = function() {
+		var time = $scope.videoPlayer.getCurrentTime();
+		if ($scope.curStoppedTime != null) {
+			return $scope.curStoppedTime;
+		}
+		return $scope.getRoundedTime(time);
+	}
+
+	$scope.getRoundedTime = function(time) {
+		return Math.floor(100 * time) / 100;
+	}
 	
 	// Drawing
 	var canvas = document.getElementById('coachingCanvas');
@@ -206,7 +214,7 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 	window.onresize = resizeCanvas;
 	
 	$scope.eraseDrawingsAtTimeStamp = function() {
-		var timeStamp = $scope.videoPlayer.getCurrentTime();
+		var timeStamp = $scope.getRoundedTimePaused();
 		delete clickXMap[timeStamp];
 		delete clickYMap[timeStamp];
 		delete clickDragMap[timeStamp];
@@ -229,13 +237,12 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 		canvas.setAttribute('width', context.canvas.clientWidth);
 		
 		if ($scope.videoPlayer != null) {
-			redraw($scope.videoPlayer.getCurrentTime());
+			redraw($scope.getRoundedTimePaused());
 		}
 	}
 
 	function addClick(x, y, dragging) {
-		var timeStamp = $scope.videoPlayer.getCurrentTime();
-		timeStamp = Math.round(100*timeStamp)/100;
+		var timeStamp = $scope.getRoundedTimePaused();
 
 		if (!clickXMap[timeStamp]) {
 			clickXMap[timeStamp] = [];
@@ -287,7 +294,7 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 		var mouseY = e.pageY - e.target.offsetParent.offsetTop;
 		paint = true;
 		addClick(mouseX, mouseY);
-		redraw($scope.videoPlayer.getCurrentTime());
+		redraw($scope.getRoundedTimePaused());
 	});
 	
 	$('#coachingCanvas').mousemove(function(e) {
@@ -295,7 +302,7 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 			var mouseX = e.pageX - e.target.offsetParent.offsetLeft;
 			var mouseY = e.pageY - e.target.offsetParent.offsetTop;
 			addClick(mouseX, mouseY, true);
-			redraw($scope.videoPlayer.getCurrentTime());
+			redraw($scope.getRoundedTimePaused());
 		}
 	});
 	
@@ -308,10 +315,9 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 	});
 	
 	$scope.saveDrawings = function(fromDelete) {
-		var timeStamp = $scope.videoPlayer.getCurrentTime();
-		timeStamp = Math.round(100*timeStamp)/100;
+		var timeStamp = $scope.getRoundedTimePaused();
 
-		if (clickXMap[timeStamp] == null) {
+		if (clickXMap[timeStamp] == null && !fromDelete) {
 			return;
 		}
 		var data = {
