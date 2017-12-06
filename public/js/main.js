@@ -1,8 +1,5 @@
 'use strict';
-var app = angular.module('app', ['angucomplete-alt', 'snap', 
-								'ngSanitize', 'com.2fdevs.videogular', 
-								'com.2fdevs.videogular.plugins.controls',
-								'info.vietnamcode.nampnq.videogular.plugins.youtube']);
+var app = angular.module('app', ['angucomplete-alt', 'snap', 'ngSanitize']); 
 
 app.filter('time', function() {
 	var conversions = {
