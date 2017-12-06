@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="/stylesheets/login.css">
     <link rel="stylesheet" href="/stylesheets/nav.css">
     <link rel="stylesheet" href="/stylesheets/public.css">
-    <link rel="stylesheet" href="/stylesheets/rankings.css">
     <link rel="stylesheet" href="/stylesheets/record_stats.css">
     <link rel="stylesheet" href="/stylesheets/scoreboard.css">
     <link rel="stylesheet" href="/stylesheets/switch.css">
@@ -53,14 +52,12 @@
       <h4 class="username"><%= h(session[:username]) || 'Please Login' %></h4>
       <ul class="nav">
         <li><a href="/">Home</a></li>
-        <li><a href="/public/all">View Public Stats</a></li>
         <li><a href="/coaching">Coaching Tools</a></li>
         <li><a href="/record">Record Stats</a></li>
         <li><a href="/full_stats_view">View Stats</a></li>
         <li><a href="/watch">Watch a Game</a></li>
         <li><a href="/add_team">Add / Edit a Roster</a></li>
         <li><a href="/add_video">Add a Video</a></li>
-        <li><a href="/rankings">Rankings</a></li>
         <li snap-close onclick = "document.getElementById('helpText').style.display='block';document.getElementById('fade').style.display='block'"><a href="">Help</a></li>
       </ul>
     </snap-drawer>
