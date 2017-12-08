@@ -48,6 +48,7 @@
 }
 
 .pageHeader {
+	height: 20px;
 	background-color: #000;
 	text-align: center;
 }
@@ -68,4 +69,8 @@
 
 .pageTitle {
 	color: #fff;
+}
+
+.selectHeader {
+	height: 30px;
 }

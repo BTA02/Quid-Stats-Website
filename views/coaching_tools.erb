@@ -1,4 +1,4 @@
-<div name="header" class="container-fluid text-center" ng-init="isCoachingTools = true">
+<div name="header" class="container-fluid text-center selectHeader" ng-init="isCoachingTools = true" ng-hide="fullScreen.isFullScreen">
 	<!-- Team Selector -->
 	<select name="teamSelect" ng-model="team" ng-change="getAllGames()">
 		<option value="">Select a team</option>
@@ -11,7 +11,7 @@
     </select>
 </div>
 	
-<div id="fullOuter">
+<div id="fullOuterCoaching">
 	<!-- Video player object -->
 	<div id="vidContainerFull">
 		<div id="videoFull">
@@ -25,7 +25,7 @@
 				player-vars="playerVars"></youtube-video>
 		</div>
 	
-		<div id="drawingsAndNotesFull">
+		<div id="drawingsAndNotesFull" ng-hide="fullScreen.isFullScreen">
 			<div class="statsList">
 				<div class="statsListItem" ng-repeat="drawingAndNoteObj in drawingsAndNotes" ng-click="seekToTime(drawingAndNoteObj.stat_name, drawingAndNoteObj.time)">
 					<span ng-show="drawingAndNoteObj.stat_name != 'NOTE'" style="font-weight: bold;">{{Math.round(drawingAndNoteObj.time) | time:'ss':'mm:ss'}}</span>
@@ -39,13 +39,13 @@
 	</div>
 	
 	<!--Options under the video -->
-	<div id="coachingToolsContainerFull">
-		<button class="btn btn-default drawing-button" ng-click="startNote()">Add Note</button>
+	<div id="coachingToolsButtons">
 		<button class="btn btn-default drawing-button" ng-click="instantReplay()">Replay</button>
-		<button class="btn btn-default drawing-button" ng-click="playVideo()">Play Video</button>
-		<button class="btn btn-default drawing-button" ng-click="pauseVideo()">Pause Video</button>
-		<button class="btn btn-default drawing-button" ng-click="eraseDrawingsAtTimeStamp()">Erase Screen</button>
+		<button class="btn btn-default drawing-button" ng-click="playPauseVideo()">{{playPauseButtonText}}</button>
 		<button class="btn btn-default drawing-button" ng-click="saveDrawings()">Save Current Drawing</button>
+		<button class="btn btn-default drawing-button" ng-click="eraseDrawingsAtTimeStamp()">Erase Screen</button>
+		<button class="btn btn-default drawing-button" ng-click="startNote()">Add Note</button>
+		<button class="btn btn-default drawing-button" ng-click="toggleFullScreen()">{{fullScreen.text}}</button>
 	</div>
 
 <!--End of column flex-->

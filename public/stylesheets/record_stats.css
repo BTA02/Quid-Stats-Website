@@ -51,7 +51,7 @@
 
 /*both a flex object, and a flex container*/
 #vidContainerFull {
-    height: calc(100% - 250px);
+    height: calc(100%);
     min-height: 390px;
     flex: 1 1 auto;
     display: flex;

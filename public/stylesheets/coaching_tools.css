@@ -1,0 +1,26 @@
+.snap-content {
+	display: flex;
+	flex-direction: column; 
+}
+
+#fullOuterCoaching {
+    height: calc(100% - 50px);
+    
+    flex: 1 1 auto;
+
+    display: flex;
+    flex-direction: column;
+}
+
+/*both a flex object, and a flex container*/
+#vidContainerFullCoaching {
+    height: calc(100%);
+    min-height: 390px;
+    flex: 1 1 auto;
+    display: flex;
+}
+
+#coachingToolsButtons {
+	height: 60px;
+	display: flex;
+}

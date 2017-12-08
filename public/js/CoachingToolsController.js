@@ -4,6 +4,13 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 	
 	var interv;
 	$scope.curStoppedTime;
+
+	$scope.fullScreen = {
+		text: "F.S.",
+		isFullScreen: false
+	};
+
+	$scope.playPauseButtonText = "Play";
 		
 	$scope.closeDialog = function(which) {
 		document.getElementById(which).style.display='none';document.getElementById('fade').style.display='none';
@@ -21,6 +28,7 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 		var idAndYearAndOpponent;
 		idAndYearAndOpponent = $scope.vidObj.split(",");
 		$scope.selectedVideo = idAndYearAndOpponent[0];
+
 		
 		$scope.originalStats = [];
 		$scope.year = idAndYearAndOpponent[1];
@@ -148,7 +156,17 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 		document.getElementById('displayNoteOverlay').style.display='block';document.getElementById('fade').style.display='block';
 	};
 	
-	// These are functions for the buttons on the .erb screen
+	$scope.playPauseVideo = function() {
+		var state = $scope.videoPlayer.getPlayerState();
+		if (state === 1) {
+			$scope.pauseVideo();
+			$scope.playPauseButtonText = "Play";
+		} else {
+			$scope.playVideo();
+			$scope.playPauseButtonText = "Pause";
+		}
+	}
+
 	$scope.playVideo = function() {
 		$scope.curStoppedTime = null;
 		$scope.videoPlayer.playVideo();
@@ -165,6 +183,10 @@ angular.module('app').controller('CoachingToolsController', ['$scope', '$http', 
 		$interval.cancel(interv);
 		$scope.videoPlayer.pauseVideo();
 	};
+
+	$scope.toggleFullScreen = function() {
+		$scope.fullScreen.isFullScreen = !$scope.fullScreen.isFullScreen;
+	}
 	
 	// Cuepoints
 	$scope.checkCuepoints = function(time) {
