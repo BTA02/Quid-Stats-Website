@@ -327,7 +327,7 @@ get '/calcStats/:user_id/:stat_selected/:per' do
 	end
 end
 
-get '/calcFullStats/:user_id/:stat_selected/:per' do
+get '/calcFullStats/:user_id/:stat_selected/:per/:sop' do
 	if params[:user_id] == 'me'
 		user_id = session[:authorId]
 	else
@@ -338,7 +338,7 @@ get '/calcFullStats/:user_id/:stat_selected/:per' do
 	team_id = params[:team_id]
 	game_ids = params[:ids].split(",")
 	
-	calc_full_stats = CalcFullStats.new($client, team_id, game_ids, user_id, params[:per])
+	calc_full_stats = CalcFullStats.new($client, team_id, game_ids, user_id, params[:per], params[:sop])
 	case stat_selected
 	when 'chaser_raw_stats'
 		raw_stats_map_json = calc_full_stats.chaser_raw_stats.to_json

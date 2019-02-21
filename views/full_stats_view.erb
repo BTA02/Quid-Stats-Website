@@ -21,6 +21,12 @@
     <option value="1">Per Minute</option>
     <option value="2">Per Game</option>
   </select>
+  <select name="sopSelect" ng-model="sop">
+    <option value="" select disabled>Select Snitch Mod</option>
+    <option value="0">Pre and Post SOP</option>
+    <option value="1">Pre SOP</option>
+    <option value="2">Post SOP</option>
+  </select>
 
 <button class="btn btn-default" ng-click="calcStats('<%= @userId %>')">Go</button>
 </div>

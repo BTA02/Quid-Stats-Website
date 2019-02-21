@@ -25,7 +25,7 @@ angular.module('app').controller('ViewStatsControllerExp', ['$scope', '$http', f
 			return;
 		}
 
-		$http.get("/calcFullStats/" + userId + "/" + $scope.statSelected + "/" + $scope.per + "?team_id=" + $scope.team + "&ids=" + ids).then(function(response) {
+		$http.get("/calcFullStats/" + userId + "/" + $scope.statSelected + "/" + $scope.per + "/" + $scope.sop + "?team_id=" + $scope.team + "&ids=" + ids).then(function(response) {
 			if ($scope.statSelected == "chaser_raw_stats") {
 				$scope.displayStatType = "raw";
 			} else if ($scope.statSelected == "possessions") {

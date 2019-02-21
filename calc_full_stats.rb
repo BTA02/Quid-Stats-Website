@@ -7,7 +7,7 @@ class CalcFullStats
 
 	attr_accessor :stats_map
 
-	def initialize(client, team_id, game_ids, author_id, per)
+	def initialize(client, team_id, game_ids, author_id, per, sop)
 		@client = client
 		@team_id = team_id
 		@game_ids = game_ids
@@ -18,6 +18,10 @@ class CalcFullStats
 		# per = 2 - per game
 		# per = 3 - per minute per game
 		@per = per.to_i
+		# sop = 0 - full game
+		# sop = 1 - pre-snitch only
+		# sop = 2 - post-snitch only
+		@sop = sop.to_i
 	end
 
 	def get_stats_rows_from_games()
@@ -222,6 +226,9 @@ class CalcFullStats
 		start_time = -1
 		cur_game = "notAGame"
 		on_field_array = ["chaserA", "chaserB", "chaserC", "keeper"]
+		snitch_release_time = -1
+		
+		#Loop through all game events
 		events_from_games.each do |event|
 			if cur_game != event["vid_id"]
 				on_field_array = ["chaserA", "chaserB", "chaserC", "keeper"]
@@ -243,6 +250,7 @@ class CalcFullStats
 				next
 			end
 
+			# I think this adds the player to the stat map, if something happens
 			unless @stats_map.include?(player_id)
 				if (!player_id.nil? && player_id != "null")
 					first_name = '?'
@@ -280,8 +288,13 @@ class CalcFullStats
 				end
 			end
 			
+			# Skip events that are outside SOP's designation
+			if should_skip_event(@sop, event["time"], event_type, snitch_release_time)
+				next
+			end
+			
 			if event_type == "SUB"
-				if start_time != -1
+				if start_time != -1 && !should_skip_event(@sop, event["time"], event_type, snitch_release_time)
 					time_to_add = event["time"] - start_time
 					add_time_to_each_player(on_field_array, time_to_add, cur_game)
 					start_time = event["time"]
@@ -289,7 +302,6 @@ class CalcFullStats
 				ind = on_field_array.index(event["player_id"])
 				on_field_array[ind] = player_id
 			elsif event_type == "SWAP"
-
 				if start_time != -1
 					time_to_add = event["time"] - start_time
 					add_time_to_each_player(on_field_array, time_to_add, cur_game)
@@ -312,6 +324,13 @@ class CalcFullStats
 			elsif event_type == "AWAY_GOAL"
 				add_plus_minus_val(on_field_array, -1)
 			elsif event_type == "SEEKERS_RELEASED"
+				# Add time to each player because I'll use this as a stopping point
+				if start_time != -1
+					time_to_add = event["time"] - start_time
+					add_time_to_each_player(on_field_array, time_to_add, cur_game)
+					start_time = event["time"]
+				end
+				snitch_release_time = event["time"]
 			elsif event_type == "AWAY_SNITCH_CATCH"
 			
 			elsif event_type == "SNITCH_CATCH"
@@ -332,6 +351,8 @@ class CalcFullStats
 				@stats_map[player_id][event["stat_name"].downcase] += 1
 			end				
 		end
+		
+		# add the game to each players' games played
 		@stats_map.update(@stats_map) { |key, val|
 			val.update(val) { |key1, val1|
 				if key1 == 'games_played'
@@ -386,6 +407,24 @@ class CalcFullStats
 			}
 		end
 		@stats_map.values
+	end
+	
+	def should_skip_event(sop_value, event_time, event_type, snitch_release_time)
+		if event_type == "SEEKERS_RELEASED"
+			return false
+		end
+		if sop_value == 0
+			pp "sop value 0, so false"
+			return false
+		end
+		if sop_value == 1 && event_time > snitch_release_time && snitch_release_time != -1
+			pp "here1"
+			return true
+		end
+		if sop_value == 2 && (event_time < snitch_release_time || snitch_release_time == -1) && event_type != "SUB"
+			pp "here2"
+			return true
+		end
 	end
 
 	def add_plus_minus_val(on_field_array, val)
