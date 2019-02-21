@@ -462,6 +462,7 @@ class CalcFullStats
 		end		
 	end
 
+	# This is the combos stats pages
 	def calc_plus_minus_stat(arrs)
 
 		# Gets all the events
@@ -499,6 +500,7 @@ class CalcFullStats
 		start_time = -1
 		start_bludger_time = -1
 		have_control = false
+		snitch_release_time = -1
 
     	all_stats.each do |event|
     		if event["vid_id"] != cur_game
@@ -506,6 +508,9 @@ class CalcFullStats
     		end
     		cur_game = event['vid_id']
     		sorted_on_field_array = sort_on_field_array_by_position(on_field_array)
+    		if should_skip_event(@sop, event["time"], event["stat_name"], snitch_release_time)
+    			next
+    		end
     		case event['stat_name']
     		when 'GOAL'
     			all_combos.each do |combo|
@@ -609,8 +614,6 @@ class CalcFullStats
 					end
 					start_bludger_time = -1
 				end
-				
-				
     		when 'START_CLOCK'
     			start_time = event["time"]
     			if have_control
@@ -621,6 +624,27 @@ class CalcFullStats
     			if have_control
     				start_bludger_time = event["time"]
     			end
+			when 'SEEKERS_RELEASED'
+				if start_time != -1
+					time_to_add = event["time"] - start_time
+					if time_to_add != 0
+						all_combos.each do |combo|
+							add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, time_to_add, 'time', cur_game)
+						end
+					end
+					start_time = event["time"]
+				end
+				if start_bludger_time != -1
+					bludger_time_to_add = event["time"] - start_bludger_time
+					if bludger_time_to_add != 0
+						all_combos.each do |combo|
+							add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, bludger_time_to_add, 'bludger_time', cur_game)
+						end
+					end
+					start_bludger_time = event["time"]
+				end
+				snitch_release_time = event["time"]
+				
     		end
         end
 
