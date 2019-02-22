@@ -289,14 +289,17 @@ class CalcFullStats
 			end
 			
 			# Skip events that are outside SOP's designation
-			if should_skip_event(@sop, event["time"], event_type, snitch_release_time)
-				next
-			end
+			should_skip = should_skip_event(@sop, event["time"], event_type, snitch_release_time)
+			# if should_skip
+				# next
+			# end
 			
 			if event_type == "SUB"
-				if start_time != -1 && !should_skip_event(@sop, event["time"], event_type, snitch_release_time)
+				if start_time != -1
 					time_to_add = event["time"] - start_time
-					add_time_to_each_player(on_field_array, time_to_add, cur_game)
+					if !should_skip
+						add_time_to_each_player(on_field_array, time_to_add, cur_game)
+					end
 					start_time = event["time"]
 				end
 				ind = on_field_array.index(event["player_id"])
@@ -304,7 +307,9 @@ class CalcFullStats
 			elsif event_type == "SWAP"
 				if start_time != -1
 					time_to_add = event["time"] - start_time
-					add_time_to_each_player(on_field_array, time_to_add, cur_game)
+					if !should_skip
+						add_time_to_each_player(on_field_array, time_to_add, cur_game)
+					end
 					start_time = event["time"]
 				end
 				ind = on_field_array.index(event["player_id"])
@@ -314,7 +319,9 @@ class CalcFullStats
 			elsif event_type == "PAUSE_CLOCK"
 				if start_time != -1
 					time_to_add = event["time"] - start_time
-					add_time_to_each_player(on_field_array, time_to_add, cur_game)
+					if !should_skip
+						add_time_to_each_player(on_field_array, time_to_add, cur_game)
+					end
 					start_time = -1
 				end
 			elsif event_type == "START_CLOCK"
@@ -322,33 +329,45 @@ class CalcFullStats
 			elsif event_type == "GAME_START"
 				start_time = event["time"]
 			elsif event_type == "AWAY_GOAL"
-				add_plus_minus_val(on_field_array, -1)
+				if !should_skip	
+					add_plus_minus_val(on_field_array, -1)
+				end
 			elsif event_type == "SEEKERS_RELEASED"
-				# Add time to each player because I'll use this as a stopping point
+			# TODO Fix now that I know what I'm doing
 				if start_time != -1
 					time_to_add = event["time"] - start_time
-					add_time_to_each_player(on_field_array, time_to_add, cur_game)
+					if !should_skip
+						add_time_to_each_player(on_field_array, time_to_add, cur_game)
+					end
 					start_time = event["time"]
 				end
 				snitch_release_time = event["time"]
 			elsif event_type == "AWAY_SNITCH_CATCH"
 			
 			elsif event_type == "SNITCH_CATCH"
-				@stats_map[player_id]["snitch_catch"] += 1
+				if !should_skip	
+					@stats_map[player_id]["snitch_catch"] += 1
+				end
 			elsif event_type == "GOAL"
-				@stats_map[player_id][event["stat_name"].downcase] += 1
-				@stats_map[player_id]["shot"] += 1
-				@stats_map[player_id]["point"] += 1
-				add_plus_minus_val(on_field_array, 1)
+				if !should_skip
+					@stats_map[player_id][event["stat_name"].downcase] += 1
+					@stats_map[player_id]["shot"] += 1
+					@stats_map[player_id]["point"] += 1
+					add_plus_minus_val(on_field_array, 1)
+				end
 			elsif event_type == "ASSIST"
-				@stats_map[player_id][event["stat_name"].downcase] += 1
-				@stats_map[player_id]["point"] += 1
+				if !should_skip
+					@stats_map[player_id][event["stat_name"].downcase] += 1
+					@stats_map[player_id]["point"] += 1
+				end
 			elsif event_type == "OFFENSE" || event_type == "DEFENSE"
 			elsif event_type == "OFFENSIVE_DRIVE" || event_type == "DEFENSIVE_DRIVE"
 			elsif event_type == "GAIN_CONTROL" || event_type == "LOSE_CONTROL"
 				
 			else
-				@stats_map[player_id][event["stat_name"].downcase] += 1
+				if !should_skip
+					@stats_map[player_id][event["stat_name"].downcase] += 1
+				end
 			end				
 		end
 		
@@ -410,21 +429,16 @@ class CalcFullStats
 	end
 	
 	def should_skip_event(sop_value, event_time, event_type, snitch_release_time)
-		if event_type == "SEEKERS_RELEASED"
-			return false
-		end
 		if sop_value == 0
-			pp "sop value 0, so false"
 			return false
 		end
 		if sop_value == 1 && event_time > snitch_release_time && snitch_release_time != -1
-			pp "here1"
 			return true
 		end
-		if sop_value == 2 && (event_time < snitch_release_time || snitch_release_time == -1) && event_type != "SUB"
-			pp "here2"
+		if sop_value == 2 && (event_time < snitch_release_time || snitch_release_time == -1)
 			return true
 		end
+		false
 	end
 
 	def add_plus_minus_val(on_field_array, val)
@@ -508,29 +522,32 @@ class CalcFullStats
     		end
     		cur_game = event['vid_id']
     		sorted_on_field_array = sort_on_field_array_by_position(on_field_array)
-    		if should_skip_event(@sop, event["time"], event["stat_name"], snitch_release_time)
-    			next
-    		end
+    		should_skip = should_skip_event(@sop, event["time"], event["stat_name"], snitch_release_time)
     		case event['stat_name']
     		when 'GOAL'
-    			all_combos.each do |combo|
-    				add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, 1, 'GOAL', cur_game)
+    			if !should_skip
+	    			all_combos.each do |combo|
+	    				add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, 1, 'GOAL', cur_game)
+	    			end
     			end
     		when 'AWAY_GOAL'
-    			all_combos.each do |combo|
-					add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, 1, 'AWAY_GOAL', cur_game)
-    			end
+    			if !should_skip
+	    			all_combos.each do |combo|
+						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, 1, 'AWAY_GOAL', cur_game)
+	    			end
+	    		end
 			when 'GAIN_CONTROL'
 				have_control = true
 				start_bludger_time = event['time']
-				all_combos.each do |combo|
-					add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, 1, 'GAIN_CONTROL', cur_game)
+				if !should_skip
+					all_combos.each do |combo|
+						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, 1, 'GAIN_CONTROL', cur_game)
+					end
 				end
-				
 			when 'LOSE_CONTROL'
 				if start_bludger_time != -1
 					bludger_time_to_add = event["time"] - start_bludger_time
-					if bludger_time_to_add != 0
+					if bludger_time_to_add != 0 && !should_skip
 					all_combos.each do |combo|
 							add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, bludger_time_to_add, 'bludger_time', cur_game)
 						end
@@ -540,13 +557,15 @@ class CalcFullStats
 				have_control = false
 				start_bludger_time = -1
 				
-				all_combos.each do |combo|
-					add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, 1, 'LOSE_CONTROL', cur_game)
+				if !should_skip
+					all_combos.each do |combo|
+						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, 1, 'LOSE_CONTROL', cur_game)
+					end
 				end
     		when 'SUB'
 				if start_time != -1
 					time_to_add = event["time"] - start_time
-					if time_to_add != 0
+					if time_to_add != 0 && !should_skip
 						all_combos.each do |combo|
 							add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, time_to_add, 'time', cur_game)
 						end
@@ -554,10 +573,9 @@ class CalcFullStats
 					start_time = event["time"]
 				end
 				
-				
 				if start_bludger_time != -1
 					bludger_time_to_add = event["time"] - start_bludger_time
-					if bludger_time_to_add != 0
+					if bludger_time_to_add != 0 && !should_skip
 						all_combos.each do |combo|
 							add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, bludger_time_to_add, 'bludger_time', cur_game)
 						end
@@ -571,7 +589,7 @@ class CalcFullStats
 			when 'SWAP'
 				if start_time != -1
 					time_to_add = event["time"] - start_time
-					if time_to_add != 0
+					if time_to_add != 0 && !should_skip
 						all_combos.each do |combo|
 							add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, time_to_add, 'time', cur_game)
 						end
@@ -581,7 +599,7 @@ class CalcFullStats
 				
 				if start_bludger_time != -1
 					bludger_time_to_add = event["time"] - start_bludger_time
-					if bludger_time_to_add != 0
+					if bludger_time_to_add != 0 && !should_skip
 						all_combos.each do |combo|
 							add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, bludger_time_to_add, 'bludger_time', cur_game)
 						end
@@ -597,7 +615,7 @@ class CalcFullStats
     		when 'PAUSE_CLOCK'
 				if start_time != -1
 					time_to_add = event["time"] - start_time
-					if time_to_add != 0
+					if time_to_add != 0 && !should_skip
 						all_combos.each do |combo|
 							add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, time_to_add, 'time', cur_game)
 						end
@@ -607,7 +625,7 @@ class CalcFullStats
 				
 				if start_bludger_time != -1
 					bludger_time_to_add = event["time"] - start_bludger_time
-					if bludger_time_to_add != 0
+					if bludger_time_to_add != 0 && !should_skip
 						all_combos.each do |combo|
 							add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, bludger_time_to_add, 'bludger_time', cur_game)
 						end
@@ -627,7 +645,7 @@ class CalcFullStats
 			when 'SEEKERS_RELEASED'
 				if start_time != -1
 					time_to_add = event["time"] - start_time
-					if time_to_add != 0
+					if time_to_add != 0 && !should_skip
 						all_combos.each do |combo|
 							add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, time_to_add, 'time', cur_game)
 						end
@@ -636,7 +654,7 @@ class CalcFullStats
 				end
 				if start_bludger_time != -1
 					bludger_time_to_add = event["time"] - start_bludger_time
-					if bludger_time_to_add != 0
+					if bludger_time_to_add != 0 && !should_skip
 						all_combos.each do |combo|
 							add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, bludger_time_to_add, 'bludger_time', cur_game)
 						end
@@ -644,7 +662,6 @@ class CalcFullStats
 					start_bludger_time = event["time"]
 				end
 				snitch_release_time = event["time"]
-				
     		end
         end
 
