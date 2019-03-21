@@ -52,6 +52,8 @@
           <th class="statsHeader" ng-click="sortPMMap('control_percent')">CONTROL PERCENT</th>
           <th class="statsHeader" ng-click="sortPMMap('gain_control')">GAIN CONTROL</th>
           <th class="statsHeader" ng-click="sortPMMap('lose_control')">LOSE CONTROL</th>
+          <th class="statsHeader" ng-click="sortPMMap('zero_bludgers_forced')">0 BLUDGERS FORCED</th>
+          <th class="statsHeader" ng-click="sortPMMap('zero_bludgers_given')">0 BLUDGERS GIVEN</th>
           <th class="statsHeader" ng-click="sortPMMap('plusses')">PLUS</th>
           <th class="statsHeader" ng-click="sortPMMap('minuses')">MINUS</th>
           <th class="statsHeader" ng-click="sortPMMap('net')">NET</th>
@@ -65,6 +67,8 @@
             <td>{{row[1]["control_percent"]}}%</td>
             <td>{{row[1]["gain_control"]}}</td>
             <td>{{row[1]["lose_control"]}}</td>
+            <td>{{row[1]["zero_bludgers_forced"]}}</td>
+            <td>{{row[1]["zero_bludgers_given"]}}</td>
             <td>{{row[1]["plusses"]}}</td>
             <td>{{row[1]["minuses"]}}</td>
             <td>{{row[1]["net"]}}</td>
@@ -144,6 +148,9 @@
           <th class="statsHeader">Bludgers</th>
           <th class="statsHeader">Attempts</th>
           <th class="statsHeader">Goals Scored</th>
+          <th class="statsHeader">Missed Shots</th>
+          <th class="statsHeader">Turnovers</th>
+          <th class="statsHeader">Takeaways</th>
           <th class="statsHeader">Success Rate</th>
         </thead>
         
@@ -153,6 +160,9 @@
             <td>{{key.split(',')[1] | statNameFilter}}</td>
             <td>{{val.count}}</td>
             <td>{{val.goals}}</td>
+            <td>{{val.missed_shots}}</td>
+            <td>{{val.turnovers}}</td>
+            <td>{{val.takeaways}}</td>
             <td>{{val.percent}}%</td>
           </tr>
         </tbody>

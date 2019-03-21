@@ -69,11 +69,6 @@
 					<p ng-model="curOD">{{curOD | statNameFilter}}</p>
 				</div>
 				<div class="scoreboardItem">
-					<p ng-show="curOD == 'OFFENSE'">vs.</p>
-					<p ng-show="curOD != 'OFFENSE'">with</p>
-					<p ng-model="curBludgers">{{curBludgers}}</p>
-				</div>
-				<div class="scoreboardItem">
 					<p>Control?</p>
 					<p ng-show="curControl == 1">Yes</p>
 					<p ng-show="curControl == 0">No</p>
@@ -99,10 +94,8 @@
 					<p ng-show="statObj.stat_name == 'SUB' || statObj.stat_name == 'SWAP'"><span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>{{statObj.player_in_name}}</p>
 					
 					<!--Possession Stuff-->
-					<p ng-show="statObj.stat_name == 'OFFENSE'">vs. {{statObj.bludger_count}} bludger(s)</p>
-					<p ng-show="statObj.stat_name == 'OFFENSIVE_DRIVE'">vs. {{statObj.bludger_count}} bludger(s)</p>
-					<p ng-show="statObj.stat_name == 'DEFENSE'">with {{statObj.bludger_count}} bludger(s)</p>
-					<p ng-show="statObj.stat_name == 'DEFENSIVE_DRIVE'">with {{statObj.bludger_count}} bludger(s)</p>
+					<p ng-show="statObj.stat_name == 'OFFENSE'"></p>
+					<p ng-show="statObj.stat_name == 'DEFENSE'"></p>
 					
 					<!--Note Stuff-->
 					<p ng-show="statObj.stat_name == 'NOTE'">{{statObj.o_d_filter}}</p>
@@ -163,16 +156,9 @@
 				<p class="clickList" ng-click="startNote()">Add Note</p>
 		</div>
 		<div class="buttonGroupFull">
-			<p><b>Start Offense Against</b></p>
-				<p class="clickList" ng-click="addStat(null, null, 'OFFENSE', 0)">0 bludgers</p>
-				<p class="clickList" ng-click="addStat(null, null, 'OFFENSE', 1)">1 bludger</p>
-				<p class="clickList" ng-click="addStat(null, null, 'OFFENSE', 2)">2 bludgers</p>
-		</div>
-		<div class="buttonGroupFull">
-			<p><b>Start Defense With</b></p>
-				<p class="clickList" ng-click="addStat(null, null, 'DEFENSE', 0)">0 bludgers</p>
-				<p class="clickList" ng-click="addStat(null, null, 'DEFENSE', 1)">1 bludger</p>
-				<p class="clickList" ng-click="addStat(null, null, 'DEFENSE', 2)">2 bludgers</p>
+			<p><b>Possession</b></p>
+				<p class="clickList" ng-click="addStat(null, null, 'OFFENSE', null)">Start Offense</p>
+				<p class="clickList" ng-click="addStat(null, null, 'DEFENSE', null)">Start Defense</p>
 		</div>
 		<div class="buttonGroupFull">
 			<p><b>Home Stat</b></p>
@@ -190,6 +176,8 @@
 			<p><b>Bludgers</b></p>
 				<p class="clickList" ng-click="addStat(null, null, 'GAIN_CONTROL', null)">Gain Control</p>
 				<p class="clickList" ng-click="addStat(null, null, 'LOSE_CONTROL', null)">Lose Control</p>
+				<p class="clickList" ng-click="addStat(null, null, 'ZERO_BLUDGERS_FORCED', null)">Zero Bludgers Forced</p>
+				<p class="clickList" ng-click="addStat(null, null, 'ZERO_BLUDGERS_GIVEN', null)">Zero Bludgers Given</p>
 		</div>
 		<div class="buttonGroupFull">
 			<p><b>Seekers</b></p>

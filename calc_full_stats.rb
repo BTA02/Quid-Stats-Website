@@ -216,6 +216,126 @@ class CalcFullStats
 		end
 		all_possessions_agg
 	end
+	
+	def calc_possessions_new
+		all_possessions = get_possession_data_for_game
+		
+		one_offense_possessions = ['OFFENSE', 1]
+		two_offense_possessions = ['OFFENSE', 2]
+		
+		one_defense_possessions = ['DEFENSE', 1]
+		two_defense_possessions = ['DEFENSE', 2]
+		
+		empty_vals = {
+			'count' => 0,
+			'goals' => 0,
+			'missed_shots' => 0,
+			'turnovers' => 0,
+			'takeaways' => 0,
+			'percent' => 0
+		}
+		
+		all_possessions_agg = {
+			one_offense_possessions => empty_vals.clone,
+			two_offense_possessions => empty_vals.clone,
+			one_defense_possessions => empty_vals.clone,
+			two_defense_possessions => empty_vals.clone,
+		}
+		
+		all_possessions.each do |possession|
+			# get the possession data, and update the appropriate object
+			# update the 'count' on the possession type
+			outer_key = [possession['offenseDefense'], possession['bludger_count']]
+			
+			all_possessions_agg[outer_key]['count'] += 1
+			res = possession['result']
+			if res == 'GOAL' || res == 'AWAY_GOAL'
+				all_possessions_agg[outer_key]['goals'] += 1
+			elsif res == 'SHOT'
+				all_possessions_agg[outer_key]['missed_shots'] += 1
+			elsif res == 'TURNOVER'
+				all_possessions_agg[outer_key]['turnovers'] += 1
+			elsif res == 'TAKEAWAY'
+				all_possessions_agg[outer_key]['takeaways'] += 1
+			end
+			
+			all_possessions_agg[outer_key]['percent'] = (((all_possessions_agg[outer_key]['goals'].to_f) / (all_possessions_agg[outer_key]['count'].to_f)).round(3)) * 100
+		end
+		all_possessions_agg
+	end
+	
+	def get_possession_data_for_game
+		rows_from_game = get_stats_rows_from_games()
+	    
+	    all_possessions = Array.new
+	    possession = Hash.new
+	    
+	    # these will be reset every possession
+		
+		bludgers_possessed = 1
+		snitch_release_time = -1
+		
+	    rows_from_game.each do |row|
+	        stat = row['stat_name']
+			should_skip = should_skip_event(@sop, row['time'], stat, snitch_release_time)
+			
+	        if stat == 'OFFENSE' || stat == 'DEFENSE'
+	        	if !possession.empty? && !should_skip
+	        		all_possessions.push(possession.clone)
+	        		possession.clear
+	        	end
+	        	possession.clear
+	        	possession['offenseDefense'] = stat
+	        	possession['bludger_count'] = get_bludger_count(stat, bludgers_possessed)
+	        	possession['result'] = 'NOTHING'
+	        	possession['objectId'] = row['objectId']
+	        	
+	        elsif stat == 'GOAL'
+	        	if !possession.empty?
+	        		possession['result'] = 'GOAL'
+	        	end
+        	elsif stat == 'TURNOVER'
+	        	if !possession.empty?
+	        		possession['result'] = 'TURNOVER'
+	        	end
+	        elsif stat == 'AWAY_GOAL'
+	        	if !possession.empty?
+	        		possession['result'] = 'AWAY_GOAL'
+	        	end
+        	elsif stat == 'SHOT'
+	        	if !possession.empty?
+	        		possession['result'] = 'SHOT'
+	        	end
+	        elsif stat == 'TAKEAWAY'
+	        	if !possession.empty? 
+	        		possession['result'] = 'TAKEAWAY'
+	        	end
+	        elsif stat == 'LOSE_CONTROL'
+	        	bludgers_possessed = 1
+        	elsif stat == 'GAIN_CONTROL'
+        		bludgers_possessed = 2
+	        elsif stat == 'SEEKERS_RELEASED'
+	        	snitch_release_time = row['time']
+	        end
+	    end
+		if !possession.empty?
+    		all_possessions.push(possession.clone)
+    		possession.clear
+		end
+	   	all_possessions
+	end
+	
+	def get_bludger_count(stat, count)
+		if stat == 'OFFENSE'
+			if count == 1
+				2
+			else
+				1
+			end
+		else
+			count
+		end
+	end
 
 	def chaser_raw_stats
 		events_from_games = get_stats_rows_from_games()
@@ -290,9 +410,6 @@ class CalcFullStats
 			
 			# Skip events that are outside SOP's designation
 			should_skip = should_skip_event(@sop, event["time"], event_type, snitch_release_time)
-			# if should_skip
-				# next
-			# end
 			
 			if event_type == "SUB"
 				if start_time != -1
@@ -662,7 +779,31 @@ class CalcFullStats
 					start_bludger_time = event["time"]
 				end
 				snitch_release_time = event["time"]
-    		end
+    		when 'ZERO_BLUDGERS_FORCED'
+    			if !should_skip
+	    			all_combos.each do |combo|
+						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, 1, 'ZERO_BLUDGERS_FORCED', cur_game)
+	    			end
+	    		end
+    		when 'ZERO_BLUDGERS_GIVEN'
+    			if !should_skip
+	    			all_combos.each do |combo|
+						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, 1, 'ZERO_BLUDGERS_GIVEN', cur_game)
+	    			end
+	    		end
+    		when 'OFFENSE'
+    			if !should_skip && event["bludger_count"] == 0
+    				all_combos.each do |combo|
+						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, 1, 'ZERO_BLUDGERS_FORCED', cur_game)
+					end
+				end
+    		when 'DEFENSE'
+    			if !should_skip && event["bludger_count"] == 0
+    				all_combos.each do |combo|
+						add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, 1, 'ZERO_BLUDGERS_GIVEN', cur_game)
+					end
+				end
+	    	end
         end
 
         # this loop takes the combos map, and prepares it
@@ -743,6 +884,8 @@ class CalcFullStats
 				control_percent: 0,
 				gain_control: 0,
 				lose_control: 0,
+				zero_bludgers_forced: 0,
+				zero_bludgers_given: 0,
 				net: 0,
 				ratio: "",
 				bludger_time: 0,
@@ -774,6 +917,10 @@ class CalcFullStats
 			combo_stat_map[cur_players][:gain_control] += value
 		when 'LOSE_CONTROL'
 			combo_stat_map[cur_players][:lose_control] += value
+		when 'ZERO_BLUDGERS_FORCED'
+			combo_stat_map[cur_players][:zero_bludgers_forced] += value
+		when 'ZERO_BLUDGERS_GIVEN'
+			combo_stat_map[cur_players][:zero_bludgers_given] += value
 		end
 		#ratio stuff
 		plus = combo_stat_map[cur_players][:plusses]

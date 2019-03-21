@@ -28,8 +28,6 @@ angular.module('app').controller('ViewStatsControllerExp', ['$scope', '$http', f
 		$http.get("/calcFullStats/" + userId + "/" + $scope.statSelected + "/" + $scope.per + "/" + $scope.sop + "?team_id=" + $scope.team + "&ids=" + ids).then(function(response) {
 			if ($scope.statSelected == "chaser_raw_stats") {
 				$scope.displayStatType = "raw";
-			} else if ($scope.statSelected == "possessions") {
-				$scope.displayStatType = "possessions";
 			} else if ($scope.statSelected == "possessions_agg") {
 				$scope.displayStatType = "possessions_agg";
 			} else {
@@ -38,11 +36,6 @@ angular.module('app').controller('ViewStatsControllerExp', ['$scope', '$http', f
 			$scope.statsDisp = response.data;
 			console.log("response data");
 			console.log($scope.statsDisp);
-			// if ($scope.isPlusMinus) {
-			//   $scope.sortPMMap("GROUP");
-			// } else {
-			//   $scope.sortMap("first_name");
-			// }
 		});
 	};
 	
