@@ -34,8 +34,8 @@ angular.module('app').controller('ViewStatsControllerExp', ['$scope', '$http', f
 				$scope.displayStatType = "pm";
 			}
 			$scope.statsDisp = response.data;
-			console.log("response data");
-			console.log($scope.statsDisp);
+			// console.log("response data");
+			// console.log($scope.statsDisp);
 		});
 	};
 	

@@ -55,168 +55,6 @@ class CalcFullStats
 		end
 	end
 	
-	def calc_possessions
-	    rows_from_game = get_stats_rows_from_games()
-	    
-	    all_possessions = Array.new
-	    possession = Hash.new
-	    
-	    # these will be reset every possession
-	    drive = Hash.new
-	    all_drives_on_possession = Array.new
-		
-	    rows_from_game.each do |row|
-	        stat = row['stat_name']
-	        if stat == 'OFFENSE' || stat == 'DEFENSE'
-	        	if !drive.empty?
-	        		all_drives_on_possession.push(drive.clone)
-	        		drive.clear
-	        	end
-	        	if !all_drives_on_possession.empty?
-	        		possession['drives'] = all_drives_on_possession.clone
-	        		all_drives_on_possession.clear
-	        	end
-	        	if !possession.empty?
-	        		all_possessions.push(possession.clone)
-	        		possession.clear
-	        	end
-	        	possession.clear
-	        	possession['offenseDefense'] = stat
-	        	possession['bludger_count'] = row['bludger_count']
-	        	possession['result'] = 'NO_GOAL'
-	        	possession['expanded'] = false
-	        	possession['objectId'] = row['objectId']
-	        	
-	        elsif stat == 'OFFENSIVE_DRIVE' || stat == 'DEFENSIVE_DRIVE'
-				if !drive.empty?
-					# store the old drive
-					all_drives_on_possession.push(drive.clone)
-					drive.clear
-				end
-				drive['bludger_count'] = row['bludger_count']
-	        elsif stat == 'GOAL'
-	        	if !drive.empty?
-	        		drive['result'] = 'GOAL'
-	        	end
-	        	if !possession.empty?
-	        		possession['result'] = 'GOAL'
-	        	end
-        	elsif stat == 'TURNOVER'
-        		if !drive.empty?
-	        		drive['result'] = 'TURNOVER'
-	        	end
-	        	if !possession.empty?
-	        		possession['result'] = 'TURNOVER'
-	        	end
-	        elsif stat == 'AWAY_GOAL'
-	        	if !drive.empty?
-	        		drive['result'] = 'AWAY_GOAL'
-	        	end
-	        	if !possession.empty?
-	        		possession['result'] = 'AWAY_GOAL'
-	        	end
-	        elsif stat == 'TAKEAWAY'
-	        	if !drive.empty?
-	        		drive['result'] = 'TAKEAWAY'
-	        	end
-	        	if !possession.empty?
-	        		possession['result'] = 'TAKEAWAY'
-	        	end
-	        # elsif stat == ''
-	        end
-	    end
-		if !drive.empty?
-    		all_drives_on_possession.push(drive.clone)
-    		drive.clear
-		end
-		if !all_drives_on_possession.empty?
-    		possession['drives'] = all_drives_on_possession.clone
-    		all_drives_on_possession.clear
-		end
-		if !possession.empty?
-    		all_possessions.push(possession.clone)
-    		possession.clear
-		end
-	   	all_possessions
-	end
-	
-	def calc_possessions_agg
-		# this might end up okay because i'll have javascript prevent anyone from calling
-		# calc_possessions with more than one game, but that won't be a problem here
-		# make sure i'm ready for the flip on each game in calc_possessions
-		all_possessions = calc_possessions
-		
-		
-		zero_offense_possessions = ['OFFENSE', 0]
-		zero_offense_drives = ['OFFENSIVE_DRIVE', 0]
-		one_offense_possessions = ['OFFENSE', 1]
-		one_offense_drives = ['OFFENSIVE_DRIVE', 1]
-		two_offense_possessions = ['OFFENSE', 2]
-		two_offense_drives = ['OFFENSIVE_DRIVE', 2]
-		
-		zero_defense_possessions = ['DEFENSE', 0]
-		zero_defense_drives = ['DEFENSIVE_DRIVE', 0]
-		one_defense_possessions = ['DEFENSE', 1]
-		one_defense_drives = ['DEFENSIVE_DRIVE', 1]
-		two_defense_possessions = ['DEFENSE', 2]
-		two_defense_drives = ['DEFENSIVE_DRIVE', 2]
-		
-		empty_vals = {
-			'count' => 0,
-			'goals' => 0,
-			'percent' => 0
-		}
-		
-		all_possessions_agg = {
-			zero_offense_possessions => empty_vals.clone,
-			one_offense_possessions => empty_vals.clone,
-			two_offense_possessions => empty_vals.clone,
-			zero_offense_drives => empty_vals.clone,
-			one_offense_drives => empty_vals.clone,
-			two_offense_drives => empty_vals.clone,
-			zero_defense_possessions => empty_vals.clone,
-			one_defense_possessions => empty_vals.clone,
-			two_defense_possessions => empty_vals.clone,
-			zero_defense_drives => empty_vals.clone,
-			one_defense_drives => empty_vals.clone,
-			two_defense_drives => empty_vals.clone
-		}
-
-		
-		all_possessions.each do |possession|
-			# get the possession data, and update the appropriate object
-			# update the 'count' on the possession type
-			outer_key = [possession['offenseDefense'], possession['bludger_count']]
-			
-			all_possessions_agg[outer_key]['count'] += 1
-			if possession['result'] == 'GOAL' || possession['result'] == 'AWAY_GOAL'
-				all_possessions_agg[outer_key]['goals'] += 1
-			end
-			
-			if possession['offenseDefense'] == 'OFFENSE'
-				inner_key_val_1 = 'OFFENSIVE_DRIVE'
-			else
-				inner_key_val_1 = 'DEFENSIVE_DRIVE'
-			end
-			if possession['drives'].nil?
-				next
-			end
-			
-			all_possessions_agg[outer_key]['percent'] = (all_possessions_agg[outer_key]['goals'].to_f / all_possessions_agg[outer_key]['count'].to_f).round(3) * 100
-			
-			possession['drives'].each do |drive|
-				inner_key = [inner_key_val_1, drive['bludger_count']]
-				all_possessions_agg[inner_key]['count'] += 1
-				if drive['result'] == 'GOAL' || drive['result'] == 'AWAY_GOAL'
-					all_possessions_agg[inner_key]['goals'] += 1
-				end
-				all_possessions_agg[inner_key]['percent'] = (all_possessions_agg[inner_key]['goals'].to_f / all_possessions_agg[inner_key]['count'].to_f).round(3) * 100
-			end
-			
-		end
-		all_possessions_agg
-	end
-	
 	def calc_possessions_new
 		all_possessions = get_possession_data_for_game
 		
@@ -633,14 +471,15 @@ class CalcFullStats
 		have_control = false
 		snitch_release_time = -1
 
-    	all_stats.each do |event|
-    		if event["vid_id"] != cur_game
-    			on_field_array = ["chaserA", "chaserB", "chaserC", "keeper", "beaterA", "beaterB", "seeker"]
+		sorted_on_field_array = Array.new
+
+		all_stats.each do |event|
+			if event["vid_id"] != cur_game
+				on_field_array = ["chaserA", "chaserB", "chaserC", "keeper", "beaterA", "beaterB", "seeker"]
     		end
-    		cur_game = event['vid_id']
-    		sorted_on_field_array = sort_on_field_array_by_position(on_field_array)
-    		should_skip = should_skip_event(@sop, event["time"], event["stat_name"], snitch_release_time)
-    		case event['stat_name']
+			cur_game = event['vid_id']
+			should_skip = should_skip_event(@sop, event["time"], event["stat_name"], snitch_release_time)
+			case event['stat_name']
     		when 'GOAL'
     			if !should_skip
 	    			all_combos.each do |combo|
@@ -665,7 +504,7 @@ class CalcFullStats
 				if start_bludger_time != -1
 					bludger_time_to_add = event["time"] - start_bludger_time
 					if bludger_time_to_add != 0 && !should_skip
-					all_combos.each do |combo|
+						all_combos.each do |combo|
 							add_stat_to_combo(combo_stat_map, sorted_on_field_array, combo, bludger_time_to_add, 'bludger_time', cur_game)
 						end
 					end
@@ -700,9 +539,9 @@ class CalcFullStats
 					start_bludger_time = event["time"]
 				end
 					
-					
 				ind = on_field_array.index(event['player_id'])
 				on_field_array[ind] = event["player_in_id"]
+				sorted_on_field_array = sort_on_field_array_by_position(on_field_array)
 			when 'SWAP'
 				if start_time != -1
 					time_to_add = event["time"] - start_time
@@ -728,7 +567,8 @@ class CalcFullStats
 				ind2 = on_field_array.index(event['player_in_id'])
 				on_field_array[ind] = event["player_in_id"]
 				on_field_array[ind2] = event["player_id"]
-				
+
+				sorted_on_field_array = sort_on_field_array_by_position(on_field_array)
     		when 'PAUSE_CLOCK'
 				if start_time != -1
 					time_to_add = event["time"] - start_time
