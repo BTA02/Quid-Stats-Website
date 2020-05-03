@@ -2,7 +2,7 @@
 	<!-- Team Selector -->
 	<select name="teamSelect" ng-model="team" ng-change="getAllGames()">
 		<option value="">Select a team</option>
-		<% @teams.each do |team| %>
+		# <% @teams.each do |team| %>
 		<option value="<%= team['objectId']%>"><%=team['team_name']%></option>
 		<%end%>
 	</select>
@@ -22,6 +22,10 @@
 <div id="fullOuter">
 	<!-- Video player object -->
 	<div id="vidContainerFull">
+		<div id="videoFull">
+			<!--<canvas id="coachingCanvas"></canvas>-->
+			<youtube-video id="video" video-id="selectedVideo" player="videoPlayer" player-width="'100%'" player-height="'100%'"></youtube-video>
+		</div>
 		<div id="playersAndScoreboardFull" ng-hide="isCoachingTools">
 			<div class="position" name="chasers">
 				<p style="text-align:center;"><b>Chasers</b></p>
@@ -77,19 +81,13 @@
 			</div>
 		</div>
 	
-		<div id="videoFull">
-			<!--<canvas id="coachingCanvas"></canvas>-->
-			<youtube-video id="video" video-id="selectedVideo" player="videoPlayer" player-width="'100%'" player-height="'100%'"></youtube-video>
-
-		</div>
-	
 		<div id="statsAndFiltersFull" ng-hide="isCoachingTools">
 			<div class="statsList">
 				<div class="statsListItem" ng-repeat="statObj in displayStats">
-					<p ng-show="statObj.stat_name != 'NOTE'">{{statObj.stat_name | statNameFilter}}</p>
+					<p ng-show="statObj.stat_name != 'NOTE'">{{statObj.stat_name | statNameFilter}}: {{statObj.player_display_name}}</p>
 					
 					<!--Name Stuff-->
-					<p ng-show="statObj.player_name != 'null' && (statObj.stat_name != 'SUB' && statObj.stat_name != 'SWAP')">{{statObj.player_name}}</p>
+					<p ng-show="statObj.player_name != 'null' && (statObj.stat_name != 'SUB' && statObj.stat_name != 'SWAP')">{{statObj.player_display_name}}</p>
 					<p ng-show="statObj.player_name != 'null' && (statObj.stat_name == 'SUB' || statObj.stat_name == 'SWAP')"> <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span> {{statObj.player_name}}</p>
 					<p ng-show="statObj.stat_name == 'SUB' || statObj.stat_name == 'SWAP'"><span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>{{statObj.player_in_name}}</p>
 					
@@ -149,46 +147,39 @@
 	<div id="buttonsContainerFull" ng-hide="isCoachingTools">
 		<div class="buttonGroupFull">
 			<p><b>Clock Management</b></p>
-				<p class="clickList" ng-click="addStat(null, null, 'START_CLOCK', null)">Start Clock</p>
-				<p class="clickList" ng-click="addStat(null, null, 'PAUSE_CLOCK', null)">Pause Clock</p>
-				<p class="clickList" ng-click="instantReplay()">Instant Replay</p>
-			<p><b>Extras</b></p>
-				<p class="clickList" ng-click="startNote()">Add Note</p>
-		</div>
-		<div class="buttonGroupFull">
+				<p type="button" class="btn" ng-click="addStat(null, null, 'START_CLOCK', null)">Start Clock</p>
+				<p type="button" class="btn" ng-click="addStat(null, null, 'PAUSE_CLOCK', null)">Pause Clock</p>
+				<p type="button" class="btn" ng-click="instantReplay()">Instant Replay</p>
+			
 			<p><b>Possession</b></p>
-				<p class="clickList" ng-click="addStat(null, null, 'OFFENSE', null)">Start Offense</p>
-				<p class="clickList" ng-click="addStat(null, null, 'DEFENSE', null)">Start Defense</p>
-		</div>
-		<div class="buttonGroupFull">
+				<p type="button" class="btn" ng-click="addStat(null, null, 'OFFENSE', null)">Start Offense</p>
+				<p type="button" class="btn" ng-click="addStat(null, null, 'DEFENSE', null)">Start Defense</p>
+
 			<p><b>Home Stat</b></p>
-				<p class="clickList" ng-click="startStat('SHOT')">Shot</p>
-				<p class="clickList" ng-click="startStat('GOAL')">Goal</p>
-				<p class="clickList" ng-click="startStat('ASSIST')">Assist</p>
-				<p class="clickList" ng-click="startStat('TAKEAWAY')">Takeaway</p>
-				<p class="clickList" ng-click="startStat('TURNOVER')">Turnover</p>
-		</div>
-		<div class="buttonGroupFull">
+				<p type="button" class="btn" ng-click="startStat('SHOT')">Shot</p>
+				<p type="button" class="btn" ng-click="startStat('GOAL')">Goal</p>
+				<p type="button" class="btn" ng-click="startStat('ASSIST')">Assist</p>
+				<p type="button" class="btn" ng-click="startStat('TAKEAWAY')">Takeaway</p>
+				<p type="button" class="btn" ng-click="startStat('TURNOVER')">Turnover</p>
 			<p><b>Away Stat</b></p>
-			<p class="clickList" ng-click="addStat(null, null, 'AWAY_GOAL', null)">Goal</p>
-		</div>
-		<div class="buttonGroupFull">
+				<p type="button" class="btn" ng-click="addStat(null, null, 'AWAY_GOAL', null)">Away Goal</p>
 			<p><b>Bludgers</b></p>
-				<p class="clickList" ng-click="addStat(null, null, 'GAIN_CONTROL', null)">Gain Control</p>
-				<p class="clickList" ng-click="addStat(null, null, 'LOSE_CONTROL', null)">Lose Control</p>
-				<p class="clickList" ng-click="addStat(null, null, 'ZERO_BLUDGERS_FORCED', null)">Zero Bludgers Forced</p>
-				<p class="clickList" ng-click="addStat(null, null, 'ZERO_BLUDGERS_GIVEN', null)">Zero Bludgers Given</p>
-		</div>
-		<div class="buttonGroupFull">
+				<p type="button" class="btn" ng-click="addStat(null, null, 'GAIN_CONTROL', null)">Gain Control</p>
+				<p type="button" class="btn" ng-click="addStat(null, null, 'LOSE_CONTROL', null)">Lose Control</p>
+				<p type="button" class="btn" ng-click="addStat(null, null, 'ZERO_BLUDGERS_FORCED', null)">Zero Bludgers Forced</p>
+				<p type="button" class="btn" ng-click="addStat(null, null, 'ZERO_BLUDGERS_GIVEN', null)">Zero Bludgers Given</p>
 			<p><b>Seekers</b></p>
-				<p class="clickList" ng-click="addStat(null, null, 'SEEKERS_RELEASED', null)">Seekers Released</p>
-				<p class="clickList" ng-click="startStat('SNITCH_CATCH')">Home Catch</p>
-				<p class="clickList" ng-click="addStat(null, null, 'AWAY_SNITCH_CATCH', null)">Away Catch</p>
-		</div>
-		<div class="buttonGroupFull">
+				<p type="button" class="btn" ng-click="addStat(null, null, 'SEEKERS_RELEASED', null)">Seekers Released</p>
+				<p type="button" class="btn" ng-click="startStat('SNITCH_CATCH')">Home Catch</p>
+				<p type="button" class="btn" ng-click="addStat(null, null, 'AWAY_SNITCH_CATCH', null)">Away Catch</p>
 			<p><b>Cards</b></p>
-				<p class="clickList" ng-click="addCard('YELLOW_CARD')">Yellow Card</p>
-				<p class="clickList" ng-click="addCard('RED_CARD')">Red Card</p>
+				<p type="button" class="btn" ng-click="addCard('BLUE_CARD')">Blue Card</p>
+				<p type="button" class="btn" ng-click="addCard('YELLOW_CARD')">Yellow Card</p>
+				<p type="button" class="btn" ng-click="addCard('RED_CARD')">Red Card</p>
+
+			<p><b>Extras</b></p>
+				<p type="button" class="btn" ng-click="startNote()">Add Note</p>
+
 		</div>
 	</div>
 	<div id="coachingToolsContainerFull" ng-show="isCoachingTools">

@@ -48,3 +48,4 @@ public/lib
 npm-debug.log
 node_modules
 .idea
+package-lock.json
