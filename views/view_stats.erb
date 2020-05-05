@@ -16,7 +16,7 @@
     <!-- <option value="seeker_performance">Seeker Performance</option> -->
   </select>
 
-<button class="btn btn-default" ng-mobile-click="calcStats('<%= @userId %>')">Go</button>
+<button class="btn btn-default" ng-click="calcStats('<%= @userId %>')">Go</button>
 </div>
 
 <div name="modifiers" class="container-fluid" align="center">
@@ -28,17 +28,17 @@
     <div class="row">
   <div class="col-lg-2">
     <h2>Games</h2>
-    <button class="btn btn-default btn-sm" ng-if="!allSelected" ng-mobile-click="selectAll(true)">Select All</button>
-    <button class="btn btn-default btn-sm" ng-if="allSelected" ng-mobile-click="selectAll(false)">Deselect All</button>
+    <button class="btn btn-default btn-sm" ng-if="!allSelected" ng-click="selectAll(true)">Select All</button>
+    <button class="btn btn-default btn-sm" ng-if="allSelected" ng-click="selectAll(false)">Deselect All</button>
     <div ng-repeat="game in doneGames">
-      <input type="checkbox" ng-model="selectedGames[game.vid_id]" ng-mobile-click="changeAllSelected()">{{game.description}}</input>
+      <input type="checkbox" ng-model="selectedGames[game.vid_id]" ng-click="changeAllSelected()">{{game.description}}</input>
     </div>
   </div>
   
   <div class="col-lg-10" ng-show="statsDisp">
       <table ng-show="isPlusMinus" class="table table-striped tabled-condensed" ng-model="statsDisp">
         <thead class="statsHeaders">
-          <th class="statsHeader" ng-repeat="cat in pmCategoriesToDisplay" ng-mobile-click="sortPMMap(cat)">{{cat}}</th>
+          <th class="statsHeader" ng-repeat="cat in pmCategoriesToDisplay" ng-click="sortPMMap(cat)">{{cat}}</th>
         </thead>
         <tbody>
           <tr ng-repeat="row in statsDisp">
@@ -54,7 +54,7 @@
       
       <table ng-hide="isPlusMinus" class="table table-striped table-condensed" ng-model="statsDisp">
          <thead class="statsHeaders">
-          <th class="statsHeader" ng-repeat="cat in rawCategoriesToDisplay" ng-mobile-click="sortMap(cat)">{{cat}}</th>
+          <th class="statsHeader" ng-repeat="cat in rawCategoriesToDisplay" ng-click="sortMap(cat)">{{cat}}</th>
         </thead>
 
         <tbody>

@@ -27,7 +27,7 @@
 				<p style="text-align:center;"><b>Chasers</b></p>
 				<div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(0,3) track by $index">
 					<ul>
-						<a href="javascript:void(0)" ng-mobile-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
+						<a href="javascript:void(0)" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
 					</ul>
 				</div>
 			</div>
@@ -35,7 +35,7 @@
 				<p style="text-align:center;"><b>Keeper</b></p>
 				<div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(3,4) track by $index">
 					<ul>
-						<a href="javascript:void(0)" ng-mobile-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
+						<a href="javascript:void(0)" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
 					</ul>
 				</div>
 			</div>
@@ -43,7 +43,7 @@
 				<p style="text-align:center;"><b>Beater</b></p>
 				<div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(4,6) track by $index">
 					<ul>
-						<a href="javascript:void(0)" ng-mobile-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
+						<a href="javascript:void(0)" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
 					</ul>
 				</div>
 			</div>
@@ -51,7 +51,7 @@
 				<p style="text-align:center;"><b>Seeker</b></p>
 				<div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(6,7) track by $index">
 					<ul>
-						<a href="javascript:void(0)" ng-mobile-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
+						<a href="javascript:void(0)" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
 					</ul>
 				</div>
 			</div>
@@ -100,12 +100,12 @@
 					<!--Note Stuff-->
 					<p ng-show="statObj.stat_name == 'NOTE'">{{statObj.o_d_filter}}</p>
 					<p ng-show="statObj.stat_name == 'NOTE'">{{statObj.good_bad_filter}}</p>
-					<p class="clickList" ng-mobile-click="showNote($index)" ng-show="statObj.stat_name == 'NOTE'">Click to see note text</p>
+					<p class="clickList" ng-click="showNote($index)" ng-show="statObj.stat_name == 'NOTE'">Click to see note text</p>
 	
 					<div class="timeOnStatColumn">
-						<p ng-mobile-click="seekToTime(statObj.stat_name, statObj.time)">{{statObj.time | time:'ss':'mm:ss'}}</p>
+						<p ng-click="seekToTime(statObj.stat_name, statObj.time)">{{statObj.time | time:'ss':'mm:ss'}}</p>
 					</div>
-					<button ng-hide="<%= @public %>" class="btn btn-danger btn-xs" ng-mobile-click="deleteStat(statObj.objectId, statObj.stat_name)">Delete</button>
+					<button ng-hide="<%= @public %>" class="btn btn-danger btn-xs" ng-click="deleteStat(statObj.objectId, statObj.stat_name)">Delete</button>
 				</div>
 			</div>
 			<div class="filter">
@@ -135,7 +135,7 @@
 		
 		<div id="drawingsAndNotesFull" ng-hide="!isCoachingTools">
 			<div class="statsList">
-				<div class="statsListItem" ng-repeat="drawingAndNoteObj in drawingsAndNotes" ng-mobile-click="seekToTime(drawingAndNoteObj.stat_name, drawingAndNoteObj.time)">
+				<div class="statsListItem" ng-repeat="drawingAndNoteObj in drawingsAndNotes" ng-click="seekToTime(drawingAndNoteObj.stat_name, drawingAndNoteObj.time)">
 					<span ng-show="drawingAndNoteObj.stat_name != 'NOTE'" style="font-weight: bold;">{{Math.round(drawingAndNoteObj.time) | time:'ss':'mm:ss'}}</span>
 					<p ng-show="drawingAndNoteObj.stat_name != 'NOTE'">Drawing</p>
 					<span ng-show="drawingAndNoteObj.stat_name == 'NOTE'" style="font-weight: bold;">{{drawingAndNoteObj.time | time:'ss':'mm:ss'}}</span>
@@ -149,55 +149,55 @@
 	<div id="buttonsContainerFull" ng-hide="isCoachingTools">
 		<div class="buttonGroupFull">
 			<p><b>Clock Management</b></p>
-				<p class="clickList" ng-mobile-click="addStat(null, null, 'START_CLOCK', null)">Start Clock</p>
-				<p class="clickList" ng-mobile-click="addStat(null, null, 'PAUSE_CLOCK', null)">Pause Clock</p>
-				<p class="clickList" ng-mobile-click="instantReplay()">Instant Replay</p>
+				<p class="clickList" ng-click="addStat(null, null, 'START_CLOCK', null)">Start Clock</p>
+				<p class="clickList" ng-click="addStat(null, null, 'PAUSE_CLOCK', null)">Pause Clock</p>
+				<p class="clickList" ng-click="instantReplay()">Instant Replay</p>
 			<p><b>Extras</b></p>
-				<p class="clickList" ng-mobile-click="startNote()">Add Note</p>
+				<p class="clickList" ng-click="startNote()">Add Note</p>
 		</div>
 		<div class="buttonGroupFull">
 			<p><b>Possession</b></p>
-				<p class="clickList" ng-mobile-click="addStat(null, null, 'OFFENSE', null)">Start Offense</p>
-				<p class="clickList" ng-mobile-click="addStat(null, null, 'DEFENSE', null)">Start Defense</p>
+				<p class="clickList" ng-click="addStat(null, null, 'OFFENSE', null)">Start Offense</p>
+				<p class="clickList" ng-click="addStat(null, null, 'DEFENSE', null)">Start Defense</p>
 		</div>
 		<div class="buttonGroupFull">
 			<p><b>Home Stat</b></p>
-				<p class="clickList" ng-mobile-click="startStat('SHOT')">Shot</p>
-				<p class="clickList" ng-mobile-click="startStat('GOAL')">Goal</p>
-				<p class="clickList" ng-mobile-click="startStat('ASSIST')">Assist</p>
-				<p class="clickList" ng-mobile-click="startStat('TAKEAWAY')">Takeaway</p>
-				<p class="clickList" ng-mobile-click="startStat('TURNOVER')">Turnover</p>
+				<p class="clickList" ng-click="startStat('SHOT')">Shot</p>
+				<p class="clickList" ng-click="startStat('GOAL')">Goal</p>
+				<p class="clickList" ng-click="startStat('ASSIST')">Assist</p>
+				<p class="clickList" ng-click="startStat('TAKEAWAY')">Takeaway</p>
+				<p class="clickList" ng-click="startStat('TURNOVER')">Turnover</p>
 		</div>
 		<div class="buttonGroupFull">
 			<p><b>Away Stat</b></p>
-			<p class="clickList" ng-mobile-click="addStat(null, null, 'AWAY_GOAL', null)">Goal</p>
+			<p class="clickList" ng-click="addStat(null, null, 'AWAY_GOAL', null)">Goal</p>
 		</div>
 		<div class="buttonGroupFull">
 			<p><b>Bludgers</b></p>
-				<p class="clickList" ng-mobile-click="addStat(null, null, 'GAIN_CONTROL', null)">Gain Control</p>
-				<p class="clickList" ng-mobile-click="addStat(null, null, 'LOSE_CONTROL', null)">Lose Control</p>
-				<p class="clickList" ng-mobile-click="addStat(null, null, 'ZERO_BLUDGERS_FORCED', null)">Zero Bludgers Forced</p>
-				<p class="clickList" ng-mobile-click="addStat(null, null, 'ZERO_BLUDGERS_GIVEN', null)">Zero Bludgers Given</p>
+				<p class="clickList" ng-click="addStat(null, null, 'GAIN_CONTROL', null)">Gain Control</p>
+				<p class="clickList" ng-click="addStat(null, null, 'LOSE_CONTROL', null)">Lose Control</p>
+				<p class="clickList" ng-click="addStat(null, null, 'ZERO_BLUDGERS_FORCED', null)">Zero Bludgers Forced</p>
+				<p class="clickList" ng-click="addStat(null, null, 'ZERO_BLUDGERS_GIVEN', null)">Zero Bludgers Given</p>
 		</div>
 		<div class="buttonGroupFull">
 			<p><b>Seekers</b></p>
-				<p class="clickList" ng-mobile-click="addStat(null, null, 'SEEKERS_RELEASED', null)">Seekers Released</p>
-				<p class="clickList" ng-mobile-click="startStat('SNITCH_CATCH')">Home Catch</p>
-				<p class="clickList" ng-mobile-click="addStat(null, null, 'AWAY_SNITCH_CATCH', null)">Away Catch</p>
+				<p class="clickList" ng-click="addStat(null, null, 'SEEKERS_RELEASED', null)">Seekers Released</p>
+				<p class="clickList" ng-click="startStat('SNITCH_CATCH')">Home Catch</p>
+				<p class="clickList" ng-click="addStat(null, null, 'AWAY_SNITCH_CATCH', null)">Away Catch</p>
 		</div>
 		<div class="buttonGroupFull">
 			<p><b>Cards</b></p>
-				<p class="clickList" ng-mobile-click="addCard('YELLOW_CARD')">Yellow Card</p>
-				<p class="clickList" ng-mobile-click="addCard('RED_CARD')">Red Card</p>
+				<p class="clickList" ng-click="addCard('YELLOW_CARD')">Yellow Card</p>
+				<p class="clickList" ng-click="addCard('RED_CARD')">Red Card</p>
 		</div>
 	</div>
 	<div id="coachingToolsContainerFull" ng-show="isCoachingTools">
-		<button class="btn btn-default drawing-button" ng-mobile-click="togglePenTool()" ng-init="penButtonText = 'Start Drawing'">{{penButtonText}}</button>
-		<button class="btn btn-default drawing-button" ng-mobile-click="eraseDrawingsAtTimeStamp()">Erase Screen</button>
-		<button class="btn btn-default drawing-button" ng-mobile-click="playVideo()">Play Video</button>
-		<button class="btn btn-default drawing-button" ng-mobile-click="pauseVideo()">Pause Video</button>
-		<button class="btn btn-default drawing-button" ng-mobile-click="saveDrawings()">Save Current Drawing</button>
-		<button class="btn btn-default drawing-button" ng-mobile-click="startNote()">Add Note</button>
+		<button class="btn btn-default drawing-button" ng-click="togglePenTool()" ng-init="penButtonText = 'Start Drawing'">{{penButtonText}}</button>
+		<button class="btn btn-default drawing-button" ng-click="eraseDrawingsAtTimeStamp()">Erase Screen</button>
+		<button class="btn btn-default drawing-button" ng-click="playVideo()">Play Video</button>
+		<button class="btn btn-default drawing-button" ng-click="pauseVideo()">Pause Video</button>
+		<button class="btn btn-default drawing-button" ng-click="saveDrawings()">Save Current Drawing</button>
+		<button class="btn btn-default drawing-button" ng-click="startNote()">Add Note</button>
 		<h4 ng-hide="!penSelected" style="margin-top: auto; margin-bottom: auto; margin-left: 10px;">Current Selection: Draw</h3>
 		<h4 ng-hide="penSelected" style="margin-top: auto; margin-bottom: auto; margin-left: 10px;">Current Selection: Video</h3>
 	</div>
@@ -208,19 +208,19 @@
 <!-- Div for picking subs, starts just not-visible -->
 <div id="allPlayersPicker" class="white_content">
 	<p ng-if="statType == 'SWAP'">Swap keeper with someone on pitch. Or select 'none' if there is no penalty time.</p>
-	<a ng-if="statType != 'SWAP'" href="javascript:void(0)" ng-mobile-click="closeDialog('allPlayersPicker')">Close<br></a>
-	<a ng-repeat="allPlayer in allPlayers" ng-show="true" ng-mobile-click="playerClicked(allPlayer.objectId)" href="javascript:void(0)">{{allPlayer.first_name+' '+allPlayer.last_name}}<br></a>
-	<a ng-if="statType != 'SWAP'" href="javascript:void(0)" ng-mobile-click="closeDialog('allPlayersPicker')">Close<br></a>
+	<a ng-if="statType != 'SWAP'" href="javascript:void(0)" ng-click="closeDialog('allPlayersPicker')">Close<br></a>
+	<a ng-repeat="allPlayer in allPlayers" ng-show="true" ng-click="playerClicked(allPlayer.objectId)" href="javascript:void(0)">{{allPlayer.first_name+' '+allPlayer.last_name}}<br></a>
+	<a ng-if="statType != 'SWAP'" href="javascript:void(0)" ng-click="closeDialog('allPlayersPicker')">Close<br></a>
 </div>
 
 <div id="onFieldPlayersPicker" class="white_content">
 	<p ng-if="statType == 'SWAP'">Swap keeper with someone on pitch. Or select 'none' if there is no penalty time.</p>
 	<p ng-if="statType != 'SWAP'">Assign the {{statType}} to...</p>
-	<a ng-if="statType != 'SWAP'" href="javascript:void(0)" ng-mobile-click="closeDialog('onFieldPlayersPicker')">Close<br></a>
-	<a ng-if="statType == 'SWAP'" href="javascript:void(0)" ng-mobile-click="closeDialog('onFieldPlayersPicker')">None<br></a>
-	<a ng-repeat="onFieldPlayer in onFieldPlayers" ng-mobile-click="playerClicked(onFieldPlayer.objectId)" href="javascript:void(0)">{{onFieldPlayer.first_name+' '+onFieldPlayer.last_name}}<br></a>
-	<a ng-if="statType == 'SWAP'" href="javascript:void(0)" ng-mobile-click="closeDialog('onFieldPlayersPicker')">None<br></a>
-	<a ng-if="statType != 'SWAP'" href="javascript:void(0)" ng-mobile-click="closeDialog('onFieldPlayersPicker')">Close<br></a>
+	<a ng-if="statType != 'SWAP'" href="javascript:void(0)" ng-click="closeDialog('onFieldPlayersPicker')">Close<br></a>
+	<a ng-if="statType == 'SWAP'" href="javascript:void(0)" ng-click="closeDialog('onFieldPlayersPicker')">None<br></a>
+	<a ng-repeat="onFieldPlayer in onFieldPlayers" ng-click="playerClicked(onFieldPlayer.objectId)" href="javascript:void(0)">{{onFieldPlayer.first_name+' '+onFieldPlayer.last_name}}<br></a>
+	<a ng-if="statType == 'SWAP'" href="javascript:void(0)" ng-click="closeDialog('onFieldPlayersPicker')">None<br></a>
+	<a ng-if="statType != 'SWAP'" href="javascript:void(0)" ng-click="closeDialog('onFieldPlayersPicker')">Close<br></a>
 </div>
 
 <!-- Div for note overlay -->
@@ -240,19 +240,19 @@
 	</select>
 	<br>
 	<textarea ng-model="noteText" type="text" placeholder="Note" style="width:400px;height:150px;"></textarea><br>
-	<button class="btn btn-default" ng-mobile-click="addNote()">Add</button><br>
-	<button class="btn btn-default" ng-mobile-click="closeDialog('noteOverlay')">Close<br></button>
+	<button class="btn btn-default" ng-click="addNote()">Add</button><br>
+	<button class="btn btn-default" ng-click="closeDialog('noteOverlay')">Close<br></button>
 </div>
 
 <div id="displayNoteOverlay" class="white_content" align="center">
 	<p ng-model="displayNoteText">{{displayNoteText}}</p>
-	<a href="javascript:void(0)" ng-mobile-click="closeDialog('displayNoteOverlay')">Close<br></a>
+	<a href="javascript:void(0)" ng-click="closeDialog('displayNoteOverlay')">Close<br></a>
 	
 </div>
 <div id="fade" class="black_overlay"/>
 
 <div id="helpText" class="white_content">
-	<a href="javascript:void(0)" ng-mobile-click="closeDialog('helpText')">Close<br></a>
+	<a href="javascript:void(0)" ng-click="closeDialog('helpText')">Close<br></a>
 	<h3>This page is experimental. I recommend being familiar with the regular style before going through this.</h3>
 	<h3>Good news, all stats are treated equally. Stats taken in the regular mode will show up here, and vice-versa.</h3>
 	<h4>This page is for recording stats for a given game.</h4>
@@ -278,6 +278,6 @@
 	<h5>4. Start Opponent Drive Against...</h5>
 	<p>a. Same as 'Start Drive Against...', but this time it's when the opponent actually attempts to score.</p>
 	<h4>Cards and notes currently are disabled. They will be added eventually.</h4>
-	<a href="javascript:void(0)" ng-mobile-click="closeDialog('helpText')">Close<br></a>
+	<a href="javascript:void(0)" ng-click="closeDialog('helpText')">Close<br></a>
 </div>
 <div id="fade" class="black_overlay"/>
