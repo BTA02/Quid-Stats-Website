@@ -18,8 +18,8 @@ GEM
     faraday_middleware (0.11.0.1)
       faraday (>= 0.7.4, < 1.0)
     multipart-post (2.0.0)
-    rack (1.6.5)
-    rack-protection (1.5.3)
+    rack (1.6.13)
+    rack-protection (1.5.5)
       rack
     sinatra (1.4.8)
       rack (~> 1.5)
