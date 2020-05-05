@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.3.0'
+ruby '2.6.6'
 
 gem 'sinatra', '~> 1.4'
 # gem 'parse-ruby-client', '0.3.0'
