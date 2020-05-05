@@ -16,14 +16,18 @@
 
 	<h2>Next, pick a year the video happened</h2>
 	<p>Based on the fall year. So a video that took place in spring 2015 should be listed as fall year 2014</p>
-	<p>Hint: We are currently in fall year 2017</p>
+	<p>Hint: We are currently in fall year 2019</p>
 	<select ng-model="fallYear">
 		<option value="2012">2012</option>
 		<option value="2013">2013</option>
 		<option value="2014">2014</option>
 		<option value="2015">2015</option>
 		<option value="2016">2016</option>
-		<option selected value="2017">2017</option>
+		<option value="2017">2017</option>
+		<option value="2018">2018</option>
+		<option value="2019">2019</option>
+		<option selected value="2020">2020</option>
+		<option value="2021">2021</option>
 	</select>
 </div>
 
@@ -53,7 +57,7 @@
 		<div>
 			<youtube-video video-id="vidPreview" player="videoPreviewer" class="embed-responsive-item" player-width="'65%'"></youtube-video>
 			<h2> Then hit the "Add" button, and you're good to go </h2>
-		<button class="btn btn-lg" ng-click="addVideo()">Add</button>
+		<button class="btn btn-lg" ng-mobile-click="addVideo()">Add</button>
 		<br>
 		<br>
 		</div>

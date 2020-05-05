@@ -2,7 +2,7 @@
 <div id="team-year" class="container-fluid" align="center">
 	<h2>To add or edit a team, first, select the team and the year.</h2>
 	<p>Base the year on what year it is/was during the fall</p>
-	<p>Hint: We are currently in fall year 2017</p>
+	<p>Hint: We are currently in fall year 2019</p>
 
     <select name="teamSelect" ng-model="teamToAdd" ng-change="getRoster()">
 		<option value="new">New Team</option>
@@ -17,7 +17,11 @@
 		<option value="2014">2014</option>
 		<option value="2015">2015</option>
 		<option value="2016">2016</option>
-		<option selected value="2017">2017</option>
+		<option value="2017">2017</option>
+		<option value="2018">2018</option>
+		<option value="2019">2019</option>
+		<option selected value="2020">2020</option>
+		<option value="2021">2021</option>
 	</select>
 
 	<h4 ng-show="teamToAdd && rosterYear" style="color:red">You must hit "Save Roster" after you are done adding players. If you forget to do this, all your work will be lost</h4>
@@ -43,12 +47,12 @@
 			<angucomplete-alt id="autocompleteLast" placeholder="Last Name" maxlength="50" pause="100" selected-object="addExistingPlayer" local-data="people" search-fields="last_name" title-field="first_name,last_name" minlength="1" input-class="form-control form-control-small"></angucomplete-alt>
 		</div>
 
-		<button type="submit" ng-click="addNewPlayer()">Add New Player</button>
+		<button type="submit" ng-mobile-click="addNewPlayer()">Add New Player</button>
 
 	</div>
 
 	<div class="container-fluid" align="center">
-		<button ng-click="saveRoster()">Save Roster</button>
+		<button ng-mobile-click="saveRoster()">Save Roster</button>
 	</div>
 
 	
@@ -58,7 +62,7 @@
 		<ul class="rosterList" ng-model="pendingRoster">
 			<li ng-repeat="player in pendingRoster">
 				<span><i>{{player.first_name + ' ' + player.last_name}}</i></span>
-				<img class="removePlayerX" src="/images/red_x.png" width="10" height="10" ng-click="removePlayerFromPending(player)"/>
+				<img class="removePlayerX" src="/images/red_x.png" width="10" height="10" ng-mobile-click="removePlayerFromPending(player)"/>
 			</li>
 		</ul>
 		
@@ -74,7 +78,7 @@
 	
 	<h4>This page is for adding / editing your roster.</h4>
 	<h5>1. Select a team from the dropdown menu. Or, choose 'New Team' if you want to add a new team to the database.</h5>
-	<h5>2. The next dropdown is for the year of the roster. So, if you want to add a team for this season, use 2017. The year is based on the fall year for that season.</h5>
+	<h5>2. The next dropdown is for the year of the roster. So, if you want to add a team for this season, use 2019. The year is based on the fall year for that season.</h5>
 	<h5>3. If you selected a new team, then give it a name, and start adding players.</h5>
 	<p>4. Once you're done adding players, you MUST hit 'Save Roster'. If you don't, all your work will be for naught.</p>
 	<h5>5. Once you've saved your roster, the page will reload. Double check everything worked by selecting your team from the dropdown. Your roster should populate.</h5>

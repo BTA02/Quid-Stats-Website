@@ -28,7 +28,7 @@
     <option value="2">Post SOP</option>
   </select>
 
-<button class="btn btn-default" ng-click="calcStats('<%= @userId %>')">Go</button>
+<button class="btn btn-default" ng-mobile-click="calcStats('<%= @userId %>')">Go</button>
 </div>
 
 <!-- Games selector -->
@@ -36,10 +36,10 @@
     <div class="row">
   <div class="col-lg-2">
     <h2>Games</h2>
-    <button class="btn btn-default btn-sm" ng-if="!allSelected" ng-click="selectAll(true)">Select All</button>
-    <button class="btn btn-default btn-sm" ng-if="allSelected" ng-click="selectAll(false)">Deselect All</button>
+    <button class="btn btn-default btn-sm" ng-if="!allSelected" ng-mobile-click="selectAll(true)">Select All</button>
+    <button class="btn btn-default btn-sm" ng-if="allSelected" ng-mobile-click="selectAll(false)">Deselect All</button>
     <div ng-repeat="game in doneGames">
-      <input type="checkbox" ng-model="selectedGames[game.vid_id]" ng-click="changeAllSelected()">{{game.description}}</input>
+      <input type="checkbox" ng-model="selectedGames[game.vid_id]" ng-mobile-click="changeAllSelected()">{{game.description}}</input>
     </div>
   </div>
   
@@ -47,18 +47,18 @@
     
       <table ng-show="displayStatType == 'pm'" class="table table-striped tabled-condensed" ng-model="statsDisp">
         <thead class="statsHeaders">
-          <th class="statsHeader" ng-click="sortPMMap('group')">GROUP</th>
-          <th class="statsHeader" ng-click="sortPMMap('games_played')">GP</th>
-          <th class="statsHeader" ng-click="sortPMMap('control_percent')">CONTROL PERCENT</th>
-          <th class="statsHeader" ng-click="sortPMMap('gain_control')">GAIN CONTROL</th>
-          <th class="statsHeader" ng-click="sortPMMap('lose_control')">LOSE CONTROL</th>
-          <th class="statsHeader" ng-click="sortPMMap('zero_bludgers_forced')">0 BLUDGERS FORCED</th>
-          <th class="statsHeader" ng-click="sortPMMap('zero_bludgers_given')">0 BLUDGERS GIVEN</th>
-          <th class="statsHeader" ng-click="sortPMMap('plusses')">PLUS</th>
-          <th class="statsHeader" ng-click="sortPMMap('minuses')">MINUS</th>
-          <th class="statsHeader" ng-click="sortPMMap('net')">NET</th>
-          <th class="statsHeader" ng-click="sortPMMap('ratio')">RATIO</th>
-          <th class="statsHeader" ng-click="sortPMMap('time')">TIME</th>
+          <th class="statsHeader" ng-mobile-click="sortPMMap('group')">GROUP</th>
+          <th class="statsHeader" ng-mobile-click="sortPMMap('games_played')">GP</th>
+          <th class="statsHeader" ng-mobile-click="sortPMMap('control_percent')">CONTROL PERCENT</th>
+          <th class="statsHeader" ng-mobile-click="sortPMMap('gain_control')">GAIN CONTROL</th>
+          <th class="statsHeader" ng-mobile-click="sortPMMap('lose_control')">LOSE CONTROL</th>
+          <th class="statsHeader" ng-mobile-click="sortPMMap('zero_bludgers_forced')">0 BLUDGERS FORCED</th>
+          <th class="statsHeader" ng-mobile-click="sortPMMap('zero_bludgers_given')">0 BLUDGERS GIVEN</th>
+          <th class="statsHeader" ng-mobile-click="sortPMMap('plusses')">PLUS</th>
+          <th class="statsHeader" ng-mobile-click="sortPMMap('minuses')">MINUS</th>
+          <th class="statsHeader" ng-mobile-click="sortPMMap('net')">NET</th>
+          <th class="statsHeader" ng-mobile-click="sortPMMap('ratio')">RATIO</th>
+          <th class="statsHeader" ng-mobile-click="sortPMMap('time')">TIME</th>
         </thead>
         <tbody>
           <tr ng-repeat="row in statsDisp">
@@ -81,21 +81,21 @@
       
       <table ng-show="displayStatType == 'raw'" class="table table-striped table-condensed" ng-model="statsDisp">
         <thead class="statsHeaders">
-          <!--<th class="statsHeader" ng-repeat="cat in rawCategoriesToDisplay" ng-click="sortMap(cat)">{{cat}}</th>-->
-          <th class="statsHeader" ng-click="sortMap('first_name')">FIRST</th>
-          <th class="statsHeader" ng-click="sortMap('last_name')">LAST</th>
-          <th class="statsHeader" ng-click="sortMap('games_played')">GP</th>
-          <th class="statsHeader" ng-click="sortMap('shot')">SHOTS</th>
-          <th class="statsHeader" ng-click="sortMap('goal')">GOALS</th>
-          <th class="statsHeader" ng-click="sortMap('assist')">ASSISTS</th>
-          <th class="statsHeader" ng-click="sortMap('point')">POINTS</th>
-          <th class="statsHeader" ng-click="sortMap('takeaway')">TAKEAWAYS</th>
-          <th class="statsHeader" ng-click="sortMap('turnover')">TURNOVERS</th>
-          <th class="statsHeader" ng-click="sortMap('plusses')">PLUS</th>
-          <th class="statsHeader" ng-click="sortMap('minuses')">MINUS</th>
-          <th class="statsHeader" ng-click="sortMap('net')">NET</th>
-          <th class="statsHeader" ng-click="sortMap('ratio')">RATIO</th>
-          <th class="statsHeader" ng-click="sortMap('time')">TIME</th>
+          <!--<th class="statsHeader" ng-repeat="cat in rawCategoriesToDisplay" ng-mobile-click="sortMap(cat)">{{cat}}</th>-->
+          <th class="statsHeader" ng-mobile-click="sortMap('first_name')">FIRST</th>
+          <th class="statsHeader" ng-mobile-click="sortMap('last_name')">LAST</th>
+          <th class="statsHeader" ng-mobile-click="sortMap('games_played')">GP</th>
+          <th class="statsHeader" ng-mobile-click="sortMap('shot')">SHOTS</th>
+          <th class="statsHeader" ng-mobile-click="sortMap('goal')">GOALS</th>
+          <th class="statsHeader" ng-mobile-click="sortMap('assist')">ASSISTS</th>
+          <th class="statsHeader" ng-mobile-click="sortMap('point')">POINTS</th>
+          <th class="statsHeader" ng-mobile-click="sortMap('takeaway')">TAKEAWAYS</th>
+          <th class="statsHeader" ng-mobile-click="sortMap('turnover')">TURNOVERS</th>
+          <th class="statsHeader" ng-mobile-click="sortMap('plusses')">PLUS</th>
+          <th class="statsHeader" ng-mobile-click="sortMap('minuses')">MINUS</th>
+          <th class="statsHeader" ng-mobile-click="sortMap('net')">NET</th>
+          <th class="statsHeader" ng-mobile-click="sortMap('ratio')">RATIO</th>
+          <th class="statsHeader" ng-mobile-click="sortMap('time')">TIME</th>
         </thead>
 
         <tbody>
