@@ -48,3 +48,5 @@ public/lib
 npm-debug.log
 node_modules
 .idea
+#I added graceful.js 4.1.2 to my shrinkwrap
+npm-shrinkwrap.json
