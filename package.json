@@ -1,7 +1,7 @@
 {
   "name": "quidstats",
   "engines": {
-    "node": "4.2.1"
+    "node": "14.1.0"
   },
   "dependencies": {
     "bower": "1.8.8"
