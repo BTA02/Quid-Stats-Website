@@ -238,17 +238,17 @@ get '/addStat/:vid_id/:team_id/:fall_year/:player_id/:stat_name/:time/:player_in
 end
 
 post '/addStat' do
-	vals = JSON.parse(request.body.string)
+	vals = JSON.parse(request.body.gets)
 	add_full_stat(vals, session[:authorId])
 end
 
 # post '/setPermissions' do
-# 	vals = JSON.parse(request.body.string)
+# 	vals = JSON.parse(request.body.gets)
 # 	toggle_permissions(vals)
 # 	'finished'
 # end
 post '/addNote' do
-	vals = JSON.parse(request.body.string)
+	vals = JSON.parse(request.body.gets)
 	add_note(vals, session[:authorId])
 end
 
@@ -262,7 +262,7 @@ get '/deleteStat/:object_id/:stat_name' do
 end
 
 post '/deleteStat' do
-	vals = JSON.parse(request.body.string)
+	vals = JSON.parse(request.body.gets)
 	delete_full_stat(vals)
 end
 
@@ -374,13 +374,13 @@ get '/videoPermissions/:team_id/:vid_id' do
 end
 
 post '/setPermissions' do
-	vals = JSON.parse(request.body.string)
+	vals = JSON.parse(request.body.gets)
 	toggle_permissions(vals)
 	'finished'
 end
 
 post '/saveDrawings' do
-	vals = JSON.parse(request.body.string)
+	vals = JSON.parse(request.body.gets)
 	save_drawings(vals)
 	'finished'
 end
