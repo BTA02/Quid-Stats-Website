@@ -60,10 +60,15 @@
     display: flex;
 }
 
-#playersAndScoreboardFull {
-    order: 2;
+#playersScoreboardStatsFull {
     min-width: 150px;
-    padding-right: 5px;
+    flex: 0 1 auto;
+    order: 3;
+}
+
+#playersAndScoreboardFull {
+    min-width: 150px;
+    /* padding-right: 5px; */
     flex: 0 1 auto;
 }
 
@@ -92,7 +97,6 @@
 }
 
 #statsFull {
-    order: 3;
     min-width: 150px;
     padding-left: 5px;
     flex: 0 1 auto;
@@ -107,6 +111,12 @@
     padding-left: 5px;
     display: flex;
     flex-direction: column;
+}
+
+#buttonsContainerFull {
+    order: 2;
+    flex: 0 1 auto;
+    min-width: 150px;
 }
 
 .buttonGroupFull {

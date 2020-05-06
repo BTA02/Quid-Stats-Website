@@ -26,62 +26,63 @@
 			<!--<canvas id="coachingCanvas"></canvas>-->
 			<youtube-video id="video" video-id="selectedVideo" player="videoPlayer" player-width="'100%'" player-height="'100%'"></youtube-video>
 		</div>
-		<div id="playersAndScoreboardFull" ng-hide="isCoachingTools">
-			<div class="position" name="chasers">
-				<p style="text-align:center;"><b>Chasers</b></p>
-				<div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(0,3) track by $index">
-					<ul>
-						<a href="javascript:void(0)" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
-					</ul>
+		<div id="playersScoreboardStatsFull" ng-hide="isCoachingTools">
+			<div id="playersAndScoreboardFull" ng-hide="isCoachingTools">
+				<div class="position" name="chasers">
+					<p style="text-align:center;"><b>Chasers</b></p>
+					<div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(0,3) track by $index">
+						<ul>
+							<p type="button" class="btn" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
+						</ul>
+					</div>
+				</div>
+				<div class="position" name="keeper">
+					<p style="text-align:center;"><b>Keeper</b></p>
+					<div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(3,4) track by $index">
+						<ul>
+							<p type="button" class="btn" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
+						</ul>
+					</div>
+				</div>
+				<div class="position" name="beater">
+					<p style="text-align:center;"><b>Beater</b></p>
+					<div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(4,6) track by $index">
+						<ul>
+							<p type="button" class="btn" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
+						</ul>
+					</div>
+				</div>
+				<div class="position" name="seeker">
+					<p style="text-align:center;"><b>Seeker</b></p>
+					<div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(6,7) track by $index">
+						<ul>
+							<p type="button" class="btn" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
+						</ul>
+					</div>
+				</div>
+				<div id="scoreboard" style="text-align:center;">
+					<div class="score scoreboardItem">
+						<p>Home</p>
+						<p ng-model="homeScore">{{homeScore}}</p>
+					</div>
+					<div class="score scoreboardItem">
+						<p>Away</p>
+						<p ng-model="awayScore">{{awayScore}}</p>
+					</div>
+					<div class="scoreboardItem">
+						<p>O/D</p>
+						<p ng-model="curOD">{{curOD | statNameFilter}}</p>
+					</div>
+					<div class="scoreboardItem">
+						<p>Control?</p>
+						<p ng-show="curControl == 1">Yes</p>
+						<p ng-show="curControl == 0">No</p>
+						<p ng-show="curControl == -1">?</p>
+					</div>
 				</div>
 			</div>
-			<div class="position" name="keeper">
-				<p style="text-align:center;"><b>Keeper</b></p>
-				<div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(3,4) track by $index">
-					<ul>
-						<a href="javascript:void(0)" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
-					</ul>
-				</div>
-			</div>
-			<div class="position" name="beater">
-				<p style="text-align:center;"><b>Beater</b></p>
-				<div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(4,6) track by $index">
-					<ul>
-						<a href="javascript:void(0)" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
-					</ul>
-				</div>
-			</div>
-			<div class="position" name="seeker">
-				<p style="text-align:center;"><b>Seeker</b></p>
-				<div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(6,7) track by $index">
-					<ul>
-						<a href="javascript:void(0)" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</a>
-					</ul>
-				</div>
-			</div>
-			<div id="scoreboard" style="text-align:center;">
-				<div class="score scoreboardItem">
-					<p>Home</p>
-					<p ng-model="homeScore">{{homeScore}}</p>
-				</div>
-				<div class="score scoreboardItem">
-					<p>Away</p>
-					<p ng-model="awayScore">{{awayScore}}</p>
-				</div>
-				<div class="scoreboardItem">
-					<p>O/D</p>
-					<p ng-model="curOD">{{curOD | statNameFilter}}</p>
-				</div>
-				<div class="scoreboardItem">
-					<p>Control?</p>
-					<p ng-show="curControl == 1">Yes</p>
-					<p ng-show="curControl == 0">No</p>
-					<p ng-show="curControl == -1">?</p>
-				</div>
-			</div>
-		</div>
 	
-		<div id="statsAndFiltersFull" ng-hide="isCoachingTools">
+			<div id="statsAndFiltersFull" ng-hide="isCoachingTools">
 			<div class="statsList">
 				<div class="statsListItem" ng-repeat="statObj in displayStats">
 					<p ng-show="statObj.stat_name != 'NOTE' && ">
@@ -132,6 +133,7 @@
 					<option value="DEFENSE">Defensive Possesion</option>
 				</select>
 			</div>
+			</div>
 		</div>
 		
 		<div id="drawingsAndNotesFull" ng-hide="!isCoachingTools">
@@ -144,47 +146,86 @@
 				</div>
 			</div>
 		</div>
-	</div>
-	
-	<!--Options under the video -->
-	<div id="buttonsContainerFull" ng-hide="isCoachingTools">
-		<div class="buttonGroupFull">
-			<p><b>Clock Management</b></p>
-				<p type="button" class="btn" ng-click="addStat(null, null, 'START_CLOCK', null)">Start Clock</p>
-				<p type="button" class="btn" ng-click="addStat(null, null, 'PAUSE_CLOCK', null)">Pause Clock</p>
-				<p type="button" class="btn" ng-click="instantReplay()">Instant Replay</p>
-			
-			<p><b>Possession</b></p>
-				<p type="button" class="btn" ng-click="addStat(null, null, 'OFFENSE', null)">Start Offense</p>
-				<p type="button" class="btn" ng-click="addStat(null, null, 'DEFENSE', null)">Start Defense</p>
-
-			<p><b>Home Stat</b></p>
-				<p type="button" class="btn" ng-click="startStat('SHOT')">Shot</p>
-				<p type="button" class="btn" ng-click="startStat('GOAL')">Goal</p>
-				<p type="button" class="btn" ng-click="startStat('ASSIST')">Assist</p>
-				<p type="button" class="btn" ng-click="startStat('TAKEAWAY')">Takeaway</p>
-				<p type="button" class="btn" ng-click="startStat('TURNOVER')">Turnover</p>
-			<p><b>Away Stat</b></p>
-				<p type="button" class="btn" ng-click="addStat(null, null, 'AWAY_GOAL', null)">Away Goal</p>
-			<p><b>Bludgers</b></p>
-				<p type="button" class="btn" ng-click="addStat(null, null, 'GAIN_CONTROL', null)">Gain Control</p>
-				<p type="button" class="btn" ng-click="addStat(null, null, 'LOSE_CONTROL', null)">Lose Control</p>
-				<p type="button" class="btn" ng-click="addStat(null, null, 'ZERO_BLUDGERS_FORCED', null)">Zero Bludgers Forced</p>
-				<p type="button" class="btn" ng-click="addStat(null, null, 'ZERO_BLUDGERS_GIVEN', null)">Zero Bludgers Given</p>
-			<p><b>Seekers</b></p>
-				<p type="button" class="btn" ng-click="addStat(null, null, 'SEEKERS_RELEASED', null)">Seekers Released</p>
-				<p type="button" class="btn" ng-click="startStat('SNITCH_CATCH')">Home Catch</p>
-				<p type="button" class="btn" ng-click="addStat(null, null, 'AWAY_SNITCH_CATCH', null)">Away Catch</p>
-			<p><b>Cards</b></p>
-				<p type="button" class="btn" ng-click="addCard('BLUE_CARD')">Blue Card</p>
-				<p type="button" class="btn" ng-click="addCard('YELLOW_CARD')">Yellow Card</p>
-				<p type="button" class="btn" ng-click="addCard('RED_CARD')">Red Card</p>
-
-			<p><b>Extras</b></p>
-				<p type="button" class="btn" ng-click="startNote()">Add Note</p>
-
+		<div id="buttonsContainerFull" ng-hide="isCoachingTools">
+			<div class="buttonGroupFull">
+				<p><b>Clock</b></p>
+					<ul>
+						<button type="button" class="btn" ng-click="addStat(null, null, 'START_CLOCK', null)">Start Clock</button>
+					</ul>
+					<ul>
+						<button type="button" class="btn" ng-click="addStat(null, null, 'PAUSE_CLOCK', null)">Pause Clock</button>
+					</ul>
+					<ul>
+						<button type="button" class="btn" ng-click="instantReplay()">Instant Replay</button>
+					</ul>
+				<p><b>Possession</b></p>
+					<ul>
+						<button type="button" class="btn" ng-click="addStat(null, null, 'OFFENSE', null)">Start Offense</button>
+					</ul>
+					<ul>
+						<button type="button" class="btn" ng-click="addStat(null, null, 'DEFENSE', null)">Start Defense</button>
+					</ul>
+				<p><b>Home Stat</b></p>
+					<ul>
+						<button type="button" class="btn" ng-click="startStat('SHOT')">Shot</button>
+					</ul>
+					<ul>
+						<button type="button" class="btn" ng-click="startStat('GOAL')">Goal</button>
+					</ul>
+					<ul>
+						<button type="button" class="btn" ng-click="startStat('ASSIST')">Assist</button>
+					</ul>
+					<ul>
+						<button type="button" class="btn" ng-click="startStat('TAKEAWAY')">Takeaway</button>
+					</ul>
+					<ul>
+						<button type="button" class="btn" ng-click="startStat('TURNOVER')">Turnover</button>
+					</ul>
+				<p><b>Away Stat</b></p>
+					<ul>
+						<button type="button" class="btn" ng-click="addStat(null, null, 'AWAY_GOAL', null)">Away Goal</button>
+					</ul>
+				<p><b>Bludgers</b></p>
+					<ul>
+						<button type="button" class="btn" ng-click="addStat(null, null, 'GAIN_CONTROL', null)">Gain Control</button>
+					</ul>
+					<ul>
+						<button type="button" class="btn" ng-click="addStat(null, null, 'LOSE_CONTROL', null)">Lose Control</button>
+					</ul>
+					<ul>
+						<button type="button" class="btn" ng-click="addStat(null, null, 'ZERO_BLUDGERS_FORCED', null)">Zero Bludgers Forced</button>
+					</ul>
+					<ul>
+						<button type="button" class="btn" ng-click="addStat(null, null, 'ZERO_BLUDGERS_GIVEN', null)">Zero Bludgers Given</button>
+					</ul>
+				<p><b>Seekers</b></p>
+				<ul>
+					<button type="button" class="btn" ng-click="addStat(null, null, 'SEEKERS_RELEASED', null)">Seekers Released</button>
+				</ul>
+				<ul>
+					<button type="button" class="btn" ng-click="startStat('SNITCH_CATCH')">Home Catch</button>
+				</ul>
+				<ul>
+					<button type="button" class="btn" ng-click="addStat(null, null, 'AWAY_SNITCH_CATCH', null)">Away Catch</button>
+				</ul>
+				<p><b>Cards</b></p>
+				<ul>
+					<button type="button" class="btn" ng-click="addCard('BLUE_CARD')">Blue Card</button>
+				</ul>
+				<ul>
+					<button type="button" class="btn" ng-click="addCard('YELLOW_CARD')">Yellow Card</button>
+				</ul>
+				<ul>
+					<button type="button" class="btn" ng-click="addCard('RED_CARD')">Red Card</button>
+				</ul>
+				<p><b>Extras</b></p>
+				<ul>
+					<button type="button" class="btn" ng-click="startNote()">Add Note</button>
+				</u1>
+			</div>
 		</div>
 	</div>
+
 	<div id="coachingToolsContainerFull" ng-show="isCoachingTools">
 		<button class="btn btn-default drawing-button" ng-click="togglePenTool()" ng-init="penButtonText = 'Start Drawing'">{{penButtonText}}</button>
 		<button class="btn btn-default drawing-button" ng-click="eraseDrawingsAtTimeStamp()">Erase Screen</button>
