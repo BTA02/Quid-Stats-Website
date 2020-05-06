@@ -21,7 +21,7 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
     };
     
     $scope.getAllPlayers = function() {
-        $scope.homePlayersMap = new Map();
+        $scope.bothTeamsPlayersMap = new Map();
         $scope.getAllHomePlayers();
         $scope.getAllAwayPlayers();
     }
@@ -38,7 +38,7 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 		$http.get("/allPlayers/" + $scope.homeTeam + "/" + $scope.year).then(function(response) {
 			$scope.allHomePlayers = response.data;
 			for (var i = 0; i < $scope.allHomePlayers.length; i++) {
-				$scope.bothTeamsPlayersMap.set($scope.homePlayers[i].objectId, $scope.allPlayers[i]);
+				$scope.bothTeamsPlayersMap.set($scope.allHomePlayers[i].objectId, $scope.allHomePlayers[i]);
 			}
 			initVals();
 		});
@@ -56,7 +56,7 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 		$http.get("/allPlayers/" + $scope.opponent + "/" + $scope.year).then(function(response) {
 			$scope.allAwayPlayers = response.data;
 			for (var i = 0; i < $scope.allAwayPlayers.length; i++) {
-				$scope.bothTeamsPlayersMap.set($scope.awayPlayers[i].objectId, $scope.allPlayers[i]);
+				$scope.bothTeamsPlayersMap.set($scope.allAwayPlayers[i].objectId, $scope.allAwayPlayers[i]);
 			}
 			initVals();
 		});
@@ -101,29 +101,6 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 					return a.time - b.time;
 				});
 			$scope.filterEvents('init');
-		});
-        
-        // I don't really need this
-		if (notesUrl != undefined) {
-			$http.get(notesUrl).then(function(response) {
-				for (var i = 0; i < response.data.length; i++) {
-					response.data[i].stat_name = "NOTE";
-					$scope.originalStats.push(response.data[i]);
-				}
-				$scope.originalStats.sort(function(a, b){
-						return a.time - b.time;
-					});
-				$scope.filterEvents('init');
-			});
-		}
-        
-        // I don't really need this
-		$http.get("/videoPermissions/" + $scope.homeTeam + "/" + $scope.selectedVideo).then(function(response) {
-			if (response.data == 'true') {
-				$scope.statsPublic = true;
-			} else {
-				$scope.statsPublic = false;
-			}
 		});
 	}
 	
@@ -327,37 +304,6 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 		$scope.videoPlayer.pauseVideo();
 		
 		document.getElementById('onFieldPlayersHomePicker').style.display='block';document.getElementById('fade').style.display='block';
-	};
-	
-	$scope.startNote = function() {
-		$scope.videoPlayer.pauseVideo();
-		document.getElementById('noteOverlay').style.display='block';document.getElementById('fade').style.display='block';
-	};
-	
-	$scope.addNote = function() {
-		var data = {
-				vid_id : $scope.selectedVideo,
-				team_id : $scope.homeTeam,
-				fall_year : $scope.year,
-				time : $scope.videoPlayer.getCurrentTime(),
-				good_bad_filter : $scope.goodBad,
-				o_d_filter : $scope.oD,
-				note : $scope.noteText
-		};
-		$http.post("/addNote", data).then(function(response) {
-			$scope.noteText = "";
-			// add it to the all stats? how would I do that?
-			response.data.stat_name = "NOTE";
-			$scope.originalStats.push(response.data);
-			$scope.originalStats.sort(function(a, b){
-					return a.time - b.time;
-				});
-			$scope.filterEvents('added');
-		});
-		$scope.goodBad = "";
-		$scope.oD = "";
-		$scope.noteText = "";
-		$scope.closeDialog('noteOverlay');
 	};
 	
 	$scope.addStat = function(playerId, playerInId, stat, bludgers) {
@@ -567,11 +513,4 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 		var url = "quidstats.herokuapp.com/public/" + author + "/" + $scope.homeTeam + "/" + $scope.selectedVideo + "/" + $scope.year + "/" + $scope.playerFilter + "/" + $scope.eventFilter;
 		prompt("The following URL will bring someone to this page, with the filters set as they are now. They will not be able to edit events. If the 'Public' switch is put back to 'Private', this URL will break", url);
 	};
-	
-	$scope.showNote = function(index) {
-		$scope.videoPlayer.pauseVideo();
-		$scope.displayNoteText = $scope.displayStats[index].note;
-		document.getElementById('displayNoteOverlay').style.display='block';document.getElementById('fade').style.display='block';
-	};
-		
 }]);
