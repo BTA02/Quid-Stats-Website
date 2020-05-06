@@ -26,7 +26,7 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
         $scope.getAllAwayPlayers();
     }
 	
-	$scope.geAllHomePlayers = function() {
+	$scope.getAllHomePlayers = function() {
 		var idAndYearAndOpponent;
 		idAndYearAndOpponent = $scope.vidObj.split(",");
 		$scope.selectedVideo = idAndYearAndOpponent[0];
@@ -102,7 +102,8 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 				});
 			$scope.filterEvents('init');
 		});
-		
+        
+        // I don't really need this
 		if (notesUrl != undefined) {
 			$http.get(notesUrl).then(function(response) {
 				for (var i = 0; i < response.data.length; i++) {
@@ -115,7 +116,8 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 				$scope.filterEvents('init');
 			});
 		}
-		
+        
+        // I don't really need this
 		$http.get("/videoPermissions/" + $scope.homeTeam + "/" + $scope.selectedVideo).then(function(response) {
 			if (response.data == 'true') {
 				$scope.statsPublic = true;
@@ -129,11 +131,20 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 		var chaserA = {objectId:"chaserA", first_name:"Chaser", last_name:"A"};
 		var chaserB = {objectId:"chaserB", first_name:"Chaser", last_name:"B"};
 		var chaserC = {objectId:"chaserC", first_name:"Chaser", last_name:"C"};
-		var keeper = {objectId:"keeper", first_name:"Keeper", last_name:""};
+		var keeperA = {objectId:"keeperA", first_name:"Keeper", last_name:"A"};
 		var beaterA = {objectId:"beaterA", first_name:"Beater", last_name:"A"};
 		var beaterB = {objectId:"beaterB", first_name:"Beater", last_name:"B"};
-		var seeker = {objectId:"seeker", first_name:"Seeker", last_name:""};
-		$scope.onFieldPlayers = [chaserA, chaserB, chaserC, keeper, beaterA, beaterB, seeker];
+		var seekerA = {objectId:"seekerA", first_name:"Seeker", last_name:"A"};
+        $scope.onFieldPlayersHome = [chaserA, chaserB, chaserC, keeperA, beaterA, beaterB, seekerA];
+        
+        var chaser1 = {objectId:"chaser1", first_name:"Chaser", last_name:"1"};
+		var chaser2 = {objectId:"chaser2", first_name:"Chaser", last_name:"2"};
+		var chaser3 = {objectId:"chaser3", first_name:"Chaser", last_name:"3"};
+		var keeper1 = {objectId:"keeper1", first_name:"Keeper", last_name:"1"};
+		var beater1 = {objectId:"beater1", first_name:"Beater", last_name:"1"};
+		var beater2 = {objectId:"beater2", first_name:"Beater", last_name:"2"};
+		var seeker1 = {objectId:"seeker1", first_name:"Seeker", last_name:"1"};
+        $scope.onFieldPlayersAway = [chaser1, chaser2, chaser3, keeper1, beater1, beater2, seeker1];
 	}
 	
 	function addSubToMap(subStat) {
@@ -184,7 +195,9 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 				}
 			}
 		}
-	};
+    };
+    
+    // Axtell here... hm...
  
 	$scope.startSub = function(playerId) {
 		$scope.statType = "SUB";
@@ -197,7 +210,7 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 		$scope.statType = "SWAP";
 		$scope.videoPlayer.pauseVideo();
 		$scope.subbingPlayer = playerId;
-		document.getElementById('onFieldPlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
+		document.getElementById('onFieldPlayersHomePicker').style.display='block';document.getElementById('fade').style.display='block';
 	};
 	
 	$scope.startStat = function(stat) {
@@ -208,7 +221,7 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 		} else {
 			$scope.statType = stat;
 			$scope.videoPlayer.pauseVideo();
-			document.getElementById('onFieldPlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
+			document.getElementById('onFieldPlayersHomePicker').style.display='block';document.getElementById('fade').style.display='block';
 		}
 	};
 	
@@ -220,22 +233,22 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 			$scope.addStat(playerInId, "null", $scope.statType);
 			var indexOfCarded = -1;
 			
-			for (var i = 0; i < $scope.onFieldPlayers.length; i++) {
-				if ($scope.onFieldPlayers[i]['objectId'] == playerInId) {
+			for (var i = 0; i < $scope.onFieldPlayersHome.length; i++) {
+				if ($scope.onFieldPlayersHome[i]['objectId'] == playerInId) {
 					indexOfCarded = i;
 				}
 			}
 			if (indexOfCarded == 3) {
 				$scope.startSwap(playerInId);
 			} else {
-				$scope.closeDialog('onFieldPlayersPicker');
+				$scope.closeDialog('onFieldPlayersHomePicker');
 			}
 		} else if ($scope.statType == "SWAP") {
 			$scope.addStat($scope.subbingPlayer, playerInId, "SWAP");
-			$scope.closeDialog('onFieldPlayersPicker');
+			$scope.closeDialog('onFieldPlayersHomePicker');
 		} else {
 			$scope.addStat(playerInId, null, $scope.statType, null);
-			$scope.closeDialog('onFieldPlayersPicker');
+			$scope.closeDialog('onFieldPlayersHomePicker');
 		}
 	};
 	
@@ -244,22 +257,22 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 		var swapIndex = -1;
 		// both are 'not found'
 		
-		for (var i = 0; i < $scope.onFieldPlayers.length; i++) {
-			if ($scope.onFieldPlayers[i].objectId == sub.player_id) {
+		for (var i = 0; i < $scope.onFieldPlayersHome.length; i++) {
+			if ($scope.onFieldPlayersHome[i].objectId == sub.player_id) {
 				index = i;
 			}
-			if ($scope.onFieldPlayers[i].objectId == sub.player_in_id) {
+			if ($scope.onFieldPlayersHome[i].objectId == sub.player_in_id) {
 				swapIndex = i;
 			}
 		}
 		//index coming back as -1 each time
 		if (index != -1 && swapIndex == -1) {
-			$scope.onFieldPlayers[index] = $scope.bothTeamsPlayersMap.get(sub.player_in_id);
+			$scope.onFieldPlayersHome[index] = $scope.bothTeamsPlayersMap.get(sub.player_in_id);
 		}
 		if (index != -1 && swapIndex != -1) {
-			var temp = $scope.onFieldPlayers[index];
-			$scope.onFieldPlayers[index] = $scope.onFieldPlayers[swapIndex];
-			$scope.onFieldPlayers[swapIndex] = temp;
+			var temp = $scope.onFieldPlayersHome[index];
+			$scope.onFieldPlayersHome[index] = $scope.onFieldPlayersHome[swapIndex];
+			$scope.onFieldPlayersHome[swapIndex] = temp;
 		}
 	}
 	
@@ -313,7 +326,7 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 		$scope.statType = cardType;
 		$scope.videoPlayer.pauseVideo();
 		
-		document.getElementById('onFieldPlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
+		document.getElementById('onFieldPlayersHomePicker').style.display='block';document.getElementById('fade').style.display='block';
 	};
 	
 	$scope.startNote = function() {

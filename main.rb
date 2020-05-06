@@ -197,6 +197,17 @@ get '/watch' do
 	erb :watch
 end
 
+get '/overlayStats' do
+	@title = 'Record Stats'
+	@controllerName = 'OverlayRecordStatsController'
+	@author_id = session[:authorId]
+	if !logged_in?
+		redirect '/noAuth'
+	end
+	@teams = get_all_teams
+	erb :record_stats_overlay
+end
+
 get '/noAuth' do
 	erb :no_auth
 end
@@ -586,7 +597,7 @@ def get_all_stats_from_game(vid, team, author)
 end
 
 def get_all_stats_from_game(vid)
-	resp = $client.query9'Stats').tap do |q|
+	resp = $client.query('Stats').tap do |q|
 		q.eq("vid_id", vid)
 		q.limit = 1000
 		q.order_by = "time"

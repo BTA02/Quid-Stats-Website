@@ -1,240 +1,136 @@
-# The goal here is to do BOTH teams. I'll keep both rosters on the side of the screen, and I can add / change both easily. Yeah.
 <div name="header" class="container-fluid text-center">
 	<!-- Team Selector -->
-	<select name="teamSelect" ng-model="team" ng-change="getAllGames()">
+	<select name="teamSelect" ng-model="homeTeam" ng-change="getAllGames()">
 		<option value="">Select a team</option>
-		# <% @teams.each do |team| %>
-		<option value="<%= team['objectId']%>"><%=team['team_name']%></option>
+		# <% @teams.each do |homeTeam| %>
+		<option value="<%= homeTeam['objectId']%>"><%=homeTeam['team_name']%></option>
 		<%end%>
 	</select>
 	<!-- Video Selector and allPlayers populator--> 
 	<select ng-model="vidObj" ng-change="getAllPlayers()" ng-options="game.vid_id+','+game.fall_year+','+game.opponent_id as game.description for game in allGames">
     </select>
-    <div ng-show="vidObj" class="pull-right">
-        <label ng-show="statsPublic" for="pubLabel">Public</label>
-        <label ng-show="!statsPublic" for="pubLabel">Private</label>
+</div>
+
+<div id="overlayFullBody">
+    <div id="overlayVideoContainer">
+        <youtube-video id="video" video-id="selectedVideo" player="videoPlayer" player-width="'100%'" player-height="'100%'"></youtube-video>
     </div>
-    <div ng-show="vidObj" class="material-switch pull-right">
-        <input ng-model="statsPublic" ng-change="togglePublic()" type="checkbox" id="unchecked" class="cbx hidden"/>
-        <label id="pubLabel" for="unchecked" class="lbl"></label>
-	</div>
-</div>
-	
-<div id="overlayVideoContainer">
-    <youtube-video id="video" video-id="selectedVideo" player="videoPlayer" player-width="'100%'" player-height="'100%'"></youtube-video>
-</div>
-<div id="overlayRostersAndScoreboard">
-    <div id="homeScoreboard">
-        <div class="position" name="chasers">
-					<p style="text-align:center;"><b>Chasers</b></p>
-					<div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(0,3) track by $index">
-						<ul>
-							<p type="button" class="btn" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
-						</ul>
-					</div>
-				</div>
-				<div class="position" name="keeper">
-					<p style="text-align:center;"><b>Keeper</b></p>
-					<div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(3,4) track by $index">
-						<ul>
-							<p type="button" class="btn" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
-						</ul>
-					</div>
-				</div>
-				<div class="position" name="beater">
-					<p style="text-align:center;"><b>Beater</b></p>
-					<div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(4,6) track by $index">
-						<ul>
-							<p type="button" class="btn" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
-						</ul>
-					</div>
-				</div>
-				<div class="position" name="seeker">
-					<p style="text-align:center;"><b>Seeker</b></p>
-					<div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(6,7) track by $index">
-						<ul>
-							<p type="button" class="btn" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
-						</ul>
-					</div>
-				</div>
-				<div id="scoreboard" style="text-align:center;">
-					<div class="score scoreboardItem">
-						<p>Home</p>
-						<p ng-model="homeScore">{{homeScore}}</p>
-					</div>
-					<div class="score scoreboardItem">
-						<p>Away</p>
-						<p ng-model="awayScore">{{awayScore}}</p>
-					</div>
-					<div class="scoreboardItem">
-						<p>O/D</p>
-						<p ng-model="curOD">{{curOD | statNameFilter}}</p>
-					</div>
-					<div class="scoreboardItem">
-						<p>Control?</p>
-						<p ng-show="curControl == 1">Yes</p>
-						<p ng-show="curControl == 0">No</p>
-						<p ng-show="curControl == -1">?</p>
-					</div>
-				</div>
-			</div>
-	
-			<div id="statsAndFiltersFull" ng-hide="isCoachingTools">
-			<div class="statsList">
-				<div class="statsListItem" ng-repeat="statObj in displayStats">
-					<p ng-show="statObj.stat_name != 'NOTE' && ">
+
+    <div id="overlayRostersColumn">
+        <div id="homeRoster" class="roster">
+            <p><b>Chasers</b></p>
+            <div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(0,3) track by $index">
+                <ul>
+                    <button type="button" class="btn" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</button>
+                </ul>
+            </div>
+            <p><b>Keeper</b></p>
+            <div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(3,4) track by $index">
+                <ul>
+                    <p type="button" class="btn" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
+                </ul>
+            </div>
+            <p><b>Beater</b></p>
+            <div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(4,6) track by $index">
+                <ul>
+                    <p type="button" class="btn" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
+                </ul>
+            </div>
+            <p><b>Seeker</b></p>
+            <div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(6,7) track by $index">
+                <ul>
+                    <p type="button" class="btn" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
+                </ul>
+            </div>
+        </div>
+        <div id="awayRoster" class="roster">
+            <p><b>Chasers</b></p>
+            <div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(0,3) track by $index">
+                <ul>
+                    <button type="button" class="btn" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</button>
+                </ul>
+            </div>
+            <p><b>Keeper</b></p>
+            <div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(3,4) track by $index">
+                <ul>
+                    <p type="button" class="btn" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
+                </ul>
+            </div>
+            <p><b>Beater</b></p>
+            <div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(4,6) track by $index">
+                <ul>
+                    <p type="button" class="btn" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
+                </ul>
+            </div>
+            <p><b>Seeker</b></p>
+            <div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(6,7) track by $index">
+                <ul>
+                    <p type="button" class="btn" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
+                </ul>
+            </div>
+        </div>
+    </div>
+        
+    <div id="overlayScoreboardAndStatsColumn">
+        <div id="overlayScoreboard">
+            <div class="score scoreboardItem">
+                <p>Home</p>
+                <p ng-model="homeScore">{{homeScore}}</p>
+            </div>
+            <div class="score scoreboardItem">
+                <p>Away</p>
+                <p ng-model="awayScore">{{awayScore}}</p>
+            </div>
+            <div class="scoreboardItem">
+                <p>O/D</p>
+                <p ng-model="curOD">{{curOD | statNameFilter}}</p>
+            </div>
+            <div class="scoreboardItem">
+                <p>Control?</p>
+                <p ng-show="curControl == 1">Yes</p>
+                <p ng-show="curControl == 0">No</p>
+                <p ng-show="curControl == -1">?</p>
+            </div>
+        </div>
+        <div id="overlayStatsFull">
+            <div class="statsList">
+                <div class="statsListItem" ng-repeat="statObj in displayStats">
+                    <p ng-show="statObj.stat_name != 'NOTE' && ">
 
 
-					<p ng-show="statObj.stat_name != 'NOTE'">{{statObj.stat_name | statNameFilter}}: {{statObj.player_display_name}}</p>
-					
-					<!--Name Stuff-->
-					<p ng-show="statObj.player_name != 'null' && (statObj.stat_name != 'SUB' && statObj.stat_name != 'SWAP')">{{statObj.player_display_name}}</p>
-					<p ng-show="statObj.player_name != 'null' && (statObj.stat_name == 'SUB' || statObj.stat_name == 'SWAP')"> <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span> {{statObj.player_name}}</p>
-					<p ng-show="statObj.stat_name == 'SUB' || statObj.stat_name == 'SWAP'"><span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>{{statObj.player_in_name}}</p>
-					
-					<!--Possession Stuff-->
-					<p ng-show="statObj.stat_name == 'OFFENSE'"></p>
-					<p ng-show="statObj.stat_name == 'DEFENSE'"></p>
-					
-					<!--Note Stuff-->
-					<p ng-show="statObj.stat_name == 'NOTE'">{{statObj.o_d_filter}}</p>
-					<p ng-show="statObj.stat_name == 'NOTE'">{{statObj.good_bad_filter}}</p>
-					<p class="clickList" ng-click="showNote($index)" ng-show="statObj.stat_name == 'NOTE'">Click to see note text</p>
-	
-					<div class="timeOnStatColumn">
-						<p ng-click="seekToTime(statObj.stat_name, statObj.time)">{{statObj.time | time:'ss':'mm:ss'}}</p>
-					</div>
-					<button ng-hide="<%= @public %>" class="btn btn-danger btn-xs" ng-click="deleteStat(statObj.objectId, statObj.stat_name)">Delete</button>
-				</div>
-			</div>
-			<div class="filter">
-				<select ng-model="playerFilter" ng-change="filterEvents('players')">
-					<option value="allPlayers">All Players</option>
-					<option ng-repeat="player in allPlayers" value="{{player.objectId}}">{{player.first_name + ' ' + player.last_name}}</option>
-				</select>
-			</div>
-			<div class="filter">
-				<select ng-model="eventFilter" ng-change="filterEvents('events')">
-					<option value="allEvents">All Events</option>
-					<option value="SHOT">Shots</option>
-					<option value="GOAL">Goals</option>
-					<option value="ASSIST">Assists</option>
-					<option value="TAKEAWAY">Takeaway</option>
-					<option value="TURNOVER">Turnover</option>
-					<option value="SUB">Sub</option>
-					<option value="AWAY_GOAL">Away Goals</option>
-					<option value="NOTE">Notes</option>
-					<option value="GAIN_CONTROL">Gain Control</option>
-					<option value="LOSE_CONTROL">Lose Control</option>
-					<option value="OFFENSE">Offensive Possesions</option>
-					<option value="DEFENSE">Defensive Possesion</option>
-				</select>
-			</div>
-			</div>
-		</div>
-		
-		<div id="drawingsAndNotesFull" ng-hide="!isCoachingTools">
-			<div class="statsList">
-				<div class="statsListItem" ng-repeat="drawingAndNoteObj in drawingsAndNotes" ng-click="seekToTime(drawingAndNoteObj.stat_name, drawingAndNoteObj.time)">
-					<span ng-show="drawingAndNoteObj.stat_name != 'NOTE'" style="font-weight: bold;">{{Math.round(drawingAndNoteObj.time) | time:'ss':'mm:ss'}}</span>
-					<p ng-show="drawingAndNoteObj.stat_name != 'NOTE'">Drawing</p>
-					<span ng-show="drawingAndNoteObj.stat_name == 'NOTE'" style="font-weight: bold;">{{drawingAndNoteObj.time | time:'ss':'mm:ss'}}</span>
-					<p ng-show="drawingAndNoteObj.stat_name == 'NOTE'">{{drawingAndNoteObj.note}}</p>
-				</div>
-			</div>
-		</div>
-		<div id="buttonsContainerFull" ng-hide="isCoachingTools">
-			<div class="buttonGroupFull">
-				<p><b>Clock</b></p>
-					<ul>
-						<button type="button" class="btn" ng-click="addStat(null, null, 'START_CLOCK', null)">Start Clock</button>
-					</ul>
-					<ul>
-						<button type="button" class="btn" ng-click="addStat(null, null, 'PAUSE_CLOCK', null)">Pause Clock</button>
-					</ul>
-					<ul>
-						<button type="button" class="btn" ng-click="instantReplay()">Instant Replay</button>
-					</ul>
-				<p><b>Possession</b></p>
-					<ul>
-						<button type="button" class="btn" ng-click="addStat(null, null, 'OFFENSE', null)">Start Offense</button>
-					</ul>
-					<ul>
-						<button type="button" class="btn" ng-click="addStat(null, null, 'DEFENSE', null)">Start Defense</button>
-					</ul>
-				<p><b>Home Stat</b></p>
-					<ul>
-						<button type="button" class="btn" ng-click="startStat('SHOT')">Shot</button>
-					</ul>
-					<ul>
-						<button type="button" class="btn" ng-click="startStat('GOAL')">Goal</button>
-					</ul>
-					<ul>
-						<button type="button" class="btn" ng-click="startStat('ASSIST')">Assist</button>
-					</ul>
-					<ul>
-						<button type="button" class="btn" ng-click="startStat('TAKEAWAY')">Takeaway</button>
-					</ul>
-					<ul>
-						<button type="button" class="btn" ng-click="startStat('TURNOVER')">Turnover</button>
-					</ul>
-				<p><b>Away Stat</b></p>
-					<ul>
-						<button type="button" class="btn" ng-click="addStat(null, null, 'AWAY_GOAL', null)">Away Goal</button>
-					</ul>
-				<p><b>Bludgers</b></p>
-					<ul>
-						<button type="button" class="btn" ng-click="addStat(null, null, 'GAIN_CONTROL', null)">Gain Control</button>
-					</ul>
-					<ul>
-						<button type="button" class="btn" ng-click="addStat(null, null, 'LOSE_CONTROL', null)">Lose Control</button>
-					</ul>
-					<ul>
-						<button type="button" class="btn" ng-click="addStat(null, null, 'ZERO_BLUDGERS_FORCED', null)">Zero Bludgers Forced</button>
-					</ul>
-					<ul>
-						<button type="button" class="btn" ng-click="addStat(null, null, 'ZERO_BLUDGERS_GIVEN', null)">Zero Bludgers Given</button>
-					</ul>
-				<p><b>Seekers</b></p>
-				<ul>
-					<button type="button" class="btn" ng-click="addStat(null, null, 'SEEKERS_RELEASED', null)">Seekers Released</button>
-				</ul>
-				<ul>
-					<button type="button" class="btn" ng-click="startStat('SNITCH_CATCH')">Home Catch</button>
-				</ul>
-				<ul>
-					<button type="button" class="btn" ng-click="addStat(null, null, 'AWAY_SNITCH_CATCH', null)">Away Catch</button>
-				</ul>
-				<p><b>Cards</b></p>
-				<ul>
-					<button type="button" class="btn" ng-click="addCard('BLUE_CARD')">Blue Card</button>
-				</ul>
-				<ul>
-					<button type="button" class="btn" ng-click="addCard('YELLOW_CARD')">Yellow Card</button>
-				</ul>
-				<ul>
-					<button type="button" class="btn" ng-click="addCard('RED_CARD')">Red Card</button>
-				</ul>
-				<p><b>Extras</b></p>
-				<ul>
-					<button type="button" class="btn" ng-click="startNote()">Add Note</button>
-				</u1>
-			</div>
-		</div>
-	</div>
+                    <p ng-show="statObj.stat_name != 'NOTE'">{{statObj.stat_name | statNameFilter}}: {{statObj.player_display_name}}</p>
+                    
+                    <!--Name Stuff-->
+                    <p ng-show="statObj.player_name != 'null' && (statObj.stat_name != 'SUB' && statObj.stat_name != 'SWAP')">{{statObj.player_display_name}}</p>
+                    <p ng-show="statObj.player_name != 'null' && (statObj.stat_name == 'SUB' || statObj.stat_name == 'SWAP')"> <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span> {{statObj.player_name}}</p>
+                    <p ng-show="statObj.stat_name == 'SUB' || statObj.stat_name == 'SWAP'"><span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>{{statObj.player_in_name}}</p>
+                    
+                    <!--Possession Stuff-->
+                    <p ng-show="statObj.stat_name == 'OFFENSE'"></p>
+                    <p ng-show="statObj.stat_name == 'DEFENSE'"></p>
+                    
+                    <!--Note Stuff-->
+                    <p ng-show="statObj.stat_name == 'NOTE'">{{statObj.o_d_filter}}</p>
+                    <p ng-show="statObj.stat_name == 'NOTE'">{{statObj.good_bad_filter}}</p>
+                    <p class="clickList" ng-click="showNote($index)" ng-show="statObj.stat_name == 'NOTE'">Click to see note text</p>
 
-	<div id="coachingToolsContainerFull" ng-show="isCoachingTools">
-		<button class="btn btn-default drawing-button" ng-click="togglePenTool()" ng-init="penButtonText = 'Start Drawing'">{{penButtonText}}</button>
-		<button class="btn btn-default drawing-button" ng-click="eraseDrawingsAtTimeStamp()">Erase Screen</button>
-		<button class="btn btn-default drawing-button" ng-click="playVideo()">Play Video</button>
-		<button class="btn btn-default drawing-button" ng-click="pauseVideo()">Pause Video</button>
-		<button class="btn btn-default drawing-button" ng-click="saveDrawings()">Save Current Drawing</button>
-		<button class="btn btn-default drawing-button" ng-click="startNote()">Add Note</button>
-		<h4 ng-hide="!penSelected" style="margin-top: auto; margin-bottom: auto; margin-left: 10px;">Current Selection: Draw</h3>
-		<h4 ng-hide="penSelected" style="margin-top: auto; margin-bottom: auto; margin-left: 10px;">Current Selection: Video</h3>
-	</div>
+                    <div class="timeOnStatColumn">
+                        <p ng-click="seekToTime(statObj.stat_name, statObj.time)">{{statObj.time | time:'ss':'mm:ss'}}</p>
+                    </div>
+                    <button ng-hide="<%= @public %>" class="btn btn-danger btn-xs" ng-click="deleteStat(statObj.objectId, statObj.stat_name)">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 
-<!--End of column flex-->
+
+
+
+
+
+
+
 </div>
 
 <!-- Div for picking subs, starts just not-visible -->
@@ -254,34 +150,6 @@
 	<a ng-if="statType == 'SWAP'" href="javascript:void(0)" ng-click="closeDialog('onFieldPlayersPicker')">None<br></a>
 	<a ng-if="statType != 'SWAP'" href="javascript:void(0)" ng-click="closeDialog('onFieldPlayersPicker')">Close<br></a>
 </div>
-
-<!-- Div for note overlay -->
-
-<div id="noteOverlay" class="white_content" align="center">
-	<select ng-model="oD">
-		<option>General</option>
-		<option>Offense</option>
-		<option>Defense</option>
-		<option>Transition</option>
-	</select>
-	<br>
-	<select ng-model="goodBad">
-		<option>Neutral</option>
-		<option>Positive</option>
-		<option>Negative</option>
-	</select>
-	<br>
-	<textarea ng-model="noteText" type="text" placeholder="Note" style="width:400px;height:150px;"></textarea><br>
-	<button class="btn btn-default" ng-click="addNote()">Add</button><br>
-	<button class="btn btn-default" ng-click="closeDialog('noteOverlay')">Close<br></button>
-</div>
-
-<div id="displayNoteOverlay" class="white_content" align="center">
-	<p ng-model="displayNoteText">{{displayNoteText}}</p>
-	<a href="javascript:void(0)" ng-click="closeDialog('displayNoteOverlay')">Close<br></a>
-	
-</div>
-<div id="fade" class="black_overlay"/>
 
 <div id="helpText" class="white_content">
 	<a href="javascript:void(0)" ng-click="closeDialog('helpText')">Close<br></a>
