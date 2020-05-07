@@ -19,14 +19,8 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 			$scope.allGames = response.data;
 		});
     };
-    
-    $scope.getAllPlayers = function() {
-        $scope.bothTeamsPlayersMap = new Map();
-        $scope.getAllHomePlayers();
-        $scope.getAllAwayPlayers();
-    }
 	
-	$scope.getAllHomePlayers = function() {
+	$scope.getAllPlayers = function() {
 		var idAndYearAndOpponent;
 		idAndYearAndOpponent = $scope.vidObj.split(",");
 		$scope.selectedVideo = idAndYearAndOpponent[0];
@@ -34,35 +28,36 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 		var videoUrl = "https://www.youtube.com/watch?v=" + $scope.selectedVideo;
 		$scope.year = idAndYearAndOpponent[1];
 		$scope.awayTeam = idAndYearAndOpponent[2];
+		$scope.allPlayers = [];
 		$scope.allHomePlayers = [];
+		$scope.allAwayPlayers = [];
+		$scope.bothTeamsPlayersMap = new Map();
+
 		$http.get("/allPlayers/" + $scope.homeTeam + "/" + $scope.year).then(function(response) {
+			$scope.allPlayers += response.data;
 			$scope.allHomePlayers = response.data;
+			
 			for (var i = 0; i < $scope.allHomePlayers.length; i++) {
-				$scope.bothTeamsPlayersMap.set($scope.allHomePlayers[i].objectId, $scope.allHomePlayers[i]);
+				var currentPlayer = $scope.allHomePlayers[i]
+				$scope.bothTeamsPlayersMap.set(currentPlayer.objectId, currentPlayer);
+			}
+			initVals();
+		});
+
+		$http.get("/allPlayers/" + $scope.awayTeam + "/" + $scope.year).then(function(response) {
+			$scope.allPlayers += response.data;
+			$scope.allAwayPlayers = response.data;
+			
+			for (var i = 0; i < $scope.allAwayPlayers.length; i++) {
+				var currentPlayer = $scope.allAwayPlayers[i]
+				$scope.bothTeamsPlayersMap.set(currentPlayer.objectId, currentPlayer);
 			}
 			initVals();
 		});
     };
-    
-    $scope.getAllAwayPlayers = function() {
-        var idAndYearAndOpponent;
-		idAndYearAndOpponent = $scope.vidObj.split(",");
-		$scope.selectedVideo = idAndYearAndOpponent[0];
-		// Set this to my videogular config
-		$scope.year = idAndYearAndOpponent[1];
-		$scope.awayTeam = idAndYearAndOpponent[2];
-        $scope.allAwayPlayers = [];
-        // Axtell check $scope.opponent here
-		$http.get("/allPlayers/" + $scope.opponent + "/" + $scope.year).then(function(response) {
-			$scope.allAwayPlayers = response.data;
-			for (var i = 0; i < $scope.allAwayPlayers.length; i++) {
-				$scope.bothTeamsPlayersMap.set($scope.allAwayPlayers[i].objectId, $scope.allAwayPlayers[i]);
-			}
-			initVals();
-		});
-    }
 	
 	function initVals() {
+		console.log("initvals")
 		// init filters
 		$scope.playerFilter="allPlayers";
 		$scope.eventFilter="allEvents";
@@ -176,14 +171,14 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
     
     // Axtell here... hm...
  
-	$scope.startSub = function(playerId) {
+	$scope.startHomeSub = function(playerId) {
 		$scope.statType = "SUB";
 		$scope.videoPlayer.pauseVideo();
 		$scope.subbingPlayer = playerId;
-		document.getElementById('allPlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
+		document.getElementById('allHomePlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
 	};
  
-	$scope.startSwap = function(playerId) {
+	$scope.startHomeSwap = function(playerId) {
 		$scope.statType = "SWAP";
 		$scope.videoPlayer.pauseVideo();
 		$scope.subbingPlayer = playerId;
@@ -191,8 +186,6 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 	};
 	
 	$scope.startStat = function(stat) {
-		// Axtell here
-		// This is the idea that, when adding stats, if there are no subs, just add generic stats
 		if ($scope.subMap.size == 0) {
 			$scope.addStat(null, null, stat, null);
 		} else {
@@ -230,6 +223,14 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 	};
 	
 	function applySub(sub) {
+		if (sub.team_id == $scope.homeTeam) {
+			applyHomeSub(sub)
+		} else {
+			applyAwaySub(sub)
+		}
+	}
+	
+	function applyHomeSub(sub) {
 		var index = -1;
 		var swapIndex = -1;
 		// both are 'not found'
@@ -243,14 +244,41 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 			}
 		}
 		//index coming back as -1 each time
+		// take a player from bench put them on field
 		if (index != -1 && swapIndex == -1) {
 			$scope.onFieldPlayersHome[index] = $scope.bothTeamsPlayersMap.get(sub.player_in_id);
 		}
+		// swap two on field players
 		if (index != -1 && swapIndex != -1) {
 			var temp = $scope.onFieldPlayersHome[index];
 			$scope.onFieldPlayersHome[index] = $scope.onFieldPlayersHome[swapIndex];
 			$scope.onFieldPlayersHome[swapIndex] = temp;
 		}
+	}
+
+	function applyAwaySub(sub) {
+		var index = -1;
+		var swapIndex = -1;
+		// both are 'not found'
+		
+		for (var i = 0; i < $scope.onFieldPlayersAway.length; i++) {
+			if ($scope.onFieldPlayersAway[i].objectId == sub.player_id) {
+				index = i;
+			}
+			if ($scope.onFieldPlayersAway[i].objectId == sub.player_in_id) {
+				swapIndex = i;
+			}
+		}
+		//index coming back as -1 each time
+		if (index != -1 && swapIndex == -1) {
+			$scope.onFieldPlayersAway[index] = $scope.bothTeamsPlayersMap.get(sub.player_in_id);
+		}
+		if (index != -1 && swapIndex != -1) {
+			var temp = $scope.onFieldPlayersAway[index];
+			$scope.onFieldPlayersAway[index] = $scope.onFieldPlayersAway[swapIndex];
+			$scope.onFieldPlayersAway[swapIndex] = temp;
+		}
+
 	}
 	
 	$scope.updateScoreboard = function() {
@@ -357,7 +385,10 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 		// $http.post("/addStat",)
 	};
 	
+	//This can be edited. We only need to do this for some things
+	// A takeawa
 	$scope.addOppositeStat = function(stat, bludgers) {
+		return;
 		console.log("adding opposite of", stat, bludgers);
 		// gotta get the opponent somehow
 		// also have to inverse the stat as well

@@ -85,9 +85,6 @@
 			<div id="statsAndFiltersFull" ng-hide="isCoachingTools">
 			<div class="statsList">
 				<div class="statsListItem" ng-repeat="statObj in displayStats">
-					<p ng-show="statObj.stat_name != 'NOTE' && ">
-
-
 					<p ng-show="statObj.stat_name != 'NOTE'">{{statObj.stat_name | statNameFilter}}: {{statObj.player_display_name}}</p>
 					
 					<!--Name Stuff-->

@@ -18,54 +18,56 @@
 
     <div id="overlayRostersColumn">
         <div id="homeRoster" class="roster">
+            <p><b>HOME</b></p>
             <p><b>Chasers</b></p>
-            <div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(0,3) track by $index">
+            <div class="player" ng-repeat="onPlayer in onFieldPlayersHome.slice(0,3) track by $index">
                 <ul>
-                    <button type="button" class="btn" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</button>
+                    <button type="button" class="btn" ng-click="startHomeSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</button>
                 </ul>
             </div>
             <p><b>Keeper</b></p>
-            <div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(3,4) track by $index">
+            <div class="player" ng-repeat="onPlayer in onFieldPlayersHome.slice(3,4) track by $index">
                 <ul>
-                    <p type="button" class="btn" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
+                    <p type="button" class="btn" ng-click="startHomeSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
                 </ul>
             </div>
             <p><b>Beater</b></p>
-            <div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(4,6) track by $index">
+            <div class="player" ng-repeat="onPlayer in onFieldPlayersHome.slice(4,6) track by $index">
                 <ul>
-                    <p type="button" class="btn" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
+                    <p type="button" class="btn" ng-click="startHomeSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
                 </ul>
             </div>
             <p><b>Seeker</b></p>
-            <div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(6,7) track by $index">
+            <div class="player" ng-repeat="onPlayer in onFieldPlayersHome.slice(6,7) track by $index">
                 <ul>
-                    <p type="button" class="btn" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
+                    <p type="button" class="btn" ng-click="startHomeSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
                 </ul>
             </div>
         </div>
         <div id="awayRoster" class="roster">
+            <p><b>{{awayTeam['team_name']}}</p></b>
             <p><b>Chasers</b></p>
-            <div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(0,3) track by $index">
+            <div class="player" ng-repeat="onPlayer in onFieldPlayersAway.slice(0,3) track by $index">
                 <ul>
-                    <button type="button" class="btn" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</button>
+                    <button type="button" class="btn" ng-click="startAwaySub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</button>
                 </ul>
             </div>
             <p><b>Keeper</b></p>
-            <div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(3,4) track by $index">
+            <div class="player" ng-repeat="onPlayer in onFieldPlayersAway.slice(3,4) track by $index">
                 <ul>
-                    <p type="button" class="btn" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
+                    <p type="button" class="btn" ng-click="startAwaySub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
                 </ul>
             </div>
             <p><b>Beater</b></p>
-            <div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(4,6) track by $index">
+            <div class="player" ng-repeat="onPlayer in onFieldPlayersAway.slice(4,6) track by $index">
                 <ul>
-                    <p type="button" class="btn" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
+                    <p type="button" class="btn" ng-click="startAwaySub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
                 </ul>
             </div>
             <p><b>Seeker</b></p>
-            <div class="player" ng-repeat="onPlayer in onFieldPlayers.slice(6,7) track by $index">
+            <div class="player" ng-repeat="onPlayer in onFieldPlayersAway.slice(6,7) track by $index">
                 <ul>
-                    <p type="button" class="btn" ng-click="startSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
+                    <p type="button" class="btn" ng-click="startAwaySub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
                 </ul>
             </div>
         </div>
@@ -82,22 +84,19 @@
                 <p ng-model="awayScore">{{awayScore}}</p>
             </div>
             <div class="scoreboardItem">
-                <p>O/D</p>
+                <p>Quaffle</p>
                 <p ng-model="curOD">{{curOD | statNameFilter}}</p>
             </div>
             <div class="scoreboardItem">
                 <p>Control?</p>
-                <p ng-show="curControl == 1">Yes</p>
-                <p ng-show="curControl == 0">No</p>
+                <p ng-show="curControl == 1">Home</p>
+                <p ng-show="curControl == 0">Away</p>
                 <p ng-show="curControl == -1">?</p>
             </div>
         </div>
         <div id="overlayStatsFull">
             <div class="statsList">
                 <div class="statsListItem" ng-repeat="statObj in displayStats">
-                    <p ng-show="statObj.stat_name != 'NOTE' && ">
-
-
                     <p ng-show="statObj.stat_name != 'NOTE'">{{statObj.stat_name | statNameFilter}}: {{statObj.player_display_name}}</p>
                     
                     <!--Name Stuff-->
@@ -134,11 +133,11 @@
 </div>
 
 <!-- Div for picking subs, starts just not-visible -->
-<div id="allPlayersPicker" class="white_content">
+<div id="allHomePlayersPicker" class="white_content">
 	<p ng-if="statType == 'SWAP'">Swap keeper with someone on pitch. Or select 'none' if there is no penalty time.</p>
-	<a ng-if="statType != 'SWAP'" href="javascript:void(0)" ng-click="closeDialog('allPlayersPicker')">Close<br></a>
-	<a ng-repeat="allPlayer in allPlayers" ng-show="true" ng-click="playerClicked(allPlayer.objectId)" href="javascript:void(0)">{{allPlayer.first_name+' '+allPlayer.last_name}}<br></a>
-	<a ng-if="statType != 'SWAP'" href="javascript:void(0)" ng-click="closeDialog('allPlayersPicker')">Close<br></a>
+	<a ng-if="statType != 'SWAP'" href="javascript:void(0)" ng-click="closeDialog('allHomePlayersPicker')">Close<br></a>
+	<a ng-repeat="homePlayer in allHomePlayers" ng-show="true" ng-click="playerClicked(homePlayer.objectId)" href="javascript:void(0)">{{homePlayer.first_name+' '+homePlayer.last_name}}<br></a>
+	<a ng-if="statType != 'SWAP'" href="javascript:void(0)" ng-click="closeDialog('allHomePlayersPicker')">Close<br></a>
 </div>
 
 <div id="onFieldPlayersPicker" class="white_content">
