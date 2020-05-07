@@ -24,3 +24,24 @@
     order: 3;
 }
 
+.overlayPicker {
+    display: flex;
+    flex-direction: column;
+}
+
+.columnPicker {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.statColumnPicker {
+    flex: 0 1 auto;
+    order: 1
+}
+
+.subColumnPicker {
+    flex: 0 1 auto;
+    order: 2
+}
+

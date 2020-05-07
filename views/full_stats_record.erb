@@ -85,7 +85,7 @@
 			<div id="statsAndFiltersFull" ng-hide="isCoachingTools">
 			<div class="statsList">
 				<div class="statsListItem" ng-repeat="statObj in displayStats">
-					<p ng-show="statObj.stat_name != 'NOTE'">{{statObj.stat_name | statNameFilter}}: {{statObj.player_display_name}}</p>
+					<p ng-show="statObj.stat_name != 'NOTE'">{{statObj.stat_name | statNameFilter}}</p>
 					
 					<!--Name Stuff-->
 					<p ng-show="statObj.player_name != 'null' && (statObj.stat_name != 'SUB' && statObj.stat_name != 'SWAP')">{{statObj.player_display_name}}</p>

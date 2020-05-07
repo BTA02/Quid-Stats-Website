@@ -52,7 +52,6 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 				var currentPlayer = $scope.allAwayPlayers[i]
 				$scope.bothTeamsPlayersMap.set(currentPlayer.objectId, currentPlayer);
 			}
-			initVals();
 		});
     };
 	
