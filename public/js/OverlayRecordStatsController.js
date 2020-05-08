@@ -168,20 +168,58 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 		}
     };
     
-    // Axtell here... hm...
- 
-	$scope.startHomeSub = function(playerId) {
-		$scope.statType = "SUB";
+	// Axtell here... hm...
+	var playerSelected;
+	var overlayId;
+	var isKeeper;
+	function startEvent(playerId, playerPickerId, _isKeeper) {
 		$scope.videoPlayer.pauseVideo();
-		$scope.subbingPlayer = playerId;
-		document.getElementById('allHomePlayersPicker').style.display='block';document.getElementById('fade').style.display='block';
-	};
- 
+		playerSelected = playerId;
+		overlayId = playerPickerId;
+		isKeeper = _isKeeper
+		document.getElementById(playerPickerId).style.display='flex';document.getElementById('fade').style.display='block';
+	}
+
+
+	$scope.startHomeEvent = function(playerId, isKeeper) {
+		startEvent(playerId, 'allHomePlayersPicker', isKeeper);
+	}
+
+	$scope.startAwayEvent = function(playerId, isKeeper) {
+		startEvent(playerId, 'allAwayPlayersPicker', isKeeper);
+	}
+
+	$scope.finishEvent = function(playerSelectedOnOverlay, statSelectedOnOverlay) {
+		if (playerSelectedOnOverlay) {
+			// this is a simple sub
+			$scope.addStat(playerSelected, playerSelectedOnOverlay, "SUB");
+			$scope.closeDialog(overlayId);
+			return;
+		}
+		if (statSelectedOnOverlay == null) {
+			$scope.closeDialog(overlayId);
+			return;
+		}
+
+		if (statSelectedOnOverlay == "YELLOW_CARD" || statSelectedOnOverlay == "RED_CARD") {
+			$scope.addStat($scope.playerTapped, null, stat);
+			if (isKeeper) {
+				$scope.startHomeSwap(playerId);
+			} else {
+				$scope.closeDialog(overlayId);
+			}
+		} else if (statSelectedOnOverlay == "SWAP") {
+		} else {
+			$scope.addStat(playerSelected, null, statSelectedOnOverlay, null);
+			$scope.closeDialog(overlayId);
+		}
+	}
+
 	$scope.startHomeSwap = function(playerId) {
 		$scope.statType = "SWAP";
 		$scope.videoPlayer.pauseVideo();
 		$scope.subbingPlayer = playerId;
-		document.getElementById('onFieldPlayersHomePicker').style.display='block';document.getElementById('fade').style.display='block';
+		document.getElementById('onFieldPlayersHomePicker').style.display='flex';document.getElementById('fade').style.display='block';
 	};
 	
 	$scope.startStat = function(stat) {
@@ -190,7 +228,7 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 		} else {
 			$scope.statType = stat;
 			$scope.videoPlayer.pauseVideo();
-			document.getElementById('onFieldPlayersHomePicker').style.display='block';document.getElementById('fade').style.display='block';
+			document.getElementById('onFieldPlayersHomePicker').style.display='flex';document.getElementById('fade').style.display='block';
 		}
 	};
 	
@@ -330,7 +368,7 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 		$scope.statType = cardType;
 		$scope.videoPlayer.pauseVideo();
 		
-		document.getElementById('onFieldPlayersHomePicker').style.display='block';document.getElementById('fade').style.display='block';
+		document.getElementById('onFieldPlayersHomePicker').style.display='flex';document.getElementById('fade').style.display='block';
 	};
 	
 	$scope.addStat = function(playerId, playerInId, stat, bludgers) {

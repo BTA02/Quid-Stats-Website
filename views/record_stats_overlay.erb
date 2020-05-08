@@ -22,25 +22,25 @@
             <p><b>Chasers</b></p>
             <div class="player" ng-repeat="onPlayer in onFieldPlayersHome.slice(0,3) track by $index">
                 <ul>
-                    <button type="button" class="btn" ng-click="startHomeSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</button>
+                    <button type="button" class="btn" ng-click="startHomeEvent(onPlayer.objectId, false)">{{onPlayer.first_name+' '+onPlayer.last_name}}</button>
                 </ul>
             </div>
             <p><b>Keeper</b></p>
             <div class="player" ng-repeat="onPlayer in onFieldPlayersHome.slice(3,4) track by $index">
                 <ul>
-                    <p type="button" class="btn" ng-click="startHomeSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
+                    <p type="button" class="btn" ng-click="startHomeEvent(onPlayer.objectId, true)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
                 </ul>
             </div>
             <p><b>Beater</b></p>
             <div class="player" ng-repeat="onPlayer in onFieldPlayersHome.slice(4,6) track by $index">
                 <ul>
-                    <p type="button" class="btn" ng-click="startHomeSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
+                    <p type="button" class="btn" ng-click="startHomeEvent(onPlayer.objectId, false)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
                 </ul>
             </div>
             <p><b>Seeker</b></p>
             <div class="player" ng-repeat="onPlayer in onFieldPlayersHome.slice(6,7) track by $index">
                 <ul>
-                    <p type="button" class="btn" ng-click="startHomeSub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
+                    <p type="button" class="btn" ng-click="startHomeEvent(onPlayer.objectId, false)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
                 </ul>
             </div>
         </div>
@@ -49,25 +49,25 @@
             <p><b>Chasers</b></p>
             <div class="player" ng-repeat="onPlayer in onFieldPlayersAway.slice(0,3) track by $index">
                 <ul>
-                    <button type="button" class="btn" ng-click="startAwaySub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</button>
+                    <button type="button" class="btn" ng-click="startAwaySub(onPlayer.objectId, false)">{{onPlayer.first_name+' '+onPlayer.last_name}}</button>
                 </ul>
             </div>
             <p><b>Keeper</b></p>
             <div class="player" ng-repeat="onPlayer in onFieldPlayersAway.slice(3,4) track by $index">
                 <ul>
-                    <p type="button" class="btn" ng-click="startAwaySub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
+                    <p type="button" class="btn" ng-click="startAwaySub(onPlayer.objectId, true)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
                 </ul>
             </div>
             <p><b>Beater</b></p>
             <div class="player" ng-repeat="onPlayer in onFieldPlayersAway.slice(4,6) track by $index">
                 <ul>
-                    <p type="button" class="btn" ng-click="startAwaySub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
+                    <p type="button" class="btn" ng-click="startAwaySub(onPlayer.objectId, false)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
                 </ul>
             </div>
             <p><b>Seeker</b></p>
             <div class="player" ng-repeat="onPlayer in onFieldPlayersAway.slice(6,7) track by $index">
                 <ul>
-                    <p type="button" class="btn" ng-click="startAwaySub(onPlayer.objectId)">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
+                    <p type="button" class="btn" ng-click="startAwaySub(onPlayer.objectId, true">{{onPlayer.first_name+' '+onPlayer.last_name}}</p>
                 </ul>
             </div>
         </div>
@@ -130,35 +130,31 @@
 
 </div>
 
-<!-- Div for picking stats and subs, starts not-visible -->
-<div id="allHomePlayersPicker" class="white_content overlayPicker">
+<div id="allHomePlayersPicker" class="white_content">
     <div class="statsColumnPicker columnPicker chaserStats">
-        <button type="button" class="btn" ng-click="addStat(null, null, 'SHOT', null)">Shot</button>
-        <button type="button" class="btn" ng-click="addStat(null, null, 'GOAL', null)">Goal</button>
-        <button type="button" class="btn" ng-click="addStat(null, null, 'ASSIST', null)">Assist</button>
-        <button type="button" class="btn" ng-click="addStat(null, null, 'TAKEAWAY', null)">Takeaway</button>
-        <button type="button" class="btn" ng-click="addStat(null, null, 'TURNOVER', null)">Turnover</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'SHOT')">Shot</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'GOAL')">Goal</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'ASSIST')">Assist</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'TAKEAWAY')">Takeaway</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'TURNOVER')">Turnover</button>
+        <button type="button" class "btn btn-outline-danger" ng-click="closeDialog('allHomePlayersPicker')">Close</button>
     </div>
     <div class="statsColumnPicker columnPicker beaterStats">
-        <button type="button" class="btn" ng-click="addStat(null, null, 'GAIN_CONTROL', null)">Gain Control</button>
-        <button type="button" class="btn" ng-click="addStat(null, null, 'LOSE_CONTROL', null)">Lost Control</button>
-        <button type="button" class="btn" ng-click="addStat(null, null, 'ZERO_BLUDGERS_FORCED', null)">Zero Bludgers Forced</button>
-        <button type="button" class="btn" ng-click="addStat(null, null, 'ZERO_BLUDGERS_GIVEN', null)">Zero Bludgers Given</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'GAIN_CONTROL')">Gain Control</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'LOSE_CONTROL')">Lost Control</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'ZERO_BLUDGERS_FORCED')">Zero Bludgers Forced</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'ZERO_BLUDGERS_GIVEN')">Zero Bludgers Given</button>
+        <button type="button" class "btn btn-outline-danger" ng-click="closeDialog('allHomePlayersPicker')">Close</button>
     </div>
     <div class="statsColumnPicker columnPicker seekerStats">
-        <button type="button" class="btn" ng-click="addStat(null, null, 'SNITCH_CATCH', null)">Catch</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'SNITCH_CATCH')">Catch</button>
+        <button type="button" class "btn btn-outline-danger" ng-click="closeDialog('allHomePlayersPicker')">Close</button>
     </div>
     <div class="subColumnPicker columnPicker">
+        <button type="button" class="btn" ng-repeat="homePlayer in allHomePlayers" ng-click="finishEvent(homePlayer.objectId, 'SUB')">{{homePlayer.first_name + ' ' + homePlayer.last_name}}</button>
+        <button type="button" class "btn btn-outline-danger" ng-click="closeDialog('allHomePlayersPicker')">Close</button>
     </div>
 
-</div>
-
-
-<div id="allHomePlayersPickerOld" class="white_content">
-	<p ng-if="statType == 'SWAP'">Swap keeper with someone on pitch. Or select 'none' if there is no penalty time.</p>
-	<a ng-if="statType != 'SWAP'" href="javascript:void(0)" ng-click="closeDialog('allHomePlayersPicker')">Close<br></a>
-	<a ng-repeat="homePlayer in allHomePlayers" ng-show="true" ng-click="playerClicked(homePlayer.objectId)" href="javascript:void(0)">{{homePlayer.first_name+' '+homePlayer.last_name}}<br></a>
-	<a ng-if="statType != 'SWAP'" href="javascript:void(0)" ng-click="closeDialog('allHomePlayersPicker')">Close<br></a>
 </div>
 
 <div id="onFieldPlayersPicker" class="white_content">

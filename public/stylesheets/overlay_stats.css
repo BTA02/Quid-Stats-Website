@@ -24,15 +24,23 @@
     order: 3;
 }
 
+#allHomePlayersPicker {
+    flex-direction: row;
+}
+
 .overlayPicker {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: space-around;
 }
 
 .columnPicker {
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+}
+
+.columnPicker > button {
+    margin-bottom: 20px;
 }
 
 .statColumnPicker {
@@ -41,7 +49,9 @@
 }
 
 .subColumnPicker {
-    flex: 0 1 auto;
-    order: 2
+    flex: 1 1 auto;
+    order: 2;
+    flex-wrap: wrap;
+    align-items: center;
 }
 
