@@ -14,8 +14,15 @@
 
 #overlayRostersColumn {
     min-width: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     flex: 0 1 auto;
     order: 2;
+}
+
+.roster {
+    flex: 0 1 auto;
 }
 
 #overlayScoreboardAndStatsColumn {

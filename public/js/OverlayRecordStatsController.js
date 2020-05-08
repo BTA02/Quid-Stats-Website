@@ -171,22 +171,23 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 	// Axtell here... hm...
 	var playerSelected;
 	var overlayId;
-	var isKeeper;
-	function startEvent(playerId, playerPickerId, _isKeeper) {
+	$scope.positionSelected;
+	function startEvent(playerId, _overlayId) {
 		$scope.videoPlayer.pauseVideo();
 		playerSelected = playerId;
-		overlayId = playerPickerId;
-		isKeeper = _isKeeper
-		document.getElementById(playerPickerId).style.display='flex';document.getElementById('fade').style.display='block';
+		overlayId = _overlayId;
+		document.getElementById(_overlayId).style.display='flex';document.getElementById('fade').style.display='block';
 	}
 
 
-	$scope.startHomeEvent = function(playerId, isKeeper) {
-		startEvent(playerId, 'allHomePlayersPicker', isKeeper);
+	$scope.startHomeEvent = function(playerId, position) {
+		$scope.positionSelected = position;
+		startEvent(playerId, 'allHomePlayersPicker');
 	}
 
-	$scope.startAwayEvent = function(playerId, isKeeper) {
-		startEvent(playerId, 'allAwayPlayersPicker', isKeeper);
+	$scope.startAwayEvent = function(playerId, position) {
+		$scope.positionSelected = position;
+		startEvent(playerId, 'allAwayPlayersPicker');
 	}
 
 	$scope.finishEvent = function(playerSelectedOnOverlay, statSelectedOnOverlay) {
