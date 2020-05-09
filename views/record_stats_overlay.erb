@@ -22,25 +22,25 @@
                 <p><b>Chasers</b></p>
                 <div class="player" ng-repeat="onPlayer in onFieldPlayersHome.slice(0,3) track by $index">
                     <ul>
-                        <button type="button" class="btn btn-lg" ng-click="startHomeEvent(onPlayer.objectId, 'chaser')">{{onPlayer.first_name+' '+onPlayer.last_name}}</button>
+                        <button type="button" class="btn" ng-click="startHomeEvent(onPlayer.objectId, 'chaser')">{{onPlayer.first_name+' '+onPlayer.last_name}}</button>
                     </ul>
                 </div>
                 <p><b>Keeper</b></p>
                 <div class="player" ng-repeat="onPlayer in onFieldPlayersHome.slice(3,4) track by $index">
                     <ul>
-                        <button type="button" class="btn btn-lg" ng-click="startHomeEvent(onPlayer.objectId, 'keeper')">{{onPlayer.first_name+' '+onPlayer.last_name}}</button>
+                        <button type="button" class="btn" ng-click="startHomeEvent(onPlayer.objectId, 'keeper')">{{onPlayer.first_name+' '+onPlayer.last_name}}</button>
                     </ul>
                 </div>
-                <button type="button" class="btn btn-lg btn-link" ng-click="startHomeEvent(null, 'beater')"><b>Beater</b></button>
+                <button type="button" class="btn btn-link" ng-click="startHomeEvent(null, 'beater')"><b>Beater</b></button>
                 <div class="player" ng-repeat="onPlayer in onFieldPlayersHome.slice(4,6) track by $index">
                     <ul>
-                        <button type="button" class="btn btn-lg" ng-click="startHomeEvent(onPlayer.objectId, 'beater_sub')">{{onPlayer.first_name+' '+onPlayer.last_name}}</button>
+                        <button type="button" class="btn" ng-click="startHomeEvent(onPlayer.objectId, 'beater_sub')">{{onPlayer.first_name+' '+onPlayer.last_name}}</button>
                     </ul>
                 </div>
-                <button type="button" class="btn btn-lg btn-link" ng-click="startHomeEvent(null, 'seekerStart')"><b>Seeker</b></button>
+                <button type="button" class="btn btn-link" ng-click="startHomeEvent(null, 'seekerStart')"><b>Seeker</b></button>
                 <div class="player" ng-repeat="onPlayer in onFieldPlayersHome.slice(6,7) track by $index">
                     <ul>
-                        <button type="button" class="btn btn-lg" ng-click="startHomeEvent(onPlayer.objectId, 'seeker')">{{onPlayer.first_name+' '+onPlayer.last_name}}</button>
+                        <button type="button" class="btn" ng-click="startHomeEvent(onPlayer.objectId, 'seeker')">{{onPlayer.first_name+' '+onPlayer.last_name}}</button>
                     </ul>
                 </div>
             </div>
@@ -49,25 +49,25 @@
                 <p><b>Chasers</b></p>
                 <div class="player" ng-repeat="onPlayer in onFieldPlayersAway.slice(0,3) track by $index">
                     <ul>
-                        <button type="button" class="btn btn-lg" ng-click="startAwayEvent(onPlayer.objectId, 'chaser')">{{onPlayer.first_name+' '+onPlayer.last_name}}</button>
+                        <button type="button" class="btn" ng-click="startAwayEvent(onPlayer.objectId, 'chaser')">{{onPlayer.first_name+' '+onPlayer.last_name}}</button>
                     </ul>
                 </div>
                 <p><b>Keeper</b></p>
                 <div class="player" ng-repeat="onPlayer in onFieldPlayersAway.slice(3,4) track by $index">
                     <ul>
-                        <button type="button" class="btn btn-lg" ng-click="startAwayEvent(onPlayer.objectId, 'keeper')">{{onPlayer.first_name+' '+onPlayer.last_name}}</button>
+                        <button type="button" class="btn" ng-click="startAwayEvent(onPlayer.objectId, 'keeper')">{{onPlayer.first_name+' '+onPlayer.last_name}}</button>
                     </ul>
                 </div>
-                <button type="button" class="btn btn-lg btn-link" ng-click="startAwayEvent(null, 'beater')"><b>Beater</b></button>
+                <button type="button" class="btn btn-link" ng-click="startAwayEvent(null, 'beater')"><b>Beater</b></button>
                 <div class="player" ng-repeat="onPlayer in onFieldPlayersAway.slice(4,6) track by $index">
                     <ul>
-                        <button type="button" class="btn btn-lg" ng-click="startAwayEvent(onPlayer.objectId, 'beater_sub')">{{onPlayer.first_name+' '+onPlayer.last_name}}</button>
+                        <button type="button" class="btn" ng-click="startAwayEvent(onPlayer.objectId, 'beater_sub')">{{onPlayer.first_name+' '+onPlayer.last_name}}</button>
                     </ul>
                 </div>
-                <button type="button" class="btn btn-lg btn-link" ng-click="startAwayEvent(null, 'seekerStart')"><b>Seeker</b></button>
+                <button type="button" class="btn btn-link" ng-click="startAwayEvent(null, 'seekerStart')"><b>Seeker</b></button>
                 <div class="player" ng-repeat="onPlayer in onFieldPlayersAway.slice(6,7) track by $index">
                     <ul>
-                        <button type="button" class="btn btn-lg" ng-click="startAwayEvent(onPlayer.objectId, 'seeker')">{{onPlayer.first_name+' '+onPlayer.last_name}}</button>
+                        <button type="button" class="btn" ng-click="startAwayEvent(onPlayer.objectId, 'seeker')">{{onPlayer.first_name+' '+onPlayer.last_name}}</button>
                     </ul>
                 </div>
             </div>
@@ -126,61 +126,61 @@
 
 <div id="allHomePlayersPicker" class="white_content">
     <div class="statsColumnPicker columnPicker chaserStats" ng-show="positionSelected =='chaser' || positionSelected == 'keeper'">
-        <button type="button" class="btn btn-lg" ng-click="finishEvent(null, 'SHOT')">Shot</button>
-        <button type="button" class="btn btn-lg" ng-click="finishEvent(null, 'GOAL')">Goal</button>
-        <button type="button" class="btn btn-lg" ng-click="finishEvent(null, 'ASSIST')">Assist</button>
-        <button type="button" class="btn btn-lg" ng-click="finishEvent(null, 'TAKEAWAY')">Takeaway</button>
-        <button type="button" class="btn btn-lg" ng-click="finishEvent(null, 'TURNOVER')">Turnover</button>
-        <button type="button" class "btn btn-lg btn-outline-danger" ng-click="closeDialog('allHomePlayersPicker')">Close</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'SHOT')">Shot</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'GOAL')">Goal</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'ASSIST')">Assist</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'TAKEAWAY')">Takeaway</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'TURNOVER')">Turnover</button>
+        <button type="button" class "btn btn-outline-danger" ng-click="closeDialog('allHomePlayersPicker')">Close</button>
     </div>
     <div class="statsColumnPicker columnPicker beaterStats" ng-show="positionSelected == 'beater'">
-        <button type="button" class="btn btn-lg" ng-click="finishEvent(null, 'GAIN_CONTROL')">Gain Control</button>
-        <button type="button" class="btn btn-lg" ng-click="finishEvent(null, 'LOSE_CONTROL')">Lost Control</button>
-        <button type="button" class="btn btn-lg" ng-click="finishEvent(null, 'ZERO_BLUDGERS_FORCED')">Zero Bludgers Forced</button>
-        <button type="button" class="btn btn-lg" ng-click="finishEvent(null, 'ZERO_BLUDGERS_GIVEN')">Zero Bludgers Given</button>
-        <button type="button" class "btn btn-lg btn-outline-danger" ng-click="closeDialog('allHomePlayersPicker')">Close</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'GAIN_CONTROL')">Gain Control</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'LOSE_CONTROL')">Lost Control</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'ZERO_BLUDGERS_FORCED')">Zero Bludgers Forced</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'ZERO_BLUDGERS_GIVEN')">Zero Bludgers Given</button>
+        <button type="button" class "btn btn-outline-danger" ng-click="closeDialog('allHomePlayersPicker')">Close</button>
     </div>
     <div class="statsColumnPicker columnPicker seekerStats" ng-show="positionSelected == 'seeker'">
-        <button type="button" class="btn btn-lg" ng-click="finishEvent(null, 'SNITCH_CATCH')">Catch</button>
-        <button type="button" class "btn btn-lg btn-outline-danger" ng-click="closeDialog('allHomePlayersPicker')">Close</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'SNITCH_CATCH')">Catch</button>
+        <button type="button" class "btn btn-outline-danger" ng-click="closeDialog('allHomePlayersPicker')">Close</button>
     </div>
     <div class="statsColumnPicker columnPicker seekerStartStats" ng-show="positionSelected == 'seekerStart'">
-        <button type="button" class="btn btn-lg" ng-click="finishEvent(null, 'SEEKERS_RELEASED')">Seekers Released</button>
-        <button type="button" class "btn btn-lg btn-outline-danger" ng-click="closeDialog('allHomePlayersPicker')">Close</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'SEEKERS_RELEASED')">Seekers Released</button>
+        <button type="button" class "btn btn-outline-danger" ng-click="closeDialog('allHomePlayersPicker')">Close</button>
     </div>
     <div class="subColumnPicker columnPicker" ng-show="positionSelected != 'beater' && positionSelected != 'seekerStart'">
-        <button type="button" class="btn btn-lg" ng-repeat="homePlayer in allHomePlayers" ng-click="finishEvent(homePlayer.objectId, 'SUB')">{{homePlayer.first_name + ' ' + homePlayer.last_name}}</button>
-        <button type="button" class "btn btn-lg btn-outline-danger" ng-click="closeDialog('allHomePlayersPicker')">Close</button>
+        <button type="button" class="btn" ng-repeat="homePlayer in allHomePlayers" ng-click="finishEvent(homePlayer.objectId, 'SUB')">{{homePlayer.first_name + ' ' + homePlayer.last_name}}</button>
+        <button type="button" class "btn btn-outline-danger" ng-click="closeDialog('allHomePlayersPicker')">Close</button>
     </div>
 
 </div>
 <div id="allAwayPlayersPicker" class="white_content">
     <div class="statsColumnPicker columnPicker chaserStats" ng-show="positionSelected =='chaser' || positionSelected == 'keeper'">
-        <button type="button" class="btn btn-lg" ng-click="finishEvent(null, 'SHOT')">Shot</button>
-        <button type="button" class="btn btn-lg" ng-click="finishEvent(null, 'GOAL')">Goal</button>
-        <button type="button" class="btn btn-lg" ng-click="finishEvent(null, 'ASSIST')">Assist</button>
-        <button type="button" class="btn btn-lg" ng-click="finishEvent(null, 'TAKEAWAY')">Takeaway</button>
-        <button type="button" class="btn btn-lg" ng-click="finishEvent(null, 'TURNOVER')">Turnover</button>
-        <button type="button" class "btn btn-lg btn-outline-danger" ng-click="closeDialog('allAwayPlayersPicker')">Close</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'SHOT')">Shot</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'GOAL')">Goal</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'ASSIST')">Assist</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'TAKEAWAY')">Takeaway</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'TURNOVER')">Turnover</button>
+        <button type="button" class "btn btn-outline-danger" ng-click="closeDialog('allAwayPlayersPicker')">Close</button>
     </div>
     <div class="statsColumnPicker columnPicker beaterStats" ng-show="positionSelected == 'beater'">
-        <button type="button" class="btn btn-lg" ng-click="finishEvent(null, 'GAIN_CONTROL')">Gain Control</button>
-        <button type="button" class="btn btn-lg" ng-click="finishEvent(null, 'LOSE_CONTROL')">Lost Control</button>
-        <button type="button" class="btn btn-lg" ng-click="finishEvent(null, 'ZERO_BLUDGERS_FORCED')">Zero Bludgers Forced</button>
-        <button type="button" class="btn btn-lg" ng-click="finishEvent(null, 'ZERO_BLUDGERS_GIVEN')">Zero Bludgers Given</button>
-        <button type="button" class "btn btn-lg btn-outline-danger" ng-click="closeDialog('allAwayPlayersPicker')">Close</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'GAIN_CONTROL')">Gain Control</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'LOSE_CONTROL')">Lost Control</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'ZERO_BLUDGERS_FORCED')">Zero Bludgers Forced</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'ZERO_BLUDGERS_GIVEN')">Zero Bludgers Given</button>
+        <button type="button" class "btn btn-outline-danger" ng-click="closeDialog('allAwayPlayersPicker')">Close</button>
     </div>
     <div class="statsColumnPicker columnPicker seekerStats" ng-show="positionSelected == 'seeker'">
-        <button type="button" class="btn btn-lg" ng-click="finishEvent(null, 'SNITCH_CATCH')">Catch</button>
-        <button type="button" class "btn btn-lg btn-outline-danger" ng-click="closeDialog('allAwayPlayersPicker')">Close</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'SNITCH_CATCH')">Catch</button>
+        <button type="button" class "btn btn-outline-danger" ng-click="closeDialog('allAwayPlayersPicker')">Close</button>
     </div>
     <div class="statsColumnPicker columnPicker seekerStartStats" ng-show="positionSelected == 'seekerStart'">
-        <button type="button" class="btn btn-lg" ng-click="finishEvent(null, 'SEEKERS_RELEASED')">Seekers Released</button>
-        <button type="button" class "btn btn-lg btn-outline-danger" ng-click="closeDialog('allAwayPlayersPicker')">Close</button>
+        <button type="button" class="btn" ng-click="finishEvent(null, 'SEEKERS_RELEASED')">Seekers Released</button>
+        <button type="button" class "btn btn-outline-danger" ng-click="closeDialog('allAwayPlayersPicker')">Close</button>
     </div>
     <div class="subColumnPicker columnPicker" ng-show="positionSelected != 'beater' && positionSelected != 'seekerStart'">
-        <button type="button" class="btn btn-lg" ng-repeat="awayPlayer in allAwayPlayers" ng-click="finishEvent(awayPlayer.objectId, 'SUB')">{{awayPlayer.first_name + ' ' + awayPlayer.last_name}}</button>
-        <button type="button" class "btn btn-lg btn-outline-danger" ng-click="closeDialog('allAwayPlayersPicker')">Close</button>
+        <button type="button" class="btn" ng-repeat="awayPlayer in allAwayPlayers" ng-click="finishEvent(awayPlayer.objectId, 'SUB')">{{awayPlayer.first_name + ' ' + awayPlayer.last_name}}</button>
+        <button type="button" class "btn btn-outline-danger" ng-click="closeDialog('allAwayPlayersPicker')">Close</button>
     </div>
 
 </div>
