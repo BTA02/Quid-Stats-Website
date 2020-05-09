@@ -166,7 +166,17 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 				}
 			}
 		}
-    };
+	};
+	
+	$scope.toggleClock = function() {
+		if ($scope.isRunning) {
+			$scope.isRunning = false;
+			$scope.addStat(null, null, 'PAUSE_CLOCK', null)
+		} else {
+			$scope.isRunning = true;
+			$scope.addStat(null, null, 'START_CLOCK', null)
+		}
+	}
     
 	// Axtell here... hm...
 	var playerSelected;
@@ -330,36 +340,48 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 		$scope.curOD = "?";
 		$scope.curBludgers = 0;
 		$scope.curControl = -1;
+		$scope.isRunning = false;
+		$scope.previousStart = 0;
+		$scope.previousPause = 0;
 		
 		for (var i = 0; i < $scope.originalStats.length; i++) {
-			if ($scope.originalStats[i].time > endTime) {
+			var curStat = $scope.originalStats[i];
+			if (curStat.time > endTime) {
 				break;
 			}
-			if ($scope.originalStats[i].stat_name === "GOAL") {
+			if (curStat.stat_name === "GOAL") {
 				$scope.homeScore += 1;
 			}
-			if ($scope.originalStats[i].stat_name === "AWAY_GOAL") {
+			if (curStat.stat_name === "AWAY_GOAL") {
 				$scope.awayScore += 1;
 			}
-			if ($scope.originalStats[i].stat_name === "SNITCH_CATCH") {
+			if (curStat.stat_name === "SNITCH_CATCH") {
 				$scope.homeScore += 3;
 			}
-			if ($scope.originalStats[i].stat_name === "AWAY_SNITCH_CATCH") {
+			if (curStat.stat_name === "AWAY_SNITCH_CATCH") {
 				$scope.awayScore += 3;
 			}
-			if ($scope.originalStats[i].stat_name === "OFFENSE") {
+			if (curStat.stat_name === "OFFENSE") {
 				$scope.curOD = "OFFENSE";
-				$scope.curBludgers = $scope.originalStats[i].bludger_count;
+				$scope.curBludgers = curStat.bludger_count;
 			}
-			if ($scope.originalStats[i].stat_name === "DEFENSE") {
+			if (curStat.stat_name === "DEFENSE") {
 				$scope.curOD = "DEFENSE";
-				$scope.curBludgers = $scope.originalStats[i].bludger_count;
+				$scope.curBludgers = curStat.bludger_count;
 			}
-			if ($scope.originalStats[i].stat_name === "GAIN_CONTROL") {
+			if (curStat.stat_name === "GAIN_CONTROL") {
 				$scope.curControl = 1;
 			}
-			if ($scope.originalStats[i].stat_name === "LOSE_CONTROL") {
+			if (curStat.stat_name === "LOSE_CONTROL") {
 				$scope.curControl = 0;
+			}
+			if (curStat.stat_name === "START_CLOCK") {
+				$scope.isRunning = true;
+				$scope.previousStart = curStat.time;
+			}
+			if (curStat.stat_name === "PAUSE_CLOCK") {
+				$scope.isRunning = false;
+				$scope.previousPause = curStat.time;
 			}
 
 		}
