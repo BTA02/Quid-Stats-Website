@@ -38,6 +38,7 @@ app.filter('statNameFilter', function() {
 		if (!value) {
 			return;
 		}
+		value = value.toString()
 		var ret = value.replace(/_/g, ' ');
 		ret = ret.toLowerCase();
 		ret = ret.replace( /\b\w/g, function (m) {

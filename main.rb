@@ -197,6 +197,17 @@ get '/watch' do
 	erb :watch
 end
 
+get '/overlayStats' do
+	@title = 'Record Stats'
+	@controllerName = 'OverlayRecordStatsController'
+	@author_id = session[:authorId]
+	if !logged_in?
+		redirect '/noAuth'
+	end
+	@teams = get_all_teams
+	erb :record_stats_overlay
+end
+
 get '/noAuth' do
 	erb :no_auth
 end
@@ -231,6 +242,11 @@ end
 
 get '/allStats/:vid_id/:team_id' do
 	get_all_stats_from_game(params[:vid_id], params[:team_id], session[:authorId])
+end
+
+# Gets all stats from any author
+get '/allStats/:vid_id' do
+	get_all_stats_from_game(params[:vid_id])
 end
 
 get '/addStat/:vid_id/:team_id/:fall_year/:player_id/:stat_name/:time/:player_in_id' do
@@ -574,6 +590,15 @@ def get_all_stats_from_game(vid, team, author)
 		q.eq("vid_id", vid)
 		q.eq("team_id", team)
 		q.eq("author_id", author)
+		q.limit = 1000
+		q.order_by = "time"
+	end.get
+	resp.to_json
+end
+
+def get_all_stats_from_game(vid)
+	resp = $client.query('Stats').tap do |q|
+		q.eq("vid_id", vid)
 		q.limit = 1000
 		q.order_by = "time"
 	end.get
