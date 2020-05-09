@@ -61,11 +61,9 @@ angular.module('app').controller('RecordStatsController', ['$scope', '$http', '$
 				var playerIn = $scope.playersMap.get(inId);
 				if (player) {
 					statObj.player_name = player.first_name + ' ' + player.last_name;
-					statObj.player_first_name = player.first_name;
-					statObj.player_last_name = player.last_name;
-					statObj.player_display_name = player.first_name[0] + '. ' + player.last_name;
-				} else { 
+				} else {
 					statObj.player_name = id;
+
 				}
 				if (playerIn) {
 					statObj.player_in_name = playerIn.first_name + ' ' + playerIn.last_name;
