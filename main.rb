@@ -872,7 +872,6 @@ def add_full_stat(vals, author_id)
 	new_stat['fall_year'] = vals['year']
 	new_stat['player_id'] = vals['player_id']
 	new_stat['stat_name'] = vals['stat']
-	new_stat['bludger_count'] = vals['bludger_count']
 	new_stat['time'] = vals['time'].to_i
 	new_stat['player_in_id'] = vals['player_in_id']
 
