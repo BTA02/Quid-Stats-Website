@@ -25,7 +25,7 @@
     flex-direction: row;
     justify-content: space-between;
     flex: 0 1 auto;
-    order: 2;
+    order: 1;
 }
 
 .roster {
@@ -76,6 +76,12 @@
 #overlayScoreboard {
     display: flex;
     flex-direction: column;
+    order: 2;
+    border: solid 1px black;
+}
+
+#overlayScoreboard > * {
+    padding: 5px;
 }
 
 #overlayScoreboard:hover {
@@ -90,4 +96,22 @@
 .scoreboardItemOverlay {
     flex: 1 1 auto;
     text-align: center;
+}
+
+#overlayStatsList {
+    text-align: center;
+    overflow-y: scroll;
+    padding: 5px;
+    flex: 1 1 auto;
+
+    display: flex;
+    flex-direction: column;
+    order: 3;
+}
+
+.overlayStatsListItem {
+    border: solid 1px black;
+    width: 100%;
+    margin-bottom: 5px;
+    cursor: pointer;
 }

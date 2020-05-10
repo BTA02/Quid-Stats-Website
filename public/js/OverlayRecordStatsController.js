@@ -102,10 +102,10 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 		var chaserA = {objectId:"chaserA", first_name:"Chaser", last_name:"A"};
 		var chaserB = {objectId:"chaserB", first_name:"Chaser", last_name:"B"};
 		var chaserC = {objectId:"chaserC", first_name:"Chaser", last_name:"C"};
-		var keeperA = {objectId:"keeperA", first_name:"Keeper", last_name:"A"};
+		var keeperA = {objectId:"keeper", first_name:"Keeper", last_name:""};
 		var beaterA = {objectId:"beaterA", first_name:"Beater", last_name:"A"};
 		var beaterB = {objectId:"beaterB", first_name:"Beater", last_name:"B"};
-		var seekerA = {objectId:"seekerA", first_name:"Seeker", last_name:"A"};
+		var seekerA = {objectId:"seeker", first_name:"Seeker", last_name:""};
         $scope.onFieldPlayersHome = [chaserA, chaserB, chaserC, keeperA, beaterA, beaterB, seekerA];
         
         var chaser1 = {objectId:"chaser1", first_name:"Chaser", last_name:"1"};
@@ -200,10 +200,18 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 		startEvent(playerId, 'allAwayPlayersPicker');
 	}
 
-	$scope.finishEvent = function(playerSelectedOnOverlay, statSelectedOnOverlay) {
+	$scope.finishHomeEvent = function(playerSelectedOnOverlay, statSelectedOnOverlay) {
+		$scope.finishEvent(playerSelectedOnOverlay, statSelectedOnOverlay, $scope.homeTeam);
+	}
+
+	$scope.finishAwayEvent = function(playerSelectedOnOverlay, statSelectedOnOverlay) {
+		$scope.finishEvent(playerSelectedOnOverlay, statSelectedOnOverlay, $scope.awayTeam);
+	}
+	
+	$scope.finishEvent = function(playerSelectedOnOverlay, statSelectedOnOverlay, teamId) {
 		if (playerSelectedOnOverlay) {
 			// this is a simple sub
-			$scope.addStat(playerSelected, playerSelectedOnOverlay, "SUB");
+			$scope.addStat(playerSelected, playerSelectedOnOverlay, statSelectedOnOverlay, teamId);
 			$scope.closeDialog(overlayId);
 			return;
 		}
@@ -213,7 +221,7 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 		}
 
 		if (statSelectedOnOverlay == "YELLOW_CARD" || statSelectedOnOverlay == "RED_CARD") {
-			$scope.addStat($scope.playerTapped, null, stat);
+			$scope.addStat($scope.playerTapped, null, stat, teamId);
 			if (isKeeper) {
 				$scope.startHomeSwap(playerId);
 			} else {
@@ -221,7 +229,7 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 			}
 		} else if (statSelectedOnOverlay == "SWAP") {
 		} else {
-			$scope.addStat(playerSelected, null, statSelectedOnOverlay, null);
+			$scope.addStat(playerSelected, null, statSelectedOnOverlay, teamId);
 			$scope.closeDialog(overlayId);
 		}
 	}
@@ -243,12 +251,12 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 		}
 	};
 	
-	$scope.playerClicked = function(playerInId) {
+	$scope.playerClicked = function(playerInId, teamId) {
 		if ($scope.statType == "SUB") {
-			$scope.addStat($scope.subbingPlayer, playerInId, "SUB");
+			$scope.addStat($scope.subbingPlayer, playerInId, "SUB", teamId);
 			$scope.closeDialog('allPlayersPicker');
 		} else if ($scope.statType == "YELLOW_CARD" || $scope.statType == "RED_CARD") {
-			$scope.addStat(playerInId, "null", $scope.statType);
+			$scope.addStat(playerInId, "null", $scope.statType, teamId);
 			var indexOfCarded = -1;
 			
 			for (var i = 0; i < $scope.onFieldPlayersHome.length; i++) {
@@ -262,10 +270,10 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 				$scope.closeDialog('onFieldPlayersHomePicker');
 			}
 		} else if ($scope.statType == "SWAP") {
-			$scope.addStat($scope.subbingPlayer, playerInId, "SWAP");
+			$scope.addStat($scope.subbingPlayer, playerInId, "SWAP", teamId);
 			$scope.closeDialog('onFieldPlayersHomePicker');
 		} else {
-			$scope.addStat(playerInId, null, $scope.statType, null);
+			$scope.addStat(playerInId, null, $scope.statType, teamId);
 			$scope.closeDialog('onFieldPlayersHomePicker');
 		}
 	};
@@ -339,7 +347,7 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 		
 		$scope.curOD = "?";
 		$scope.curBludgers = 0;
-		$scope.curControl = -1;
+		$scope.curControl = "?";
 		$scope.isRunning = false;
 		$scope.previousStart = 0;
 		$scope.previousPause = 0;
@@ -349,31 +357,29 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 			if (curStat.time > endTime) {
 				break;
 			}
-			if (curStat.stat_name === "GOAL") {
-				$scope.homeScore += 1;
+			if (curStat.stat_name === "GOAL" && curStat.team_id == $scope.homeTeam) {
+				$scope.homeScore += 10;
 			}
-			if (curStat.stat_name === "AWAY_GOAL") {
-				$scope.awayScore += 1;
+			if (curStat.stat_name === "GOAL" && curStat.team_id == $scope.awayTeam) {
+				$scope.awayScore += 10;
 			}
 			if (curStat.stat_name === "SNITCH_CATCH") {
-				$scope.homeScore += 3;
+				$scope.homeScore += 45;
 			}
 			if (curStat.stat_name === "AWAY_SNITCH_CATCH") {
 				$scope.awayScore += 3;
 			}
 			if (curStat.stat_name === "OFFENSE") {
-				$scope.curOD = "OFFENSE";
-				$scope.curBludgers = curStat.bludger_count;
+				$scope.curOD = "Home Team";
 			}
 			if (curStat.stat_name === "DEFENSE") {
-				$scope.curOD = "DEFENSE";
-				$scope.curBludgers = curStat.bludger_count;
+				$scope.curOD = "Away Team";
 			}
 			if (curStat.stat_name === "GAIN_CONTROL") {
-				$scope.curControl = 1;
+				$scope.curControl = "Home Team";
 			}
 			if (curStat.stat_name === "LOSE_CONTROL") {
-				$scope.curControl = 0;
+				$scope.curControl = "Away Team";
 			}
 			if (curStat.stat_name === "START_CLOCK") {
 				$scope.isRunning = true;
@@ -383,7 +389,6 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 				$scope.isRunning = false;
 				$scope.previousPause = curStat.time;
 			}
-
 		}
 	};
 	
@@ -394,19 +399,18 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 		document.getElementById('onFieldPlayersHomePicker').style.display='flex';document.getElementById('fade').style.display='block';
 	};
 	
-	$scope.addStat = function(playerId, playerInId, stat, bludgers) {
+	$scope.addStat = function(playerId, playerInId, stat, teamId) {
 		$scope.videoPlayer.pauseVideo();
-		$scope.addOppositeStat(stat, bludgers);
+		// no such thing as an "opposite" stat. It just happens and I need to filter it query-side
 		
 		var data = {
-				team_id : $scope.homeTeam,
+				team_id : teamId,
 				vid_id : $scope.selectedVideo,
 				year : $scope.year,
 				player_id : playerId,
 				player_in_id : playerInId,
 				time : $scope.videoPlayer.getCurrentTime(),
 				stat : stat,
-				bludger_count : bludgers
 		};
 		
 		$http.post("/addStat", data).then(function(response){
@@ -431,7 +435,7 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 				applySub(response.data);
 			}
 			if (stat === "SNITCH_CATCH" || stat === "AWAY_SNITCH_CATCH") {
-				$scope.addStat(null, null, "PAUSE_CLOCK");
+				$scope.addStat(null, null, "PAUSE_CLOCK", null);
 			}
 
 			$scope.originalStats.sort(function(a, b){
@@ -445,59 +449,40 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 		// $http.post("/addStat",)
 	};
 	
-	//This can be edited. We only need to do this for some things
-	// A takeawa
-	$scope.addOppositeStat = function(stat, bludgers) {
-		return;
-		console.log("adding opposite of", stat, bludgers);
-		// gotta get the opponent somehow
-		// also have to inverse the stat as well
+	$scope.addOppositeStat = function(stat, teamId) {
+		var teamIdToUse;
+		if (teamId == $scope.homeTeam) {
+			teamIdToUse = $scope.awayTeam;
+		} else {
+			teamIdToUse = $scope.homeTeam;
+		}
 		if (stat == 'OFFENSE') {
 			stat = 'DEFENSE';
 		} else if (stat == 'DEFENSE') {
 			stat = 'OFFENSE';
-		} else if (stat == 'OFFENSIVE_DRIVE') {
-			stat = 'DEFENSIVE_DRIVE';
-		} else if (stat == 'DEFENSIVE_DRIVE') {
-			stat = 'OFFENSIVE_DRIVE';
 		} else if (stat == 'GOAL') {
 			stat = 'AWAY_GOAL';
-		} else if (stat == 'AWAY_GOAL') {
-			stat = 'GOAL';
 		} else if (stat == 'GAIN_CONTROL') {
 			stat = 'LOSE_CONTROL';
 		} else if (stat == 'LOSE_CONTROL') {
 			stat = 'GAIN_CONTROL';
-		} else if (stat == 'SEEKERS_RELEASED') {
-			// do nothing, but don't return
 		} else if (stat == 'SNITCH_CATCH') {
 			stat = 'AWAY_SNITCH_CATCH';
-		} else if (stat == 'AWAY_SNITCH_CATCH') {
-			stat = 'SNITCH_CATCH';
-		} else if (stat == 'START_CLOCK') {
-			// do nothing, but don't return
-		} else if (stat == 'PAUSE_CLOCK') {
-			// do nothing, but don't return
-		} else {
+		 } else {
 			console.log("No opposite stat to add (like a sub)");
 			// do nothing, but DO return
 			return;
 		}
 		var data = {
-				team_id : $scope.opponent,
+				team_id : teamIdToUse,
 				vid_id : $scope.selectedVideo,
 				year : $scope.year,
 				player_id : null,
 				player_in_id : null,
 				time : $scope.videoPlayer.getCurrentTime(),
-				stat : stat,
-				bludger_count : bludgers
+				stat : stat
 		};
 		
-		if ($scope.opponent == null) {
-			console.log("opponent is null");
-			return;
-		}
 		// Don't actually need to do anything, just post the opposite, niiiice
 		$http.post("/addStat", data).then(function(response){
 			// I'm going to need to handle this
