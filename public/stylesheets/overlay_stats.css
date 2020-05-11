@@ -102,7 +102,7 @@
     text-align: center;
     overflow-y: scroll;
     padding: 5px;
-    flex: 1 1 auto;
+    flex: 0 1 auto;
 
     display: flex;
     flex-direction: column;
