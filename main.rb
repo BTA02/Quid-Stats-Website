@@ -205,7 +205,7 @@ get '/overlayStats' do
 		redirect '/noAuth'
 	end
 	@teams = get_all_teams
-	erb :record_stats_overlay
+	erb :OverlayRecordStats
 end
 
 get '/noAuth' do

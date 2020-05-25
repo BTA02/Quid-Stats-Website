@@ -78,12 +78,13 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 					statObj.player_name = player.first_name + ' ' + player.last_name;
 					statObj.player_first_name = player.first_name;
 					statObj.player_last_name = player.last_name;
-					statObj.player_display_name = player.first_name[0] + '. ' + player.last_name;
+					statObj.player_display_name = getPlayerDisplayName(player.first_name, player.last_name);
 				} else { 
 					statObj.player_name = id;
 				}
 				if (playerIn) {
 					statObj.player_in_name = playerIn.first_name + ' ' + playerIn.last_name;
+					statObj.player_in_display_name = getPlayerDisplayName(playerIn.first_name, playerIn.last_name);
 				} else {
 					statObj.player_in_name = inId;
 				}
@@ -189,7 +190,6 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 		document.getElementById(_overlayId).style.display='flex';document.getElementById('fade').style.display='block';
 	}
 
-
 	$scope.startHomeEvent = function(playerId, position) {
 		$scope.positionSelected = position;
 		startEvent(playerId, 'allHomePlayersPicker');
@@ -205,7 +205,39 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 	}
 
 	$scope.finishAwayEvent = function(playerSelectedOnOverlay, statSelectedOnOverlay) {
-		$scope.finishEvent(playerSelectedOnOverlay, statSelectedOnOverlay, $scope.awayTeam);
+		if (isGroupStat(statSelectedOnOverlay)) {
+			playerSelected = null;
+		} 
+		if (shouldConvertToHomeStat(statSelectedOnOverlay)) {
+			statSelectedOnOverlay = convertToHomeStat(statSelectedOnOverlay)
+			$scope.finishEvent(playerSelectedOnOverlay, statSelectedOnOverlay, $scope.homeTeam);
+		} else {
+			$scope.finishEvent(playerSelectedOnOverlay, statSelectedOnOverlay, $scope.awayTeam);
+		}
+	}
+
+	function isGroupStat(stat) {
+		if (stat == "ZERO_BLUDGERS_FORCED" || stat == "ZERO_BLUDGERS_GIVEN") {
+			return true;
+		}
+		return false;
+	}
+
+	function shouldConvertToHomeStat(stat) {
+		if (stat == "ZERO_BLUDGERS_FORCED" || stat == "ZERO_BLUDGERS_GIVEN") {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	function convertToHomeStat(stat) {
+		if (stat == "ZERO_BLUDGERS_FORCED") {
+			return "ZERO_BLUDGERS_GIVEN";
+		}
+		if (stat == "ZERO_BLUDGERS_GIVEN") {
+			return "ZERO_BLUDGERS_FORCED";
+		}
 	}
 	
 	$scope.finishEvent = function(playerSelectedOnOverlay, statSelectedOnOverlay, teamId) {
@@ -229,8 +261,11 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 			}
 		} else if (statSelectedOnOverlay == "SWAP") {
 		} else {
+			if (statSelectedOnOverlay == "ZERO_BLUDGERS_FORCED" || statSelectedOnOverlay == "ZERO_BLUDGERS_GIVEN") {
+				playerSelectedOnOverlay = null
+			}
 			$scope.addStat(playerSelected, null, statSelectedOnOverlay, teamId);
-			$scope.closeDialog(overlayId);
+			$scope.closeDialog(overlayId)
 		}
 	}
 
@@ -277,6 +312,24 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 			$scope.closeDialog('onFieldPlayersHomePicker');
 		}
 	};
+
+	//startHomeEvent(null, 'possession')
+	// finishHomeEvent(null, 'OFFENSE')
+	$scope.startHomeOffensivePossession = function() {
+		$scope.addStat(null, null, 'OFFENSE', $scope.homeTeam)
+	}
+
+	$scope.startAwayOffensivePossession = function() {
+		$scope.addStat(null, null, 'DEFENSE', $scope.homeTeam)
+	}
+
+	$scope.homeTeamGainBludgers = function() {
+		$scope.addStat(null, null, 'GAIN_CONTROL', $scope.homeTeam)
+	}
+	
+	$scope.awayTeamGainBludgers = function() {
+		$scope.addStat(null, null, 'LOSE_CONTROL', $scope.homeTeam)
+	}
 	
 	function applySub(sub) {
 		if (sub.team_id == $scope.homeTeam) {
@@ -420,11 +473,13 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 			var playerIn = $scope.bothTeamsPlayersMap.get(inId);
 			if (player) {
 				response.data.player_name = player.first_name + ' ' + player.last_name;
+				response.data.player_display_name = getPlayerDisplayName(player.first_name, player.last_name);
 			} else {
 				response.data.player_name = null;
 			}
 			if (playerIn) {
 				response.data.player_in_name = playerIn.first_name + ' ' + playerIn.last_name;
+				response.data.player_in_display_name = getPlayerDisplayName(playerIn.first_name, playerIn.last_name);
 			} else {
 				response.data.player_in_name = inId;
 			}
@@ -448,6 +503,10 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 		
 		// $http.post("/addStat",)
 	};
+
+	function getPlayerDisplayName(firstName, lastName) {
+		return firstName.slice(0, 2) + ". " + lastName;
+	}
 	
 	$scope.addOppositeStat = function(stat, teamId) {
 		var teamIdToUse;
