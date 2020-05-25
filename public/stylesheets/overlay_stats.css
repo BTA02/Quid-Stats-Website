@@ -13,8 +13,8 @@
 }
 
 #overlayVideoContainer {
-    flex: 1 0 auto;
-    order: 1;
+    height: 100%;
+    width: 100%;
 }
 
 #overlayVideo {
