@@ -1,6 +1,10 @@
 angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$http', '$interval', '$sce', function($scope, $http, $interval, $sce) {
 	
 	$scope.Math = window.Math;
+
+	$scope.playerVars = {
+		fs: 0
+	};
 	
 	$interval( function() {
 		if ($scope.vidObj) {
