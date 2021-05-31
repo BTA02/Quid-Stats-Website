@@ -60,7 +60,6 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
     };
 	
 	function initVals() {
-		console.log("initvals")
 		// init filters
 		$scope.playerFilter="allPlayers";
 		$scope.eventFilter="allEvents";
@@ -72,7 +71,7 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
         statsUrl = "/allStats/" + $scope.selectedVideo
 		$http.get(statsUrl).then(function(response) {
 			for (var i = 0; i < response.data.length; i++) {
-				var statObj = response.data[i]; // This is going to return every stat, both teams. How do I reconcile that?
+				var statObj = response.data[i]; // This is going to return every stat, both teams. How do I reconcile that? Why would I need to?
 				$scope.originalStats.push(statObj);
 				var id = statObj.player_id;
 				var inId = statObj.player_in_id;
@@ -157,16 +156,18 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 	}
  
 	$scope.updateOnFieldPlayers = function() {
+		debugger;
 		if (!$scope.videoPlayer) {
 			return;
 		}
 		var startTime = 0;
-		var endTime = $scope.videoPlayer.getCurrentTime() + 1;
+		var endTime = $scope.videoPlayer.playerInfo.currentTime;
 		setOnFieldToBlank();
 		for (var i = startTime; i < endTime; i++) {
 			if ($scope.subMap.get(i) !== null && $scope.subMap.get(i) !== undefined) {
 				var arrayOfSubs = $scope.subMap.get(i);
 				for (var j = 0; j < arrayOfSubs.length; j++) {
+					debugger;
 					applySub(arrayOfSubs[j]);
 				}
 			}
@@ -336,6 +337,7 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 	}
 	
 	function applySub(sub) {
+		debugger;
 		if (sub.team_id == $scope.homeTeam) {
 			applyHomeSub(sub)
 		} else {
@@ -344,6 +346,7 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 	}
 	
 	function applyHomeSub(sub) {
+		debugger;
 		var index = -1;
 		var swapIndex = -1;
 		// both are 'not found'
@@ -398,7 +401,7 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 		if ($scope.originalStats == undefined) {
 			return;
 		}
-		var endTime = $scope.videoPlayer.getCurrentTime() + 1;
+		var endTime = $scope.videoPlayer.playerInfo.currentTime + 1;
 		$scope.homeScore = 0;
 		$scope.awayScore = 0;
 		
@@ -466,7 +469,7 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 				year : $scope.year,
 				player_id : playerId,
 				player_in_id : playerInId,
-				time : $scope.videoPlayer.getCurrentTime(),
+				time : $scope.videoPlayer.playerInfo.currentTime,
 				stat : stat,
 		};
 		
@@ -542,7 +545,7 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 				year : $scope.year,
 				player_id : null,
 				player_in_id : null,
-				time : $scope.videoPlayer.getCurrentTime(),
+				time : $scope.videoPlayer.playerInfo.currentTime,
 				stat : stat
 		};
 		
@@ -577,7 +580,7 @@ angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$ht
 	}
 	
 	$scope.instantReplay = function() {
-		$scope.seekToTime("", $scope.videoPlayer.getCurrentTime());
+		$scope.seekToTime("", $scope.videoPlayer.playerInfo.currentTime);
 	};
 	
 	$scope.seekToTime = function(statName, time) {
