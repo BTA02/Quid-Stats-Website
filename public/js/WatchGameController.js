@@ -1,4 +1,4 @@
-angular.module('app').controller('OverlayRecordStatsController', ['$scope', '$http', '$interval', '$sce', function($scope, $http, $interval, $sce) {
+angular.module('app').controller('WatchGameController', ['$scope', '$http', '$interval', '$sce', function($scope, $http, $interval, $sce) {
 	
 	$scope.Math = window.Math;
 

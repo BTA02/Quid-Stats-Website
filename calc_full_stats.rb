@@ -30,7 +30,7 @@ class CalcFullStats
 		
 		array_of_game_ids_sliced.each do |array_of_ids|
 			stats_to_add = @client.query('Stats').tap do |q|
-				q.eq('team_id', @team_id)
+				# q.eq('team_id', @team_id)
 				q.eq('author_id', @author_id)
 				q.value_in('vid_id', array_of_ids)
 				q.order_by = "vid_id,time"
@@ -339,6 +339,7 @@ class CalcFullStats
 
 	def chaser_raw_stats
 		events_from_games = get_stats_rows_from_games()
+
 		if events_from_games.nil?
 			return nil
 		end
@@ -353,6 +354,7 @@ class CalcFullStats
 			if cur_game != event["vid_id"]
 				on_field_array = ["chaserA", "chaserB", "chaserC", "keeper"]
 			end
+
 			cur_game = event["vid_id"]
 			player_id = nil
 			
@@ -410,7 +412,7 @@ class CalcFullStats
 			
 			# Skip events that are outside SOP's designation
 			should_skip = should_skip_event(@sop, event["time"], event_type, snitch_release_time)
-			
+
 			if event_type == "SUB"
 				if start_time != -1
 					time_to_add = event["time"] - start_time
@@ -487,7 +489,7 @@ class CalcFullStats
 				end
 			end				
 		end
-		
+
 		# add the game to each players' games played
 		@stats_map.update(@stats_map) { |key, val|
 			val.update(val) { |key1, val1|
@@ -546,6 +548,8 @@ class CalcFullStats
 	end
 	
 	def should_skip_event(sop_value, event_time, event_type, snitch_release_time)
+		return false
+
 		if sop_value == 0
 			return false
 		end
@@ -585,6 +589,10 @@ class CalcFullStats
 	end
 
 	def add_time_to_each_player(on_field_array, time_to_add, gameId)
+
+		pp on_field_array
+		pp time_to_add
+
 		on_field_array.each do |player|
 			if (@stats_map.include?(player))
 				@stats_map[player]["time"] += time_to_add

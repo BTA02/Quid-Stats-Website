@@ -188,7 +188,7 @@ end
 
 get '/watch' do
 	@title = 'Watch Game'
-	@controllerName = 'RecordStatsController'
+	@controllerName = 'WatchGameController'
 	@author_id = session[:authorId]
 	if !logged_in?
 		redirect '/noAuth'
