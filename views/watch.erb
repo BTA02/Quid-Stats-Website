@@ -103,30 +103,32 @@
 				</div>
 			</div>
 		</div>
-		<div class="filter">
-			<select ng-model="playerFilter" ng-change="filterEvents('players')">
-				<option value="allPlayers">All Players</option>
-				<option ng-repeat="player in allPlayers" value="{{player.objectId}}">{{player.first_name + ' ' + player.last_name}}</option>
-			</select>
-		</div>
-		<div class="filter">
-			<select ng-model="eventFilter" ng-change="filterEvents('events')">
-				<option value="allEvents">All Events</option>
-				<option value="SHOT">Shots</option>
-				<option value="GOAL">Goals</option>
-				<option value="ASSIST">Assists</option>
-				<option value="TAKEAWAY">Takeaway</option>
-				<option value="TURNOVER">Turnover</option>
-				<option value="SUB">Sub</option>
-				<option value="AWAY_GOAL">Away Goals</option>
-				<option value="NOTE">Notes</option>
-				<option value="GAIN_CONTROL">Gain Control</option>
-				<option value="LOSE_CONTROL">Lose Control</option>
-				<option value="OFFENSE">Offensive Possesions</option>
-				<option value="OFFENSIVE_DRIVE">Offensive Drive</opiton>
-				<option value="DEFENSE">Defensive Possesion</option>
-				<option value="DEFENSIVE_DRIVE">Defensive Drive</option>
-			</select>
+		<div class="filters>
+			<div class="filter">
+				<select ng-model="playerFilter" ng-change="filterEvents('players')">
+					<option value="allPlayers">All Players</option>
+					<option ng-repeat="player in allPlayers" value="{{player.objectId}}">{{player.first_name + ' ' + player.last_name}}</option>
+				</select>
+			</div>
+			<div class="filter">
+				<select ng-model="eventFilter" ng-change="filterEvents('events')">
+					<option value="allEvents">All Events</option>
+					<option value="SHOT">Shots</option>
+					<option value="GOAL">Goals</option>
+					<option value="ASSIST">Assists</option>
+					<option value="TAKEAWAY">Takeaway</option>
+					<option value="TURNOVER">Turnover</option>
+					<option value="SUB">Sub</option>
+					<option value="AWAY_GOAL">Away Goals</option>
+					<option value="NOTE">Notes</option>
+					<option value="GAIN_CONTROL">Gain Control</option>
+					<option value="LOSE_CONTROL">Lose Control</option>
+					<option value="OFFENSE">Offensive Possesions</option>
+					<option value="OFFENSIVE_DRIVE">Offensive Drive</opiton>
+					<option value="DEFENSE">Defensive Possesion</option>
+					<option value="DEFENSIVE_DRIVE">Defensive Drive</option>
+				</select>
+			</div>
 		</div>
 	</div>
 </div>
