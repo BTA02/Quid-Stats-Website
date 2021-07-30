@@ -194,7 +194,7 @@ get '/watch' do
 		redirect '/noAuth'
 	end
 	@teams = get_all_teams
-	erb :watch
+	erb :WatchGame
 end
 
 get '/overlayStats' do

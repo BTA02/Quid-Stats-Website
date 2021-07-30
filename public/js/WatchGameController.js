@@ -183,7 +183,6 @@ angular.module('app').controller('WatchGameController', ['$scope', '$http', '$in
 		}
 	}
     
-	// Axtell here... hm...
 	var playerSelected;
 	var overlayId;
 	$scope.positionSelected;
@@ -192,16 +191,6 @@ angular.module('app').controller('WatchGameController', ['$scope', '$http', '$in
 		playerSelected = playerId;
 		overlayId = _overlayId;
 		document.getElementById(_overlayId).style.display='flex';document.getElementById('fade').style.display='block';
-	}
-
-	$scope.startHomeEvent = function(playerId, position) {
-		$scope.positionSelected = position;
-		startEvent(playerId, 'allHomePlayersPicker');
-	}
-
-	$scope.startAwayEvent = function(playerId, position) {
-		$scope.positionSelected = position;
-		startEvent(playerId, 'allAwayPlayersPicker');
 	}
 
 	$scope.finishHomeEvent = function(playerSelectedOnOverlay, statSelectedOnOverlay) {
