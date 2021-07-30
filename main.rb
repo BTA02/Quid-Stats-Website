@@ -188,13 +188,13 @@ end
 
 get '/watch' do
 	@title = 'Watch Game'
-	@controllerName = 'RecordStatsController'
+	@controllerName = 'WatchGameController'
 	@author_id = session[:authorId]
 	if !logged_in?
 		redirect '/noAuth'
 	end
 	@teams = get_all_teams
-	erb :watch
+	erb :WatchGame
 end
 
 get '/overlayStats' do

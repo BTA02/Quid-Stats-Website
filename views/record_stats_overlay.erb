@@ -90,7 +90,7 @@
                 <p ng-show="statObj.player_name != 'null'">{{statObj.stat_name | statNameFilter}}: {{statObj.player_name}}</p>
                 <p ng-show="statObj.player_name == 'null'">{{statObj.stat_name | statNameFilter}}</p>
                 <!--Substitution type event-->
-                <p ng-show="statObj.stat_name == 'SUB' || statObj.stat_name == 'SWAP'">For: {{statObj.player_in_name}}</p>
+                <p ng-show="statObj.stat_name == 'SUB' || statObj.stat_name == 'SWAP'">Out For: {{statObj.player_in_name}}</p>
                 
                 <!--Possession Stuff-->
                 <p ng-show="statObj.stat_name == 'OFFENSE'"></p>
