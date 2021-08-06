@@ -16,7 +16,7 @@ class CalcFullStats
 		# per = 0 - nothing
 		# per = 1 - per minute
 		# per = 2 - per game
-		# per = 3 - per minute per game
+		# per = 3 - per possession (offensive and defensive, based on what makes sense)
 		@per = per.to_i
 		# sop = 0 - full game
 		# sop = 1 - pre-snitch only
@@ -348,6 +348,8 @@ class CalcFullStats
 		cur_game = "notAGame"
 		on_field_array = ["chaserA", "chaserB", "chaserC", "keeper"]
 		snitch_release_time = -1
+
+		first_possession = true
 		
 		#Loop through all game events
 		events_from_games.each do |event|
@@ -405,7 +407,9 @@ class CalcFullStats
 						"time" => 0,
 						"gain_control" => 0,
 						"lose_control" => 0,
-						"games_played" => Set.new
+						"games_played" => Set.new,
+						"offensive_possessions" => 0,
+						"defensive_possessions" => 0
 					}
 				end
 			end
@@ -479,7 +483,21 @@ class CalcFullStats
 					@stats_map[player_id][event["stat_name"].downcase] += 1
 					@stats_map[player_id]["point"] += 1
 				end
-			elsif event_type == "OFFENSE" || event_type == "DEFENSE"
+			elsif event_type == "OFFENSE"
+				if !should_skip
+					if !first_possession
+						# opposite on purpose
+						add_stat_to_all_players(on_field_array, "DEFENSE")
+					end
+				end
+				first_possession = false
+			elsif event_type == "DEFENSE" 
+				if !should_skip
+					if !first_possession
+						add_stat_to_all_players(on_field_array, "OFFENSE")
+					end
+				end
+				first_possession = false
 			elsif event_type == "OFFENSIVE_DRIVE" || event_type == "DEFENSIVE_DRIVE"
 			elsif event_type == "GAIN_CONTROL" || event_type == "LOSE_CONTROL"
 				
@@ -500,53 +518,94 @@ class CalcFullStats
 				end
 			}
 		}
-		if @per == 0
-			return @stats_map.values
-		elsif @per == 1
-			@stats_map.update(@stats_map) { |key, val|
-				val.update(val) { |key1, val1|
-					if key1 == 'first_name'
-						val1 = val['first_name']
-					elsif key1 == 'last_name'
-						val1 = val['last_name']
-					elsif key1 == 'time'
-						val1 = val['time']
-					elsif key1 == 'ratio'
-						val1 = val['ratio']
-					elsif key1 == 'games_played'
-						val1 = val['games_played']
-					elsif val['time'] != 0
-						val1 = val1.to_f / (val['time'].to_f / 60.0)
-						val1.round(2)
+		convert_based_on_per_data(@per, @stats_map)
+	end
+
+	def convert_based_on_per_data(per, stats_map)
+	    pp 'inside'
+		pp per
+		if per == 0
+			return stats_map.values
+		elsif per == 1
+			stats_map.update(stats_map) { |player_id, stat_map|
+				stat_map.update(stat_map) { |stat_name, stat_value|
+					if skip_per_conversion_always(stat_name)
+						stat_value = stat_map[stat_name]
+					elsif stat_name == 'time'
+						stat_value = stat_map['time']
+					elsif stat_map['time'] != -1
+						stat_value = stat_value.to_f / (stat_map['time'].to_f / 60.0)
+						stat_value.round(2)
 					end
 				}
 			}
-		elsif @per == 2
-			@stats_map.update(@stats_map) { |key, val|
-				val.update(val) { |key1, val1|
-					if key1 == 'first_name'
-						val1 = val['first_name']
-					elsif key1 == 'last_name'
-						val1 = val['last_name']
-					elsif key1 == 'ratio'
-						val1 = val['ratio']
-					elsif key1 == 'games_played'
-						val1 = val['games_played']
-					elsif val['games_played'] != 0
-						val1 = val1.to_f / (val['games_played'].to_f)
-						if key1 == 'time'
-							val1.round(0)
+		elsif per == 2
+			stats_map.update(stats_map) { |player_id, stat_map|
+				stat_map.update(stat_map) { |stat_name, stat_value|
+					if skip_per_conversion_always(stat_name)
+						stat_value = stat_map[stat_name]
+					elsif stat_map['games_played'] != -1
+						stat_value = stat_value.to_f / (stat_map['games_played'].to_f)
+						if stat_name == 'time'
+							stat_value.round(0)
 						else
-							val1.round(2)
+							stat_value.round(2)
 						end
 					end
 				}
 				
 			}
+		elsif per == 3
+			stats_map.update(stats_map) { |player_id, stat_map|
+				stat_map.update(stat_map) { |stat_name, stat_value|
+				if skip_per_conversion_always(stat_name)
+					stat_value = stat_map[stat_name]
+				elsif stat_name == 'offensive_possessions'
+					stat_value = stat_map['offensive_possessions']
+				elsif stat_name == 'defensive_possessions'
+					stat_value = stat_map['defensive_possessions']
+				elsif stat_name == 'minuses' || stat_name == 'takeaway'
+					if (stat_map['defensive_possessions'] > 0)
+						stat_value = stat_value.to_f / (stat_map['defensive_possessions'].to_f)
+						stat_value.round(2)
+					else
+						stat_value = stat_map[stat_name]
+					end
+				elsif stat_name == 'shot' || stat_name == 'goal' || stat_name == 'assist' || stat_name == 'point' || stat_name == 'turnover' || stat_name == 'plusses'
+					if (stat_map['offensive_possessions'] > 0)
+						stat_value = stat_value.to_f / (stat_map['offensive_possessions'].to_f)
+						stat_value.round(2)
+					else
+						stat_value = stat_map[stat_name]
+					end
+				elsif stat_name == 'net' || stat_name == 'time'
+					total_possessions = stat_map['offensive_possessions'] + stat_map['defensive_possessions']
+					if (total_possessions > 0)
+						stat_value = stat_value.to_f / total_possessions
+						if (stat_name == 'time')
+							stat_value.round(0)
+						else
+							stat_value.round(2)
+						end
+					else
+						stat_value = stat_map[stat_name]
+					end
+				else
+					stat_value = stat_map[stat_name]
+				end
+			}
+		}
 		end
-		@stats_map.values
+		stats_map.values
 	end
-	
+
+	def skip_per_conversion_always(stat_name)
+		if stat_name == 'first_name' || stat_name == 'last_name' || stat_name == 'ratio' || stat_name == 'games_played'
+			return true
+		end 
+	end
+
+
 	def should_skip_event(sop_value, event_time, event_type, snitch_release_time)
 		return false
 
@@ -590,15 +649,28 @@ class CalcFullStats
 
 	def add_time_to_each_player(on_field_array, time_to_add, gameId)
 
-		pp on_field_array
-		pp time_to_add
-
 		on_field_array.each do |player|
 			if (@stats_map.include?(player))
 				@stats_map[player]["time"] += time_to_add
 				@stats_map[player]["games_played"] << gameId
 			end
 		end		
+	end
+
+	def add_stat_to_all_players(on_field_array, stat_name)
+		if (stat_name == "OFFENSE")
+			on_field_array.each do |player|
+				if (@stats_map.include?(player))
+					@stats_map[player]["offensive_possessions"] += 1
+				end
+			end
+		else
+			on_field_array.each do |player|
+				if (@stats_map.include?(player))
+					@stats_map[player]["defensive_possessions"] += 1
+				end
+			end
+		end
 	end
 
 	# This is the combos stats pages

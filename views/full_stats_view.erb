@@ -20,6 +20,7 @@
     <option value="0">Total</option>
     <option value="1">Per Minute</option>
     <option value="2">Per Game</option>
+    <option value="3">Per Possession</option>
   </select>
   <select name="sopSelect" ng-model="sop">
     <option value="" select disabled>Select Snitch Mod</option>
@@ -85,6 +86,8 @@
           <th class="statsHeader" ng-click="sortMap('first_name')">FIRST</th>
           <th class="statsHeader" ng-click="sortMap('last_name')">LAST</th>
           <th class="statsHeader" ng-click="sortMap('games_played')">GP</th>
+          <th class="statsHeader" ng-click="sortMap('offensive_possessions')">O.P.</th>
+          <th class="statsHeader" ng-click="sortMap('defensive_possessions')">D.P.</th>
           <th class="statsHeader" ng-click="sortMap('shot')">SHOTS</th>
           <th class="statsHeader" ng-click="sortMap('goal')">GOALS</th>
           <th class="statsHeader" ng-click="sortMap('assist')">ASSISTS</th>
@@ -103,6 +106,8 @@
             <td>{{row['first_name']}}</td>
             <td>{{row['last_name']}}</td>
             <td>{{row['games_played']}}</td>
+            <td>{{row['offensive_possessions']}}</td>
+            <td>{{row['defensive_possessions']}}</td>
             <td>{{row['shot']}}</td>
             <td>{{row['goal']}}</td>
             <td>{{row['assist']}}</td>
